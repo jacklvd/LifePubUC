@@ -99,8 +99,23 @@ Quan Le: https://docs.google.com/document/d/1hQbV365ZZpOAT3V0a0dDD-z3xuq_cu1_6Px
 
 Quan Le:
 
-*FILL IN YOUR BIOGRAPHIES HERE*
+Email: leqn@mail.uc.edu 
 
+portfolio: leqndev.com
+
+**Company 1**: Meta
+
+Experience: Software Engineer Intern
+
+**Company 2**: University of Cincinnati
+
+Experience: Machine Learning Researcher
+
+Project Sought: 
+
+Want to work on project that utilize cloud technologies with machine learning operations to build a project that can solve a business needs or a pain point for end-users
+
+*NEED TO FILL IN YOUR BIOGRAPHIES HERE*
 
 ## Budget
 - expenses to date or statement that there have not been any.
