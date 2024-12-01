@@ -4,7 +4,7 @@
 
 **Purpose**: Enhance student engagement in campus life.
 
-Features:
+### Features:
 
 **Event Listings**: Find and join nearby events (like Eventbrite).
 **Item Exchange**: Platform for exchanging textbooks, equipment, and merch (like Facebook Marketplace).
@@ -22,6 +22,8 @@ Connect Through Peer-to-Peer Exchanges: Life Pub's peer-to-peer marketplace allo
 Foster a Stronger Community: At its core, Life Pub is all about building connections. By bringing together various facets of campus life into one accessible platform, we aim to foster a vibrant and supportive student community where everyone can thrive.
 
 ## User Stories and Design Diagrams (Assignment #4):
+
+*NEED TO BE DONE* 
 
 - User Stories
 - Design Diagrams: Level 0, Level 1 and Level 2 
@@ -67,8 +69,15 @@ Foster a Stronger Community: At its core, Life Pub is all about building connect
 Note: Priority levels (High, Medium, Low) have been assigned based on the typical importance of these tasks in a project lifecycle. The team should review and adjust these as needed. The Status column is left blank for the team to update as the project progresses.
 
 
-- Timeline
-- Effort Matrix
+
+### Timeline
+
+*FILL IN INFO HERE*
+
+### Effort Matrix
+
+*FILL IN INFO HERE*
+
 
 ## ABET Concerns Essay (Assignment #7)
 
@@ -78,16 +87,19 @@ https://docs.google.com/presentation/d/1kMsCP-yr7eLmIw3owozBxf2PejEByKcg2G89E939
 
 
 ## Self-Assessment Essays (Assignment #3)
-Quan Le: 
 
-Long Vo: 
+Quan Le: https://docs.google.com/document/d/1hQbV365ZZpOAT3V0a0dDD-z3xuq_cu1_6PxtNohWYOE/edit?usp=sharing
 
-Hoang Nguyen:
+*FILL IN YOUR INFO HERE*
 
-Quan Pham:
+
 
 
 ## Professional Biographies  (Assignment #1)
+
+Quan Le:
+
+*FILL IN YOUR BIOGRAPHIES HERE*
 
 
 ## Budget
