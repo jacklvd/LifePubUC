@@ -26,7 +26,10 @@ Foster a Stronger Community: At its core, Life Pub is all about building connect
 *NEED TO BE DONE* 
 
 - User Stories
-- Design Diagrams: Level 0, Level 1 and Level 2 
+- Design Diagrams: Level 0, Level 1 and Level 2
+- ![Design Diagrams D0](Design_Diagram_(D0).png)
+-![Design Diagrams D1](Design_Diagram_(D1).png)
+-![Design Diagrams D2](Design_Diagram_(D2).png)
 - Description of the Diagrams: including conventions and a brief description of the purpose of each component.
    
 ## Project Tasks and Timeline (Assignment #5-6)
