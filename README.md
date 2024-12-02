@@ -47,7 +47,86 @@ Foster a Stronger Community: At its core, Life Pub is all about building connect
 - ![Design Diagrams D1](/Design_Diagram_(D1).png)
 - ![Design Diagrams D2](/Design_Diagram_(D2).png)
 ## Description of the Diagrams: including conventions and a brief description of the purpose of each component.
-   
+
+## Design Diagram D0: Student Marketplace Flow
+This diagram represents the **data flow within the student marketplace platform**:
+
+1. **Inputs**:
+   - **Student Listings**: Items posted by users.
+   - **User Profiles**: Data about individual users.
+   - **Search Queries**: User-generated searches.
+
+2. **System Components**:
+   - **User Input**: Captures data from users.
+   - **System**: Processes inputs and generates outputs.
+
+3. **Outputs**:
+   - **Marketplace Items**: Search results or listed items.
+   - **Connections**: Links between buyers and sellers.
+   - **Resources**: Relevant resources or events for students.
+
+This flow demonstrates how user input is transformed into actionable results within the platform.
+
+---
+
+## Design Diagram D1: Modular Components Overview
+This diagram highlights the **modular components** of the application:
+
+1. **User Interface**:
+   - Provides access through:
+     - **Web Interface**
+     - **Mobile Interface**
+
+2. **Core Modules**:
+   - **Authentication**: Handles user login and security.
+   - **User Management**: Manages user profiles and preferences.
+
+3. **Functional Modules**:
+   - **Marketplace**:
+     - Features a **Transaction System** for secure buying and selling.
+   - **Community**:
+     - Enables **Resource Sharing** for connecting students.
+
+4. **Data Storage**:
+   - Organized into three main databases:
+     - **User Data**
+     - **Listing Data**
+     - **Resource Data**
+
+---
+
+## Design Diagram D2: High-Level System Architecture
+This diagram illustrates the architecture of the **Campus Connect app**, breaking it down into the following layers:
+
+1. **Frontend Layer**:
+   - Includes the core functionalities such as:
+     - **Authentication**
+     - **Listing Management**
+     - **Search/Filter**
+     - **Messaging**
+   - These components interact with the backend through APIs or WebSocket connections.
+
+2. **Backend Services**:
+   - Comprises various microservices:
+     - **User Service**: Manages user-related data and authentication.
+     - **Listing Service**: Handles item postings and their details.
+     - **Search Service**: Manages the search index for faster and filtered queries.
+     - **Message Service**: Facilitates real-time communication between users.
+   - Utilizes **validation** and **storage** services to ensure data integrity and secure storage.
+
+3. **External Services**:
+   - Integrates with external services such as:
+     - **University OAuth** for authentication.
+     - **Content Delivery** for hosting media files.
+     - **Email Service** for user notifications.
+
+4. **Data Layer**:
+   - Stores information in specific databases:
+     - **User Database**
+     - **Search Database**
+     - **File Storage**
+     - **Message Database**
+
 ## Project Tasks and Timeline (Assignment #5-6)
 
 ### Task List
