@@ -25,12 +25,28 @@ Foster a Stronger Community: At its core, Life Pub is all about building connect
 
 *NEED TO BE DONE* 
 
-- User Stories
-- Design Diagrams: Level 0, Level 1 and Level 2
-- ![Design Diagrams D0](Design_Diagram_(D0).png)
--![Design Diagrams D1](Design_Diagram_(D1).png)
--![Design Diagrams D2](Design_Diagram_(D2).png)
-- Description of the Diagrams: including conventions and a brief description of the purpose of each component.
+## User Stories
+## Normal Student Perspective
+**As a normal student at UC,**
+- I want to be able to:
+  - Interact with the app to purchase merchandise.
+  - Find events that match my interests or hobbies (pre-defined in the app preferences).
+- So that:
+  - I can stay up-to-date with current events in the Cincinnati area.
+
+## Student Seller Perspective
+**As a student with items to sell (a.k.a. seller),**
+- I want to:
+  - Interact with the app easily to post my items.
+  - Ensure my posts receive a certain number of daily views, increasing the chances of finding potential customers.
+- I also want the app to:
+  - Facilitate and secure transactions.
+  - Avoid requiring numerous procedures to set up my account (e.g., simplified setup compared to TikTok Shop).
+## Design Diagrams: Level 0, Level 1 and Level 2
+- ![Design Diagrams D0](/Design_Diagram_(D0).png)
+- ![Design Diagrams D1](/Design_Diagram_(D1).png)
+- ![Design Diagrams D2](/Design_Diagram_(D2).png)
+## Description of the Diagrams: including conventions and a brief description of the purpose of each component.
    
 ## Project Tasks and Timeline (Assignment #5-6)
 
