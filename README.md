@@ -72,17 +72,23 @@ Note: Priority levels (High, Medium, Low) have been assigned based on the typica
 
 ### Timeline
 
-*FILL IN INFO HERE*
+Link to the Timeline: https://drive.google.com/file/d/1u4js-25v6d6zLAlpdISRgHBBA9TRQKFY/view?usp=sharing
+
 
 ### Effort Matrix
 
-*FILL IN INFO HERE*
+Link to the Effort Matrix:
+https://docs.google.com/document/d/17PhEfPg8uCi_Xp-QmUqM_7modIzHADlYA24vwrh6nVU/edit?usp=drive_link
 
 
 ## ABET Concerns Essay (Assignment #7)
 
+Link to the essay: 
+https://drive.google.com/file/d/1u4js-25v6d6zLAlpdISRgHBBA9TRQKFY/view?usp=sharing
+
 ## PPT Slideshow (includes ABET Concerns) (Assignment #8)
-Here's the link to google doc
+
+Link to google doc:
 https://docs.google.com/presentation/d/1kMsCP-yr7eLmIw3owozBxf2PejEByKcg2G89E939FXg/edit?usp=sharing
 
 
