@@ -21,10 +21,6 @@ Stay Engaged with Campus Activities: Life Pub provides real-time updates on scho
 Connect Through Peer-to-Peer Exchanges: Life Pub's peer-to-peer marketplace allows students to exchange or pass on items like textbooks, equipment, and school merchandise. It's a sustainable way to save money, reduce waste, and help out fellow students.
 Foster a Stronger Community: At its core, Life Pub is all about building connections. By bringing together various facets of campus life into one accessible platform, we aim to foster a vibrant and supportive student community where everyone can thrive.
 
-## User Stories and Design Diagrams (Assignment #4):
-
-*NEED TO BE DONE* 
-
 ## User Stories
 ## Normal Student Perspective
 **As a normal student at UC,**
