@@ -190,8 +190,7 @@ https://docs.google.com/presentation/d/1kMsCP-yr7eLmIw3owozBxf2PejEByKcg2G89E939
 
 Quan Le: https://docs.google.com/document/d/1hQbV365ZZpOAT3V0a0dDD-z3xuq_cu1_6PxtNohWYOE/edit?usp=sharing
 
-*FILL IN YOUR INFO HERE*
-
+Long Vo: https://docs.google.com/document/d/1mVfOXcnEK43ZyxZ4KTXCkwdsOW5tnd6EnP02TQxXTwk/edit?usp=sharing
 
 
 
