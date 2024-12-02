@@ -214,6 +214,8 @@ Project Sought:
 Want to work on project that utilize cloud technologies with machine learning operations to build a project that can solve a business needs or a pain point for end-users
 
 *NEED TO FILL IN YOUR BIOGRAPHIES HERE*
+
+
 Hoang Nguyen  
 Nguye3hg@mail.uc.edu  
 
