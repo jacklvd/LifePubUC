@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import Item from '../models/item';
+import Item from '../models/itemSchema';
 
 // Define interface for the request body
 interface CreateItemRequest {

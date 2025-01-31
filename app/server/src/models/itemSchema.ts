@@ -66,7 +66,6 @@ ItemSchema.index({ 'price.amount': 1 }); // Index for price-based queries
 
 // Virtual for formatted price
 
-
 // Pre-save middleware
 
 // Instance method to increment views
