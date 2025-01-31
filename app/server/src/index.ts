@@ -1,11 +1,14 @@
 import express from "express";
 import dotenv from "dotenv";
 import bodyParser from "body-parser";
+import mongoose from "mongoose";
 
 import cors from "cors";
 import helmet from "helmet";
 
 import morgan from "morgan";
+
+import itemRoute from "./routes/itemRoute";
 
 /* CONFIGURATIONS */
 dotenv.config();
@@ -21,17 +24,19 @@ app.use(morgan("common"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-
-
-if (isProduction) {
-  
-}
-else {
-  app.use(cors());
+if (process.env.MONGO_DB) {
+  mongoose
+    .connect(process.env.MONGO_DB)
+    .then((result) => {
+      console.log("connected to Mongodb");
+    })
+    .catch((err) => {
+      console.error(err);
+    });
 }
 
 /* ROUTES */
-
+app.use("/items", itemRoute)
 
 /* SERVER */
 const port = process.env.PORT || 3000;
@@ -41,5 +46,3 @@ if (!isProduction) {
     console.log(`Server running on port ${port}`);
   });
 }
-
-
