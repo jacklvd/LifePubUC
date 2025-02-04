@@ -2,10 +2,16 @@
 
 import Link from 'next/link'
 import React from 'react'
-import { Search, ShoppingCart, User } from 'lucide-react'
+import { Search, ShoppingCart, Bell, Heart } from 'lucide-react'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { Input } from '@/components/ui/input'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 const Navbar = () => {
     return (
@@ -17,12 +23,12 @@ const Navbar = () => {
                 </Link>
 
                 {/* SEARCH */}
-                <div className="flex-1 max-w-2xl mx-12">
+                <div className="flex-1 max-w-3xl mx-5">
                     <div className="relative">
-                        <Input 
+                        <Input
                             type="text"
                             placeholder="Search items..."
-                            className="w-full bg-primary-100 border-primary-300 text-white
+                            className="w-full bg-white text-black text-md
                                      focus:border-secondary-300 focus:ring-secondary-200"
                         />
                         <Search className="absolute right-3 top-2.5 h-5 w-5" />
@@ -31,42 +37,67 @@ const Navbar = () => {
 
                 {/* ACTIONS */}
                 <div className='flex items-center gap-6'>
-                    <Popover>
-                        <PopoverTrigger>
-                            <Avatar className="h-9 w-9 hover:ring-2 hover:ring-secondary-300 transition-all">
-                                <AvatarImage src="https://github.com/shadcn.png" />
-                                <AvatarFallback className="bg-primary-300">CN</AvatarFallback>
-                            </Avatar>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-48 bg-primary-500 border-primary-400 text-white">
-                            <div className="flex flex-col space-y-1">
-                                <Link href="/profile" 
-                                      className="flex items-center gap-2 p-2 hover:bg-primary-400 rounded-md transition-colors">
-                                    <User size={16} />
-                                    Profile
+                    <TooltipProvider >
+                        <Tooltip delayDuration={100} >
+                            <TooltipTrigger className=''>
+                                <Link href="" className="relative">
+                                    <div className='p-2 hover:bg-primary-50 hover:rounded-full transition-all'>
+                                        <Heart className="h-6 w-6" />
+                                    </div>
                                 </Link>
-                                <Link href="/orders" 
-                                      className="p-2 hover:bg-primary-400 rounded-md transition-colors">
-                                    Orders
+                            </TooltipTrigger>
+                            <TooltipContent className='bg-primary-500 text-sm px-3'>
+                                Favorite
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                    <TooltipProvider >
+                        <Tooltip delayDuration={100} >
+                            <TooltipTrigger className=''>
+                                <Link href="" className="relative">
+                                    <div className='p-2 hover:bg-primary-50 hover:rounded-full transition-all'>
+                                        <Bell className="h-6 w-6" />
+                                    </div>
                                 </Link>
-                                <Link href="/settings" 
-                                      className="p-2 hover:bg-primary-400 rounded-md transition-colors">
-                                    Settings
+                            </TooltipTrigger>
+                            <TooltipContent className='bg-primary-500 text-sm px-3'>
+                                Notification
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                    <TooltipProvider >
+                        <Tooltip delayDuration={100} >
+                            <TooltipTrigger className=''>
+                                <Link href="" className="relative">
+                                    <Avatar className="h-9 w-9 hover:ring-2 hover:ring-secondary-300 hover:bg-primary-50 hover:rounded-full transition-all">
+                                        <AvatarImage src="https://github.com/shadcn.png" />
+                                        <AvatarFallback className="bg-primary-300">CN</AvatarFallback>
+                                    </Avatar>
                                 </Link>
-                                <hr className="border-primary-400" />
-                                <button className="p-2 text-left hover:bg-primary-400 rounded-md transition-colors text-primary-100">
-                                    Sign out
-                                </button>
-                            </div>
-                        </PopoverContent>
-                    </Popover>
+                            </TooltipTrigger>
+                            <TooltipContent className='bg-primary-500 text-sm px-3'>
+                                Profile
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
 
-                    <Link href="/cart" className="relative hover:text-secondary-200 transition-colors">
-                        <ShoppingCart className="h-6 w-6" />
-                        <span className="absolute -top-2 -right-2 bg-secondary-300 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                            0
-                        </span>
-                    </Link>
+                    <TooltipProvider >
+                        <Tooltip delayDuration={100} >
+                            <TooltipTrigger className=''>
+                                <Link href="/cart" className="relative">
+                                    <div className='p-2 hover:bg-primary-50 hover:rounded-full transition-all'>
+                                        <ShoppingCart className="h-6 w-6" />
+                                        <span className="absolute -top-2 -right-2 bg-primary-500 text-white-100  text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                                            0
+                                        </span>
+                                    </div>
+                                </Link>
+                            </TooltipTrigger>
+                            <TooltipContent className='bg-primary-500 text-sm px-3'>
+                                Cart
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
                 </div>
             </div>
         </nav>
