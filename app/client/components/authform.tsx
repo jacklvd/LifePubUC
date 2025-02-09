@@ -77,7 +77,7 @@ const AuthForm = <T extends FieldValues>({
             <p className="text-light-100">
                 {isSignIn
                     ? "Access the vast collection of resources, and stay updated"
-                    : "Please complete all fields and upload a valid university ID to gain access to the website"}
+                    : "Please complete all fields and insert a valid university ID to gain access to the website"}
             </p>
             <Form {...form}>
                 <form

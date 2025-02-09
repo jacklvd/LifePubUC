@@ -1,19 +1,14 @@
 "use server";
 
-// import { eq } from "drizzle-orm";
-// import { db } from "@/database/drizzle";
-// import { users } from "@/database/schema";
+import User from "@/databases/schemas";
 import { hash } from "bcryptjs";
 import { signIn } from "@/auth";
-import { redirect } from "next/navigation";
-import { headers } from "next/headers";
+import { connectToDatabase } from "@/lib/db";
 
 export const signInWithCredentials = async (
-  params: Pick<AuthCredentials, "email" | "password">,
+  params: Pick<AuthCredentials, "email" | "password">
 ) => {
   const { email, password } = params;
-
-  const ip = (await headers()).get("x-forwarded-for") || "127.0.0.1";
 
   try {
     const result = await signIn("credentials", {
@@ -28,7 +23,7 @@ export const signInWithCredentials = async (
 
     return { success: true };
   } catch (error) {
-    console.log(error, "Signin error");
+    console.error("Signin error:", error);
     return { success: false, error: "Signin error" };
   }
 };
@@ -36,34 +31,32 @@ export const signInWithCredentials = async (
 export const signUp = async (params: AuthCredentials) => {
   const { fullName, email, universityId, password } = params;
 
-  const ip = (await headers()).get("x-forwarded-for") || "127.0.0.1";
+  await connectToDatabase();
 
-  const existingUser = await db
-    .select()
-    .from(users)
-    .where(eq(users.email, email))
-    .limit(1);
+  // Check if user already exists
+  const existingUser = await User.findOne({ email });
 
-  if (existingUser.length > 0) {
+  if (existingUser) {
     return { success: false, error: "User already exists" };
   }
 
   const hashedPassword = await hash(password, 10);
 
   try {
-    await db.insert(users).values({
+    // Create and save new user
+    await User.create({
       fullName,
       email,
       universityId,
       password: hashedPassword,
-      universityCard,
     });
 
+    // Automatically sign the user in after signup
     await signInWithCredentials({ email, password });
 
     return { success: true };
   } catch (error) {
-    console.log(error, "Signup error");
+    console.error("Signup error:", error);
     return { success: false, error: "Signup error" };
   }
 };

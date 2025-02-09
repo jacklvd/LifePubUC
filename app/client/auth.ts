@@ -1,10 +1,8 @@
 import NextAuth, { User } from "next-auth";
-import { compare } from "bcryptjs";
 import CredentialsProvider from "next-auth/providers/credentials";
-// need to set up these in database
-// import { db } from "@/database/drizzle";
-// import { users } from "@/database/schema";
-// import { eq } from "drizzle-orm";
+import { compare } from "bcryptjs";
+import { connectToDatabase } from "@/lib/db";
+import UserModel from "@/databases/schemas";  // Use default export
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   session: {
@@ -13,29 +11,26 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     CredentialsProvider({
       async authorize(credentials) {
+        await connectToDatabase();  // Ensure database is connected
+
         if (!credentials?.email || !credentials?.password) {
           return null;
         }
 
-        const user = await db
-          .select()
-          .from(users)
-          .where(eq(users.email, credentials.email.toString()))
-          .limit(1);
+        // Find the user by email
+        const user = await UserModel.findOne({ email: credentials.email.toString() });
 
-        if (user.length === 0) return null;
+        if (!user) return null;
 
-        const isPasswordValid = await compare(
-          credentials.password.toString(),
-          user[0].password,
-        );
-
+        // Verify the user's password
+        const isPasswordValid = await compare(credentials.password.toString(), user.password);
         if (!isPasswordValid) return null;
 
+        // Return the user details for the JWT
         return {
-          id: user[0].id.toString(),
-          email: user[0].email,
-          name: user[0].fullName,
+          id: user._id.toString(),
+          email: user.email,
+          name: user.fullName,
         } as User;
       },
     }),
