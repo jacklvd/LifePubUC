@@ -9,7 +9,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 
 import itemRoute from "./routes/itemRoute";
-
+import authRoute from "./routes/userRoute"
 /* CONFIGURATIONS */
 dotenv.config();
 
@@ -36,10 +36,19 @@ if (process.env.MONGO_DB) {
 }
 
 /* ROUTES */
-app.use("/items", itemRoute)
+/* ROUTES */
+const apiRouter = express.Router();
+
+// Mount routes to apiRouter
+apiRouter.use("/items", itemRoute);
+apiRouter.use("/auth", authRoute);  // Use authRoute here, not itemRoute
+
+// Mount apiRouter to app with /api prefix
+app.use("/api", apiRouter);
+
 
 /* SERVER */
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8000;
 
 if (!isProduction) {
   app.listen(port, () => {
