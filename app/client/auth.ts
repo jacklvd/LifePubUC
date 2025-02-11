@@ -28,7 +28,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         // Return the user details for the JWT
         return {
-          id: user._id.toString(),
+          id: user.id.toString(),
           email: user.email,
           name: user.fullName,
         } as User;

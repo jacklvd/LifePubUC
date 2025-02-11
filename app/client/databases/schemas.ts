@@ -10,7 +10,7 @@ export interface IUser extends mongoose.Document {
 }
 
 // Define the User schema
-const UserSchema = new mongoose.Schema<IUser>(
+const userSchema = new mongoose.Schema<IUser>(
   {
     fullName: {
       type: String,
@@ -40,5 +40,5 @@ const UserSchema = new mongoose.Schema<IUser>(
 );
 
 
-const User = mongoose.models.User || mongoose.model<IUser>("User", UserSchema);
+export const User = mongoose?.models?.User || mongoose.model('User', userSchema);
 export default User;
