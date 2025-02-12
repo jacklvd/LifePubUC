@@ -24,7 +24,7 @@ app.use(morgan("common"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-if (process.env.MONGO_DB) {
+if (process.env.MONGO_URI) {
   mongoose
     .connect(process.env.MONGO_URI || "")
     .then((result) => {
