@@ -26,7 +26,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 if (process.env.MONGO_DB) {
   mongoose
-    .connect(process.env.MONGO_DB)
+    .connect(process.env.MONGO_URI || "")
     .then((result) => {
       console.log("connected to Mongodb");
     })
