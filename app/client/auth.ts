@@ -1,8 +1,5 @@
 import NextAuth, { User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { compare } from "bcryptjs";
-import { connectToDatabase } from "@/lib/db";
-import UserModel from "@/databases/schemas";  // Use default export
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   session: {
@@ -11,27 +8,42 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     CredentialsProvider({
       async authorize(credentials) {
-        await connectToDatabase();  // Ensure database is connected
+        try {
+          if (!credentials?.email || !credentials?.password) {
+            return null;
+          }
 
-        if (!credentials?.email || !credentials?.password) {
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/login`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              email: credentials.email,
+              password: credentials.password,
+            }),
+          });
+
+          if (!response.ok) {
+            return null;
+          }
+
+          const data = await response.json();
+          
+          // Make sure data.data exists and has the required fields
+          if (!data?.data) {
+            return null;
+          }
+
+          return {
+            id: data.data._id || data.data.id || '', 
+            email: data.data.email || '',
+            name: data.data.fullName || '',
+          } as User;
+        } catch (error) {
+          console.error("Authorization error:", error);
           return null;
         }
-
-        // Find the user by email
-        const user = await UserModel.findOne({ email: credentials.email.toString() });
-
-        if (!user) return null;
-
-        // Verify the user's password
-        const isPasswordValid = await compare(credentials.password.toString(), user.password);
-        if (!isPasswordValid) return null;
-
-        // Return the user details for the JWT
-        return {
-          id: user.id.toString(),
-          email: user.email,
-          name: user.fullName,
-        } as User;
       },
     }),
   ],
@@ -42,18 +54,41 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.email = user.email;
         token.name = user.name;
       }
-
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
+        session.user.email = token.email as string;
         session.user.name = token.name as string;
       }
-
       return session;
     },
-  },
+    async authorized({ request, auth }) {
+      const { pathname } = request.nextUrl
+      
+      const isLoggedIn = !!auth?.user
+
+      const isAuthRoute = ['/sign-in', '/sign-up'].includes(pathname)
+      if (isAuthRoute) {
+        if (isLoggedIn) {
+          return Response.redirect(new URL('/', request.nextUrl))
+        }
+        return true
+      }
+
+      // Protected routes - if not logged in, redirect to sign-in
+      if (!isLoggedIn) {
+        return false // Will redirect to sign-in page
+      }
+
+      return true
+    },
+
+  }, 
+
+  trustHost: true,
 });
