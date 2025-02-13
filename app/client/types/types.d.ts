@@ -13,4 +13,16 @@ interface User {
   createdAt: Date;
   updatedAt: Date;
 }
-  
+
+interface Item {
+  title: string,
+  description: string,
+  price: number, 
+  amount: number
+
+}
+
+interface Category {
+  title: string,
+  url: string
+}
