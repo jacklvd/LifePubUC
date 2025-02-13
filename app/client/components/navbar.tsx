@@ -28,7 +28,7 @@ const Navbar = () => {
                         <Input
                             type="text"
                             placeholder="Search items..."
-                            className="w-full bg-white text-black text-md
+                            className="w-full bg-white text-black text-md border border-r-8 rounded-full 
                                      focus:border-secondary-300 focus:ring-secondary-200"
                         />
                         <Search className="absolute right-3 top-2.5 h-5 w-5" />
