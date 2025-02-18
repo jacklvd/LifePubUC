@@ -9,7 +9,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 
 import itemRoute from "./routes/itemRoute";
-import authRoute from "./routes/userRoute"
+import authRoute from "./routes/authRoute";
 /* CONFIGURATIONS */
 dotenv.config();
 
