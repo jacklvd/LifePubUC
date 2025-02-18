@@ -5,6 +5,16 @@ import React from 'react'
 import { Search, ShoppingCart, Bell, Heart } from 'lucide-react'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { Input } from '@/components/ui/input'
+import { signOut } from 'next-auth/react'
+
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 import {
     Tooltip,
@@ -65,21 +75,32 @@ const Navbar = () => {
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
-                    <TooltipProvider >
-                        <Tooltip delayDuration={100} >
-                            <TooltipTrigger className=''>
-                                <Link href="" className="relative">
-                                    <Avatar className="h-9 w-9 hover:ring-2 hover:ring-secondary-300 hover:bg-primary-50 hover:rounded-full transition-all">
-                                        <AvatarImage src="https://github.com/shadcn.png" />
-                                        <AvatarFallback className="bg-primary-300">CN</AvatarFallback>
-                                    </Avatar>
-                                </Link>
-                            </TooltipTrigger>
-                            <TooltipContent className='bg-primary-500 text-sm px-3'>
-                                Profile
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
+
+                    <DropdownMenu>
+                        <TooltipProvider >
+                            <Tooltip delayDuration={100} >
+                                <DropdownMenuTrigger>
+                                    <TooltipTrigger className=''>
+                                        <Link href="" className="relative">
+                                            <Avatar className="h-9 w-9 hover:ring-2 hover:ring-secondary-300 hover:bg-primary-50 hover:rounded-full transition-all">
+                                                <AvatarImage src="https://github.com/shadcn.png" />
+                                                <AvatarFallback className="bg-primary-300">CN</AvatarFallback>
+                                            </Avatar>
+                                        </Link>
+                                    </TooltipTrigger>
+                                </DropdownMenuTrigger>
+                                <TooltipContent className='bg-primary-500 text-sm px-3'>
+                                    Profile
+                                </TooltipContent>
+                                <DropdownMenuContent>
+                                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem>Profile</DropdownMenuItem>
+                                    <DropdownMenuItem  onClick={() => signOut({ callbackUrl: '/' })}>Sign out</DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                    </DropdownMenu>
 
                     <TooltipProvider >
                         <Tooltip delayDuration={100} >
