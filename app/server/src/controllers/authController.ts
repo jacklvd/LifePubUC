@@ -15,7 +15,8 @@ export const signUp = async (req: any, res: any) => {
         const existingUser = await User.findOne({ email });
 
         if (existingUser) {
-            return res.status(400).json({ message: "User already exists" });
+            res.status(400).json({ message: "User already exists" });
+            return;
         }
         // Hash the password
         const salt = await bcrypt.genSalt(10);
@@ -45,13 +46,17 @@ export const signUp = async (req: any, res: any) => {
             },
         });
     } catch (error:any) {
+        console.log(error);
         await session.abortTransaction();
         session.endSession();
         res.status(500).json({
             message: "Error creating user",
             error: error.message,
         });
+
+        return 
     }
+
 }
 
 export const signIn = async (req: any, res: any) => {

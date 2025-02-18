@@ -5,6 +5,16 @@ import React from 'react'
 import { Search, ShoppingCart, Bell, Heart } from 'lucide-react'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { Input } from '@/components/ui/input'
+import { signOutUser } from '@/lib/actions/auth';
+
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 import {
     Tooltip,
@@ -12,8 +22,25 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { useRouter } from 'next/navigation';
 
 const Navbar = () => {
+    const router = useRouter();
+
+    const handleSignOut = async () => {
+        try {
+            const result = await signOutUser();
+            
+            if (result.success) {
+                router.push('/sign-in');
+            } else {
+                console.error('Sign out failed:', result.error);
+            }
+        } catch (error) {
+            console.error('Sign out error:', error);
+        }
+    };
+
     return (
         <nav className="w-full text-primary border-b border-b-customgreys-dirtyGrey border-[0.2px]">
             <div className='max-w-7xl mx-auto flex justify-between items-center px-4 py-3 '>
@@ -65,21 +92,26 @@ const Navbar = () => {
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
-                    <TooltipProvider >
-                        <Tooltip delayDuration={100} >
-                            <TooltipTrigger className=''>
-                                <Link href="" className="relative">
-                                    <Avatar className="h-9 w-9 hover:ring-2 hover:ring-secondary-300 hover:bg-primary-50 hover:rounded-full transition-all">
-                                        <AvatarImage src="https://github.com/shadcn.png" />
-                                        <AvatarFallback className="bg-primary-300">CN</AvatarFallback>
-                                    </Avatar>
-                                </Link>
-                            </TooltipTrigger>
-                            <TooltipContent className='bg-primary-500 text-sm px-3'>
-                                Profile
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
+
+                    <DropdownMenu>
+
+
+                        <DropdownMenuTrigger>
+
+                            <Link href="" className="relative">
+                                <Avatar className="h-9 w-9 hover:ring-2 hover:ring-secondary-300 hover:bg-primary-50 hover:rounded-full transition-all">
+                                    <AvatarImage src="https://github.com/shadcn.png" />
+                                    <AvatarFallback className="bg-primary-300">CN</AvatarFallback>
+                                </Avatar>
+                            </Link>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className='bg-primary-500 text-white-100'>
+                            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem>Profile</DropdownMenuItem>
+                            <DropdownMenuItem onClick={handleSignOut}>Sign out</DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
 
                     <TooltipProvider >
                         <Tooltip delayDuration={100} >

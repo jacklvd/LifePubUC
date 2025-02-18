@@ -72,17 +72,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       
       const isLoggedIn = !!auth?.user
 
-      const isAuthRoute = ['/sign-in', '/sign-up'].includes(pathname)
-      if (isAuthRoute) {
-        if (isLoggedIn) {
+      const publicRoutes = ['/', '/sign-in', '/sign-up']
+      if (publicRoutes.includes(pathname)) {
+        if (isLoggedIn && ['/sign-in', '/sign-up'].includes(pathname)) {
           return Response.redirect(new URL('/', request.nextUrl))
         }
         return true
       }
-
-      // Protected routes - if not logged in, redirect to sign-in
+  
       if (!isLoggedIn) {
-        return false // Will redirect to sign-in page
+        return false
       }
 
       return true
