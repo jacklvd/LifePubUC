@@ -2,7 +2,7 @@
 import React from 'react';
 import Head from 'next/head';
 import './styles/globals.css';
-
+import Navbar from '@/components/navbar';
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <div>
@@ -19,7 +19,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         />
       </Head>
       <header>
-        <nav className="navbar">
+        {/* <nav className="navbar">
           <div className="navlogo">
             <div className="logo border"></div>
           </div>
@@ -61,21 +61,9 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <i className="fa-solid fa-cart-shopping"></i>
             cart
           </div>
-        </nav>
-        <div className="second-nav">
-          <div className="allicon border">
-            <i className="fa-solid fa-bars"></i>
-            <p className="list">All</p>
-          </div>
-            <p className="ptag border">Today's Deals</p>
-            <p className="ptag border">Customer Service</p>
-            <p className="ptag border">Registry</p>
-            <p className="ptag border">Gift Cards</p>
-            <p className="ptag border">Sell</p>
-          <div className="deals">
-            <p>Shop deals in Electronics</p>
-          </div>
-        </div>
+        </nav> */}
+        <Navbar />
+        
       </header>
       <main>{children}</main>
       <footer>

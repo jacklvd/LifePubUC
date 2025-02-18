@@ -26,14 +26,14 @@ const RootLayout = async ({ children }: { children: ReactNode }) => {
   const session = await auth();
   return (
     <html lang="en">
-      <SessionProvider session={session}>
+      {/* <SessionProvider session={session}> */}
         <body
           className={` antialiased`}
         >
           {children}
           <Toaster />
         </body>
-      </SessionProvider>
+      {/* </SessionProvider> */}
     </html>
   );
 }
