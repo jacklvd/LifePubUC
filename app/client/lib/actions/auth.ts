@@ -1,6 +1,6 @@
 "use server";
 
-import { signIn } from "@/auth";
+import { signIn, signOut } from "@/auth";
 
 export const signInWithCredentials = async (
   params: Pick<AuthCredentials, "email" | "password">
@@ -60,5 +60,26 @@ export const signUp = async (params: AuthCredentials) => {
   } catch (error) {
     console.error("Signup error:", error);
     return { success: false, error: "Signup failed. Please try again." };
+  }
+};
+
+
+export const signOutUser = async () => {
+  try {
+    await signOut({ 
+      redirect: false,
+    
+    });
+    
+    return { 
+      success: true,
+      url: "/sign-in" // or whatever URL you want to redirect to
+    };
+  } catch (error) {
+    console.error("Signout error:", error);
+    return { 
+      success: false, 
+      error: "Failed to sign out" 
+    };
   }
 };
