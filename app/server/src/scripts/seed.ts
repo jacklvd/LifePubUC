@@ -109,7 +109,6 @@ async function seedItems() {
     ];
   
     try {
-      // Connect to MongoDB
       const mongoUri = process.env.MONGO_URI;
       if (!mongoUri) {
           throw new Error('MONGO_URI is not defined in environment variables');
@@ -119,11 +118,9 @@ async function seedItems() {
       await mongoose.connect(mongoUri);
       console.log('Connected to MongoDB');
 
-      // Clear existing items
       console.log('Clearing existing items...');
       await Item.deleteMany({});
       
-      // Insert new items
       console.log('Inserting new items...');
       const result = await Item.insertMany(items);
       
@@ -133,7 +130,6 @@ async function seedItems() {
       console.error('Error seeding items:', error);
       throw error;
   } finally {
-      // Disconnect from MongoDB
       if (mongoose.connection.readyState === 1) {
           await mongoose.disconnect();
           console.log('Disconnected from MongoDB');
