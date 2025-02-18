@@ -19,7 +19,7 @@ const Navbar = () => {
             <div className='max-w-7xl mx-auto flex justify-between items-center px-4 py-3 '>
                 {/* LOGO */}
                 <Link href="/" className="text-2xl font-bold transition-colors">
-                    Educative
+                    LifePub
                 </Link>
 
                 {/* SEARCH */}
