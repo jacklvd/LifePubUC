@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -25,7 +26,7 @@ import Link from "next/link";
 import { toast } from "@/hooks/use-toast";
 import { FIELD_NAMES, FIELD_TYPES } from "@/constants";
 import { useRouter } from "next/navigation";
-import { useSearchParams } from 'next/navigation';
+// import { useSearchParams } from 'next/navigation';
 
 interface Props<T extends FieldValues> {
     schema: ZodType<T>;
@@ -41,7 +42,7 @@ const AuthForm = <T extends FieldValues>({
     onSubmit,
 }: Props<T>) => {
     const router = useRouter();
-    const searchParams = useSearchParams();
+    // const searchParams = useSearchParams();
     const isSignIn = type === "SIGN_IN";
 
     const form: UseFormReturn<T> = useForm({
@@ -61,11 +62,12 @@ const AuthForm = <T extends FieldValues>({
                         : "You have successfully signed up.",
                 });
 
-                await new Promise(resolve => setTimeout(resolve, 100));
-                
-                const callbackUrl = searchParams.get("callbackUrl");
-                router.replace(callbackUrl || "/");
-                router.refresh(); // Refresh server components
+                // await new Promise(resolve => setTimeout(resolve, 100));
+
+                // const callbackUrl = searchParams.get("callbackUrl");
+                // router.replace(callbackUrl || "/");
+                // router.refresh(); // Refresh server components
+                router.push("/");
             } else {
                 toast({
                     title: `Error ${isSignIn ? "signing in" : "signing up"}`,
@@ -79,13 +81,14 @@ const AuthForm = <T extends FieldValues>({
                 description: "An unexpected error occurred.",
                 variant: "destructive",
             });
+            console.error("Unexpected error:", error);
         }
     };
 
     return (
         <div className="flex flex-col gap-4">
             <h1 className="text-2xl font-semibold text-white">
-                {isSignIn ? "Welcome back to UniMarketplace" : "Create your account"}
+                {isSignIn ? "Welcome back to LifePub" : "Create your account"}
             </h1>
             <p className="text-light-100">
                 {isSignIn
@@ -130,7 +133,7 @@ const AuthForm = <T extends FieldValues>({
             </Form>
 
             <p className="text-center text-base font-medium">
-                {isSignIn ? "New to UniMarketplace? " : "Already have an account? "}
+                {isSignIn ? "New to LifePub? " : "Already have an account? "}
 
                 <Link
                     href={isSignIn ? "/sign-up" : "/sign-in"}
