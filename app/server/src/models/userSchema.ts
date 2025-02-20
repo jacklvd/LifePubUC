@@ -5,6 +5,8 @@ export interface IUser extends mongoose.Document {
   email: string;
   password: string;
   universityId: string;
+  isVerified: boolean;
+  verificationToken?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -32,6 +34,13 @@ const userSchema = new mongoose.Schema<IUser>(
       type: String,
       required: true,
       unique: true,
+    },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+    verificationToken: {
+      type: String,
     },
   },
   {

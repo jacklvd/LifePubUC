@@ -44,19 +44,8 @@ export const signUp = async (params: AuthCredentials) => {
       const errorResponse = await response.json();
       return { success: false, error: errorResponse.message };
     }
-  
-    const data = await response.json();
-  
-    if (!data?.data) {
-      return { success: false, error: "Unexpected response format" };
-    }
-  
-    const { user, token } = data.data;
-    if (!user || !token) {
-      return { success: false, error: "User data or token is missing" };
-    }
 
-    return { success: true };
+    return { success: true, message: "Please check your email to verify your account." };
   } catch (error) {
     console.error("Signup error:", error);
     return { success: false, error: "Signup failed. Please try again." };

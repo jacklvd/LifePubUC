@@ -34,6 +34,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           if (!data?.data) {
             return null;
           }
+          // Check if the user is verified
+          if (!data.data.isVerified) {
+            throw new Error("Email not verified. Please check your email.");
+          }
 
           return {
             id: data.data._id || data.data.id || '', 
