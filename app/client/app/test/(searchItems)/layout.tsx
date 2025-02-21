@@ -27,7 +27,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       </Head>
       <header>
       
-        <Navbar />
+      <Navbar />
         
       </header>
       <main>{children}</main>

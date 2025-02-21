@@ -84,7 +84,7 @@ const Navbar = () => {
                     <TooltipProvider >
                         <Tooltip delayDuration={100} >
                             <TooltipTrigger className=''>
-                                <Link href="/cart" className="relative">
+                                <Link href="/test/cart" className="relative">
                                     <div className='p-2 hover:bg-primary-50 hover:rounded-full transition-all'>
                                         <ShoppingCart className="h-6 w-6" />
                                         <span className="absolute -top-2 -right-2 bg-primary-500 text-white-100  text-xs rounded-full h-5 w-5 flex items-center justify-center">
