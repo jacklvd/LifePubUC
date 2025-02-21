@@ -1,7 +1,8 @@
-
+"use client";
 // page.tsx
 import React from 'react';
 import Link from 'next/link';
+
 
 const HomePage: React.FC = () => {
   const productImages = [
@@ -16,7 +17,7 @@ const HomePage: React.FC = () => {
   ];
 
   return (
-    <div className="bg-gray-100 p-4">
+      <div className="bg-gray-100 p-4">
       <div className="relative mb-4">
         <img
           src="https://m.media-amazon.com/images/I/81KkrQWEHIL._SX3000_.jpg"
@@ -47,6 +48,7 @@ const HomePage: React.FC = () => {
         ))}
       </div>
     </div>
+    
   );
 };
 

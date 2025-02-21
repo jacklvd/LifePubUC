@@ -1,11 +1,18 @@
+"use client";
 // layout.tsx
 import React from 'react';
 import Head from 'next/head';
 import './styles/globals.css';
 import Navbar from '@/components/navbar';
+import store, { persistor } from "../components/cartStore/cartStore";
+import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
-    <div>
+  
+    <Provider store={store}>
+      <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
+      <div>
       <Head>
         <title>Amazon</title>
         <meta charSet="UTF-8" />
@@ -19,49 +26,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         />
       </Head>
       <header>
-        {/* <nav className="navbar">
-          <div className="navlogo">
-            <div className="logo border"></div>
-          </div>
-          <div className="navadd border">
-            <p className="addfirst icon">Deliver to</p>
-            <div className="addicon">
-              <i className="fa-solid fa-location-dot icon"></i>
-              <p className="addsecond icon">Cincinnati</p>
-            </div>
-          </div>
-          <div className="nav-search">
-            <select className="search-option1">
-              <option value="All" className="search-option2">All</option>
-            </select>
-            <input type="text" placeholder="Search Amazon" className="search-input" />
-            <div className="search-icon">
-              <i className="fa-solid fa-magnifying-glass"></i>
-            </div>
-          </div>
-          <div className="languageoption border">
-            <div className="american"></div>
-            <select className="lanoption">
-              <option value="lan">EN</option>
-            </select>
-          </div>
-          <div className="sign border">
-            <p className="hello">Hello, sign in</p>
-            <div className="account">
-              <select className="account-sign">
-                <option value="Account">Account & Lists</option>
-              </select>
-            </div>
-          </div>
-          <div className="box6 border">
-            <p className="return">Returns</p>
-            <p className="order">& Orders</p>
-          </div>
-          <div className="cart border">
-            <i className="fa-solid fa-cart-shopping"></i>
-            cart
-          </div>
-        </nav> */}
+      
         <Navbar />
         
       </header>
@@ -133,6 +98,8 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         </div>
       </footer>
     </div>
+    </PersistGate>
+    </Provider>
   );
 };
 
