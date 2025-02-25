@@ -87,7 +87,7 @@ export const signUp = async (req: any, res: any) => {
         // Generate a verification token
         const verificationToken = crypto.randomBytes(32).toString("hex");
         // Hash the password
-        const salt = await bcrypt.genSalt(12);
+        const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
         // Store user data temporarily (NOT in the database)
         tempUsers.set(verificationToken, {
@@ -157,7 +157,7 @@ export const signIn = async (req: any, res: any) => {
         // Check if user exists
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(400).json({ message: "Invalid credentials" });
+            return res.status(400).json({ message: "Invalid email" });
         }
         // Check if user is verified
         if (!user.isVerified) {
@@ -173,6 +173,7 @@ export const signIn = async (req: any, res: any) => {
             expiresIn: "1h",
         });
         res.status(200).json({
+            success: true,
             message: "Signed in successfully",
             data: {
                 user,
