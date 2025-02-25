@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
 import { signIn, signOut } from "@/auth";
@@ -17,16 +18,11 @@ export const signInWithCredentials = async (
     if (result?.error) {
       return { success: false, error: result.error };
     }
-
-    // // Return the URL if next-auth provides one
-    // return { 
-    //   success: true,
-    //   url: result?.url 
-    // };
+    
     return { success: true };
-  } catch (error) {
+  } catch (error: any) {
     console.error("Signin error:", error);
-    return { success: false, error: "Signin error" };
+    return { success: false, error: error.message || "Signin failed. Please try again." };
   }
 };
 
