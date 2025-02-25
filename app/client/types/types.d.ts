@@ -15,11 +15,16 @@ interface User {
 }
 
 interface Item {
-  title: string,
-  description: string,
-  price: number, 
-  amount: number
-
+  title: string;
+  description: string;
+  category: string;
+  condition: string;
+  price: {
+    amount: number;
+  };
+  images: string[];
+  status: string;
+  views: number;
 }
 
 interface Category {
