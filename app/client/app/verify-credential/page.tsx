@@ -37,10 +37,10 @@ export default function VerifyEmail() {
                 setMessage("Error verifying email. Please try again.");
             }
 
-            // Redirect to sign-in page after 12 seconds
+            // Redirect to sign-in page after 5 seconds
             setTimeout(() => {
                 router.push("/sign-in");
-            }, 12000);
+            }, 5000);
         };
 
         verifyUser();

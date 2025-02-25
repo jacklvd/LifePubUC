@@ -10,7 +10,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       async authorize(credentials) {
         try {
           if (!credentials?.email || !credentials?.password) {
-            return null;
+            throw new Error("Email and password are required.");
           }
 
           const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/login`, {
@@ -74,9 +74,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async authorized({ request, auth }) {
       const { pathname } = request.nextUrl
       
+      if (pathname.includes('/verify-credential')) {
+        return true 
+      }
+      
       const isLoggedIn = !!auth?.user
-
       const publicRoutes = ['/', '/sign-in', '/sign-up']
+
+
       if (publicRoutes.includes(pathname)) {
         if (isLoggedIn && ['/sign-in', '/sign-up'].includes(pathname)) {
           return Response.redirect(new URL('/', request.nextUrl))
