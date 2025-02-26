@@ -9,18 +9,18 @@ export const categories = [
     },
     {
       "title": "Pants",
-      "url": "/api/placeholder/400/400"
+      "url": "https://as2.ftcdn.net/v2/jpg/01/69/27/39/1000_F_169273924_TF9xaJHZlBq33m6rMhnC00tfDRNYf2sz.jpg"
     },
     {
       "title": "Electronics",
-      "url": "/api/placeholder/400/400"
+      "url": "https://images.pexels.com/photos/356056/pexels-photo-356056.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
     },
     {
       "title": "Household Tools",
-      "url": "/api/placeholder/400/400"
+      "url": "https://images.pexels.com/photos/7218525/pexels-photo-7218525.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
     },
     {
       "title": "Souvenirs",
-      "url": "/api/placeholder/400/400"
+      "url": "https://images.pexels.com/photos/9430995/pexels-photo-9430995.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
     }
   ]
