@@ -38,9 +38,9 @@ export default function VerifyEmail() {
             }
 
             // Redirect to sign-in page after 12 seconds
-            setTimeout(() => {
-                router.push("/sign-in");
-            }, 12000);
+            // setTimeout(() => {
+            //     router.push("/sign-in");
+            // }, 12000);
         };
 
         verifyUser();

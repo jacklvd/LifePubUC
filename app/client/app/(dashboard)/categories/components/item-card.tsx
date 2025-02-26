@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Card,
   CardContent,
@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Check, Heart } from "lucide-react";
 
 
 interface ItemCardProps {
@@ -29,6 +29,9 @@ interface ItemCardProps {
 }
 
 const ItemCard = ({ item }: ItemCardProps) => {
+  const [isInCart, setIsInCart] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
+
   const formatPrice = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -56,23 +59,53 @@ const ItemCard = ({ item }: ItemCardProps) => {
     return badges[status as keyof typeof badges] || 'bg-gray-500';
   };
 
+  const handleCartClick = () => {
+    setIsInCart(!isInCart);
+    
+    // Reset to cart icon after 1.5 seconds if added to cart
+    if (!isInCart) {
+      setTimeout(() => {
+        setIsInCart(false);
+      }, 1500);
+    }
+  };
+
+  const handleFavoriteClick = () => {
+    setIsFavorite(!isFavorite);
+  };
+
   return (
     <Card className="group w-full max-w-sm hover:shadow-lg transition-shadow duration-300">
       <CardHeader>
-        <div className=" group relative w-full h-48 mb-4">
+        <div className="group relative w-full h-48 mb-4">
           <Image
             src={item.images[0] || '/placeholder-image.jpg'}
             alt={item.title}
             fill
             className="object-cover rounded-t-lg"
           />
-            {item.status === 'available' && (
-            <div className="absolute opacity-0 top-2 right-2 group-hover:opacity-100 transition-opacity duration-300">
+          {item.status === 'available' && (
+            <div className="absolute top-2 right-2 flex flex-col gap-2">
               <Button
                 size="icon"
-                className="rounded-full bg-white shadow-lg bg-opacity-80 group-hover:bg-black group-hover:shadow-lg"
+                className="rounded-full bg-white opacity-0 group-hover:opacity-100 shadow-md  transition-all duration-300"
+                onClick={handleCartClick}
               >
-                <ShoppingCart className="h-3 w-3" />
+                {isInCart ? (
+                  <Check className="h-4 w-4 text-gray-700 transition-all" />
+                ) : (
+                  <ShoppingCart className="h-4 w-4 text-gray-700 transition-all" />
+                )}
+              </Button>
+              
+              <Button
+                size="icon"
+                className="rounded-full opacity-0 group-hover:opacity-100 bg-white shadow-md  transition-all duration-300"
+                onClick={handleFavoriteClick}
+              >
+                <Heart 
+                  className={`h-4 w-4 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-700'}`} 
+                />
               </Button>
             </div>
           )}

@@ -53,6 +53,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
   pages: {
     signIn: "/sign-in",
+    
   },
   callbacks: {
     async jwt({ token, user }) {
@@ -74,9 +75,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async authorized({ request, auth }) {
       const { pathname } = request.nextUrl
       
+      if (pathname.includes('/verify-credential')) {
+        return true 
+      }
+      
       const isLoggedIn = !!auth?.user
-
       const publicRoutes = ['/', '/sign-in', '/sign-up']
+
+
       if (publicRoutes.includes(pathname)) {
         if (isLoggedIn && ['/sign-in', '/sign-up'].includes(pathname)) {
           return Response.redirect(new URL('/', request.nextUrl))

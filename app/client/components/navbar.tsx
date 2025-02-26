@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import React from 'react'
-import { Search, ShoppingCart, Bell, Heart } from 'lucide-react'
+import { Search, ShoppingCart, Bell, Heart, AlignJustify } from 'lucide-react'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { Input } from '@/components/ui/input'
 import { signOutUser } from '@/lib/actions/auth';
@@ -93,11 +93,23 @@ const Navbar = () => {
                         </Tooltip>
                     </TooltipProvider>
 
+                    <TooltipProvider >
+                        <Tooltip delayDuration={100} >
+                            <TooltipTrigger className=''>
+                                <Link href="/categories" className="relative">
+                                    <div className='p-2 hover:bg-primary-50 hover:rounded-full transition-all'>
+                                        <AlignJustify className="h-6 w-6" />
+                                    </div>
+                                </Link>
+                            </TooltipTrigger>
+                            <TooltipContent className='bg-primary-500 text-sm px-3'>
+                                Categories
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+
                     <DropdownMenu>
-
-
                         <DropdownMenuTrigger>
-
                             <Link href="" className="relative">
                                 <Avatar className="h-9 w-9 hover:ring-2 hover:ring-secondary-300 hover:bg-primary-50 hover:rounded-full transition-all">
                                     <AvatarImage src="https://github.com/shadcn.png" />

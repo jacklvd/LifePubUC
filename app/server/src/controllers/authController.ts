@@ -98,7 +98,7 @@ export const signUp = async (req: any, res: any) => {
         //     },
         // });
         // Send verification email
-        const verificationLink = `${FRONTEND_URL}/verify-email?emailToken=${verificationToken}`;
+        const verificationLink = `${FRONTEND_URL}/verify-credential?emailToken=${verificationToken}`;
         await transporter.sendMail({
             from: EMAIL_USER,
             to: email,
