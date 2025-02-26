@@ -16,7 +16,8 @@ dotenv.config();
 const isProduction = process.env.NODE_ENV === "production";
 
 const app = express();
-
+//middleware
+app.use(cors());
 app.use(express.json());
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
