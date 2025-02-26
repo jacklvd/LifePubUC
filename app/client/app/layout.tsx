@@ -1,9 +1,9 @@
-import type { Metadata } from "next";
-import "./globals.css";
-import { SessionProvider } from "next-auth/react";
-import { auth } from "@/auth";
-import { ReactNode } from "react";
-import { Toaster } from "@/components/ui/toaster";
+import type { Metadata } from 'next'
+import './globals.css'
+import { SessionProvider } from 'next-auth/react'
+import { auth } from '@/auth'
+import { ReactNode } from 'react'
+import { Toaster } from '@/components/ui/toaster'
 
 export const metadata: Metadata = {
   title: "LifePub",
@@ -11,18 +11,16 @@ export const metadata: Metadata = {
 };
 
 const RootLayout = async ({ children }: { children: ReactNode }) => {
-  const session = await auth();
+  const session = await auth()
   return (
     <html lang="en">
       <SessionProvider session={session}>
-        <body
-          className={` antialiased`}
-        >
+        <body className={` antialiased`}>
           {children}
           <Toaster />
         </body>
       </SessionProvider>
     </html>
-  );
+  )
 }
-export default RootLayout;
+export default RootLayout
