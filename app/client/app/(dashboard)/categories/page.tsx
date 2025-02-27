@@ -50,36 +50,37 @@ const CategoryPage = () => {
                     )}
                 </div>
                 <Button className='rounded-full border hover:border-black hover:bg-gray-200 hover:border-3 transition-all' variant="outline">
-                        <Plus/>
-                            <p>More</p>
-                    </Button>
+                    <Plus />
+                    <p>More</p>
+                </Button>
             </div>
 
             {/* Filter bar */}
 
             {/* Item List */}
             <div className='max-w-7xl mx-auto px-4'>
-                <div className='flex mx-auto w-full flex-row justify-between my-5'>
-                    <div>
-                        <Button className='rounded-full border hover:border-black hover:border-3 transition-all' variant="outline">
-                            <Settings2 />
-                            <p>All Filter</p>
-                        </Button>
-                    </div>
-                    <div className='flex flex-row '>
-                        {/* <p className='text-gray-500 text-md'>+20 items</p> */}
-                        <Button className='rounded-full border hover:border-black hover:border-3 transition-all' variant="outline">
-                            <ArrowUpDown />
-                            <p>Sort</p>
-                        </Button>
-                    </div>
-                </div>
+                {items.length > 0 && ( <div className='flex mx-auto w-full flex-row justify-between my-5'>
+                            <div>
+                                <Button className='rounded-full border hover:border-black hover:border-3 transition-all' variant="outline">
+                                    <Settings2 />
+                                    <p>All Filter</p>
+                                </Button>
+                            </div>
+                            <div className='flex flex-row '>
+                                {/* <p className='text-gray-500 text-md'>+20 items</p> */}
+                                <Button className='rounded-full border hover:border-black hover:border-3 transition-all' variant="outline">
+                                    <ArrowUpDown />
+                                    <p>Sort</p>
+                                </Button>
+                            </div>
+                        </div>)}
                 {loading ? (
                     <div className='flex justify-center items-center'>
                         <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900'></div>
                     </div>
                 ) : (
                     <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2'>
+                       
                         {items.map((item, index) => (
                             <ItemCard key={index} item={item} />
                         ))}
