@@ -9,6 +9,15 @@ export const metadata: Metadata = {
   title: 'LifePub',
   description:
     'A place for student to understand more about their school life and collaborate with other student to deal with more shit',
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicon.svg', type: 'image/svg+xml' }
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png' }
+    ]
+  }
 }
 
 const RootLayout = async ({ children }: { children: ReactNode }) => {
