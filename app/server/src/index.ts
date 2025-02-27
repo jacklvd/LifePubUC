@@ -25,6 +25,15 @@ app.use(morgan("common"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
+const corsOptions = {
+  origin: process.env.FRONTEND_URL || "http://localhost:3000", 
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true 
+};
+
+app.use(cors(corsOptions));
+
 if (process.env.MONGO_URI) {
   mongoose
     .connect(process.env.MONGO_URI || "")

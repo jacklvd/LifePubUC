@@ -49,6 +49,28 @@ export default function VerifyEmail() {
     verifyUser()
   }, [emailToken, router])
 
+<<<<<<< HEAD
+            // Redirect to sign-in page after 12 seconds
+            // setTimeout(() => {
+            //     router.push("/sign-in");
+            // }, 12000);
+        };
+
+        verifyUser();
+    }, [emailToken, router]);
+
+    return (
+        <div className="flex flex-col items-center justify-center h-screen">
+            {isVerified ? (
+                <h1 className="text-2xl font-bold text-green-600">✅ Email Verified!</h1>
+            ) : (
+                <h1 className="text-2xl font-bold text-yellow-600">🔄 Verifying...</h1>
+            )}
+            <p className="text-gray-500 mt-2">{message}</p>
+            <p className="text-gray-400 mt-4">Redirecting to sign-in...</p>
+        </div>
+    );
+=======
   return (
     <div className="flex flex-col items-center justify-center h-screen">
       {isVerified ? (
@@ -62,4 +84,5 @@ export default function VerifyEmail() {
       <p className="text-gray-400 mt-4">Redirecting to sign-in...</p>
     </div>
   )
+>>>>>>> master
 }
