@@ -8,10 +8,14 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Settings2, ArrowUpDown, Plus } from 'lucide-react'
 
+import { useCartStore } from '@/store/cart'
+
 const CategoryPage = () => {
   const [items, setItems] = useState<Item[]>([])
   const [loading, setLoading] = useState(true)
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  const addItem = useCartStore((state) => state.addItem);
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -90,7 +94,7 @@ const CategoryPage = () => {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
             {items.map((item, index) => (
-              <ItemCard key={index} item={item} />
+              <ItemCard key={index} item={item} addItem={addItem} />
             ))}
           </div>
         )}

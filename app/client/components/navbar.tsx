@@ -16,6 +16,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 
+import { useCartStore } from '@/store/cart'
+
 import {
   Tooltip,
   TooltipContent,
@@ -26,6 +28,7 @@ import { useRouter } from 'next/navigation'
 
 const Navbar = () => {
   const router = useRouter()
+  const totalQuantity = useCartStore((state) => state.totalQuantity);
 
   const handleSignOut = async () => {
     try {
@@ -134,7 +137,7 @@ const Navbar = () => {
                   <div className="p-2 hover:bg-primary-50 hover:rounded-full transition-all">
                     <ShoppingCart className="h-6 w-6" />
                     <span className="absolute -top-2 -right-2 bg-primary-500 text-white-100  text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                      0
+                      {totalQuantity || "0"}
                     </span>
                   </div>
                 </Link>
