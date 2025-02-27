@@ -15,19 +15,19 @@ interface User {
 }
 
 interface Item {
-  title: string;
-  description: string;
-  category: string;
-  condition: string;
+  title: string
+  description: string
+  category: string
+  condition: string
   price: {
-    amount: number;
-  };
-  images: string[];
-  status: string;
-  views: number;
+    amount: number
+  }
+  images: string[]
+  status: string
+  views: number
 }
 
 interface Category {
-  title: string,
+  title: string
   url: string
 }
