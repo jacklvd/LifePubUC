@@ -4,9 +4,15 @@ import { auth } from '@/auth'
 import { redirect } from 'next/navigation'
 
 const Layout = async ({ children }: { children: ReactNode }) => {
+<<<<<<< HEAD
+    // const session = await auth();
+
+    // if (session) redirect("/");
+=======
   const session = await auth()
 
   if (session) redirect('/')
+>>>>>>> master
 
   return (
     <main className="auth-container">
