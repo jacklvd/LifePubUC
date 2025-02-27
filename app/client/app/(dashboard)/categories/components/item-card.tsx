@@ -11,23 +11,14 @@ import Image from 'next/image'
 
 import { Button } from '@/components/ui/button'
 import { ShoppingCart, Check, Heart } from 'lucide-react'
+import { toast } from '@/hooks/use-toast'
 
 interface ItemCardProps {
-  item: {
-    title: string
-    description: string
-    category: string
-    condition: string
-    price: {
-      amount: number
-    }
-    images: string[]
-    status: string
-    views: number
-  }
+  item: Item,
+  addItem: (item: Item) => void
 }
 
-const ItemCard = ({ item }: ItemCardProps) => {
+const ItemCard = ({ item, addItem }: ItemCardProps) => {
   const [isInCart, setIsInCart] = useState(false)
   const [isFavorite, setIsFavorite] = useState(false)
 
@@ -60,7 +51,13 @@ const ItemCard = ({ item }: ItemCardProps) => {
 
   const handleCartClick = () => {
     setIsInCart(!isInCart)
-
+    
+    addItem(item);
+    toast({
+      title: "Add to cart successfully",
+      description: "",
+      variant: "default"
+    })
     // Reset to cart icon after 1.5 seconds if added to cart
     if (!isInCart) {
       setTimeout(() => {
