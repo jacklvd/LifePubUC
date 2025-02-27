@@ -6,9 +6,10 @@ import { ReactNode } from 'react'
 import { Toaster } from '@/components/ui/toaster'
 
 export const metadata: Metadata = {
-  title: "LifePub",
-  description: "A place for student to understand more about their school life and collaborate with other student to deal with more shit",
-};
+  title: 'LifePub',
+  description:
+    'A place for student to understand more about their school life and collaborate with other student to deal with more shit',
+}
 
 const RootLayout = async ({ children }: { children: ReactNode }) => {
   const session = await auth()

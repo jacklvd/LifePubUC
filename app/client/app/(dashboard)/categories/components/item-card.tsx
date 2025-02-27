@@ -1,43 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import Image from "next/image";
+} from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import Image from 'next/image'
 
-import { Button } from "@/components/ui/button";
-import { ShoppingCart, Check, Heart } from "lucide-react";
-
+import { Button } from '@/components/ui/button'
+import { ShoppingCart, Check, Heart } from 'lucide-react'
 
 interface ItemCardProps {
   item: {
-    title: string;
-    description: string;
-    category: string;
-    condition: string;
+    title: string
+    description: string
+    category: string
+    condition: string
     price: {
-      amount: number;
-    };
-    images: string[];
-    status: string;
-    views: number;
-  };
+      amount: number
+    }
+    images: string[]
+    status: string
+    views: number
+  }
 }
 
 const ItemCard = ({ item }: ItemCardProps) => {
-  const [isInCart, setIsInCart] = useState(false);
-  const [isFavorite, setIsFavorite] = useState(false);
+  const [isInCart, setIsInCart] = useState(false)
+  const [isFavorite, setIsFavorite] = useState(false)
 
   const formatPrice = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD'
-    }).format(amount);
-  };
+      currency: 'USD',
+    }).format(amount)
+  }
 
   const getConditionColor = (condition: string) => {
     const colors = {
@@ -45,34 +44,34 @@ const ItemCard = ({ item }: ItemCardProps) => {
       like_new: 'bg-emerald-400',
       good: 'bg-blue-400',
       fair: 'bg-yellow-400',
-      poor: 'bg-red-400'
-    };
-    return colors[condition as keyof typeof colors] || 'bg-gray-400';
-  };
+      poor: 'bg-red-400',
+    }
+    return colors[condition as keyof typeof colors] || 'bg-gray-400'
+  }
 
   const getStatusBadge = (status: string) => {
     const badges = {
       available: 'bg-green-500',
       sold: 'bg-red-500',
-      reserved: 'bg-yellow-500'
-    };
-    return badges[status as keyof typeof badges] || 'bg-gray-500';
-  };
+      reserved: 'bg-yellow-500',
+    }
+    return badges[status as keyof typeof badges] || 'bg-gray-500'
+  }
 
   const handleCartClick = () => {
-    setIsInCart(!isInCart);
-    
+    setIsInCart(!isInCart)
+
     // Reset to cart icon after 1.5 seconds if added to cart
     if (!isInCart) {
       setTimeout(() => {
-        setIsInCart(false);
-      }, 1500);
+        setIsInCart(false)
+      }, 1500)
     }
-  };
+  }
 
   const handleFavoriteClick = () => {
-    setIsFavorite(!isFavorite);
-  };
+    setIsFavorite(!isFavorite)
+  }
 
   return (
     <Card className="group w-full max-w-sm hover:shadow-lg transition-shadow duration-300">
@@ -97,14 +96,14 @@ const ItemCard = ({ item }: ItemCardProps) => {
                   <ShoppingCart className="h-4 w-4 text-gray-700 transition-all" />
                 )}
               </Button>
-              
+
               <Button
                 size="icon"
                 className="rounded-full opacity-0 group-hover:opacity-100 bg-white shadow-md  transition-all duration-300"
                 onClick={handleFavoriteClick}
               >
-                <Heart 
-                  className={`h-4 w-4 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-700'}`} 
+                <Heart
+                  className={`h-4 w-4 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-700'}`}
                 />
               </Button>
             </div>
@@ -120,7 +119,10 @@ const ItemCard = ({ item }: ItemCardProps) => {
       <CardContent>
         <p className="text-gray-600 line-clamp-2 mb-4">{item.description}</p>
         <div className="flex justify-between items-center">
-          <Badge variant="outline" className={getConditionColor(item.condition)}>
+          <Badge
+            variant="outline"
+            className={getConditionColor(item.condition)}
+          >
             {item.condition.replace('_', ' ').toUpperCase()}
           </Badge>
           <span className="text-xl font-bold">
@@ -133,7 +135,7 @@ const ItemCard = ({ item }: ItemCardProps) => {
         <span>{item.views} views</span>
       </CardFooter>
     </Card>
-  );
-};
+  )
+}
 
-export default ItemCard;
+export default ItemCard
