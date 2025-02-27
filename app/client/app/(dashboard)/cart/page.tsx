@@ -14,7 +14,7 @@ import { Check, ChevronLeft, CreditCard, ShoppingCart, Trash } from 'lucide-reac
 import Link from 'next/link'
 
 const CheckoutPage = () => {
-  const { items, totalAmount, totalQuantity, } = useCartStore()
+  const { items, totalAmount, totalQuantity, clearCart } = useCartStore()
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
   const { toast } = useToast()
@@ -155,8 +155,8 @@ const CheckoutPage = () => {
 
                   <div className="flex justify-end">
                     <Button variant="ghost" className="text-red-500" 
-                    // onClick={clearCart}
-                    // 
+                    onClick={() => clearCart()}
+                    
                     >
                       Clear Cart
                     </Button>
