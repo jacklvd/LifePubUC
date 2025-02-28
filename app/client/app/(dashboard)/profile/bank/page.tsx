@@ -1,4 +1,6 @@
+/* NOT DONE */
 "use client"
+
 import React, { useState } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { CardElement, Elements, useStripe, useElements } from '@stripe/react-stripe-js';
