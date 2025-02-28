@@ -11,6 +11,7 @@ interface CartState {
     totalAmount: number;
     addItem: (item: Item) => void;
     clearCart: () => void;
+    removeItem: (id: string) => void;
 }
 
 export const useCartStore = create<CartState>()(
@@ -50,8 +51,28 @@ export const useCartStore = create<CartState>()(
                     totalQuantity: 0,
                     totalAmount: 0,
                 })
+            },
+            /* Remove item */ 
+            removeItem: (id) => {
+                const current = get();
+                const itemToRemove = current.items.find(item => item._id === id);
+                console.log("Here");
+                // not found
+                if (!itemToRemove) return; 
+                
+                // calculate quantity and amount
+                const quantityToRemove = itemToRemove.quantity;
+                const amountToRemove = itemToRemove.price.amount * quantityToRemove;
+                
+            set({
+                    items: current.items.filter(item => item._id !== id),
+                    totalQuantity: current.totalQuantity - quantityToRemove,
+                    totalAmount: current.totalAmount - amountToRemove
+                });
+            
             }
         }),
+       
         {
             name: 'cart-storage', 
         }
