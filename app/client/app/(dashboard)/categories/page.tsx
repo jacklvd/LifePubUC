@@ -60,7 +60,6 @@ const CategoryPage = () => {
         </Button>
       </div>
 
-      {/* Filter bar */}
 
       {/* Item List */}
       <div className="max-w-7xl mx-auto px-4">
