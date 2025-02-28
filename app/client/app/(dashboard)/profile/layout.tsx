@@ -19,7 +19,7 @@ export default function ProfileLayout({ children }) {
                 {/* Sidebar */}
                 <aside className="w-64 bg-gray-50 border-r border-gray-200">
                     <div className="py-4 px-6 border-b border-gray-200 font-semibold text-lg">Account</div>
-                    <nav className="py-2">
+                    <nav className="py-2 text-sm">
                         <Link
                             href="/profile"
                             className={`block py-3 px-6 cursor-pointer hover:bg-gray-100 ${isActive('/profile') && !isActive('/profile/bank') ? 'bg-white font-medium text-indigo-600 border-l-4 border-indigo-600' : ''}`}
