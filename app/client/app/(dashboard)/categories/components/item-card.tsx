@@ -11,7 +11,8 @@ import Image from 'next/image'
 
 import { Button } from '@/components/ui/button'
 import { ShoppingCart, Check, Heart } from 'lucide-react'
-import { toast } from '@/hooks/use-toast'
+import { toast } from 'sonner'
+
 
 interface ItemCardProps {
   item: Item,
@@ -53,11 +54,8 @@ const ItemCard = ({ item, addItem }: ItemCardProps) => {
     setIsInCart(!isInCart)
     
     addItem(item);
-    toast({
-      title: "Add to cart successfully",
-      description: "",
-      variant: "default"
-    })
+
+    toast.success("Add Item successfully");
     // Reset to cart icon after 1.5 seconds if added to cart
     if (!isInCart) {
       setTimeout(() => {

@@ -4,9 +4,7 @@ import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useCartStore } from '@/store/cart'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { Card, CardContent,  CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { useToast } from '@/hooks/use-toast'
 import Image from 'next/image'
@@ -14,7 +12,7 @@ import { Check, ChevronLeft, CreditCard, ShoppingCart, Trash } from 'lucide-reac
 import Link from 'next/link'
 
 const CheckoutPage = () => {
-  const { items, totalAmount, totalQuantity, } = useCartStore()
+  const { items, totalAmount, totalQuantity, clearCart, removeItem } = useCartStore()
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
   const { toast } = useToast()
@@ -145,7 +143,7 @@ const CheckoutPage = () => {
                       <Button
                         size="icon"
                         variant="ghost"
-                        // onClick={() => removeItem(item._id)}
+                        onClick={() => removeItem(item._id)}
                         className="text-gray-400 hover:text-red-500"
                       >
                         <Trash className="w-4 h-4" />
@@ -155,8 +153,8 @@ const CheckoutPage = () => {
 
                   <div className="flex justify-end">
                     <Button variant="ghost" className="text-red-500" 
-                    // onClick={clearCart}
-                    // 
+                    onClick={() => clearCart()}
+                    
                     >
                       Clear Cart
                     </Button>

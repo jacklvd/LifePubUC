@@ -123,7 +123,7 @@ const Navbar = () => {
             <DropdownMenuContent className="bg-primary-500 text-white-100">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Profile</DropdownMenuItem>
+              <DropdownMenuItem ><Link href="/profile">Profile</Link></DropdownMenuItem>
               <DropdownMenuItem onClick={handleSignOut}>
                 Sign out
               </DropdownMenuItem>
