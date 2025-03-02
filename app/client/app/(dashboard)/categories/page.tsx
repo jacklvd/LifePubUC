@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
 import React, { useState, useEffect } from 'react'
@@ -6,16 +7,15 @@ import CategoryCard from './components/category-card'
 import ItemCard from './components/item-card'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { Settings2, ArrowUpDown, Plus } from 'lucide-react'
-
+import { Icon } from '@/components/icons'
 import { useCartStore } from '@/store/cart'
 
 const CategoryPage = () => {
   const [items, setItems] = useState<Item[]>([])
   const [loading, setLoading] = useState(true)
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
 
-  const addItem = useCartStore((state) => state.addItem);
+  const addItem = useCartStore((state) => state.addItem)
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -55,7 +55,7 @@ const CategoryPage = () => {
           className="rounded-full border hover:border-black hover:bg-gray-200 hover:border-3 transition-all"
           variant="outline"
         >
-          <Plus />
+          <Icon name="Plus" />
           <p>More</p>
         </Button>
       </div>
@@ -71,7 +71,7 @@ const CategoryPage = () => {
                 className="rounded-full border hover:border-black hover:border-3 transition-all"
                 variant="outline"
               >
-                <Settings2 />
+                <Icon name="Settings2" />
                 <p>All Filter</p>
               </Button>
             </div>
@@ -81,7 +81,7 @@ const CategoryPage = () => {
                 className="rounded-full border hover:border-black hover:border-3 transition-all"
                 variant="outline"
               >
-                <ArrowUpDown />
+                <Icon name="ArrowUpDown" />
                 <p>Sort</p>
               </Button>
             </div>
