@@ -12,7 +12,7 @@ import { Icon } from '@/components/icons'
 import Link from 'next/link'
 
 const CheckoutPage = () => {
-  const { items, totalAmount, totalQuantity } = useCartStore()
+  const { items, totalAmount, totalQuantity, clearCart, removeItem } = useCartStore()
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
   const { toast } = useToast()
@@ -149,7 +149,7 @@ const CheckoutPage = () => {
                       <Button
                         size="icon"
                         variant="ghost"
-                        // onClick={() => removeItem(item._id)}
+                        onClick={() => removeItem(item._id)}
                         className="text-gray-400 hover:text-red-500"
                       >
                         <Icon name="Trash" className="w-4 h-4" />
@@ -158,11 +158,9 @@ const CheckoutPage = () => {
                   ))}
 
                   <div className="flex justify-end">
-                    <Button
-                      variant="ghost"
-                      className="text-red-500"
-                      // onClick={clearCart}
-                      //
+                    <Button variant="ghost" className="text-red-500"
+                      onClick={clearCart}
+
                     >
                       Clear Cart
                     </Button>

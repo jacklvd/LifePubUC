@@ -3,7 +3,7 @@ import './globals.css'
 import { SessionProvider } from 'next-auth/react'
 import { auth } from '@/auth'
 import { ReactNode } from 'react'
-import { Toaster } from '@/components/ui/toaster'
+import { Toaster } from 'sonner'
 
 export const metadata: Metadata = {
   title: 'LifePub',
@@ -25,7 +25,7 @@ const RootLayout = async ({ children }: { children: ReactNode }) => {
       <SessionProvider session={session}>
         <body className={` antialiased`}>
           {children}
-          <Toaster />
+          <Toaster richColors />
         </body>
       </SessionProvider>
     </html>

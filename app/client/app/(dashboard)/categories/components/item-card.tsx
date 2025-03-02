@@ -11,7 +11,8 @@ import Image from 'next/image'
 
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/icons'
-import { toast } from '@/hooks/use-toast'
+import { toast } from 'sonner'
+
 
 interface ItemCardProps {
   item: Item
@@ -52,12 +53,8 @@ const ItemCard = ({ item, addItem }: ItemCardProps) => {
   const handleCartClick = () => {
     setIsInCart(!isInCart)
 
-    addItem(item)
-    toast({
-      title: 'Add to cart successfully',
-      description: '',
-      variant: 'default',
-    })
+    addItem(item);
+    toast.success('Item added to cart');
     // Reset to cart icon after 1.5 seconds if added to cart
     if (!isInCart) {
       setTimeout(() => {
