@@ -10,11 +10,11 @@ import { Badge } from '@/components/ui/badge'
 import Image from 'next/image'
 
 import { Button } from '@/components/ui/button'
-import { ShoppingCart, Check, Heart } from 'lucide-react'
+import { Icon } from '@/components/icons'
 import { toast } from '@/hooks/use-toast'
 
 interface ItemCardProps {
-  item: Item,
+  item: Item
   addItem: (item: Item) => void
 }
 
@@ -51,12 +51,12 @@ const ItemCard = ({ item, addItem }: ItemCardProps) => {
 
   const handleCartClick = () => {
     setIsInCart(!isInCart)
-    
-    addItem(item);
+
+    addItem(item)
     toast({
-      title: "Add to cart successfully",
-      description: "",
-      variant: "default"
+      title: 'Add to cart successfully',
+      description: '',
+      variant: 'default',
     })
     // Reset to cart icon after 1.5 seconds if added to cart
     if (!isInCart) {
@@ -88,9 +88,15 @@ const ItemCard = ({ item, addItem }: ItemCardProps) => {
                 onClick={handleCartClick}
               >
                 {isInCart ? (
-                  <Check className="h-4 w-4 text-gray-700 transition-all" />
+                  <Icon
+                    name="Check"
+                    className="h-4 w-4 text-gray-700 transition-all"
+                  />
                 ) : (
-                  <ShoppingCart className="h-4 w-4 text-gray-700 transition-all" />
+                  <Icon
+                    name="ShoppingCart"
+                    className="h-4 w-4 text-gray-700 transition-all"
+                  />
                 )}
               </Button>
 
@@ -99,7 +105,8 @@ const ItemCard = ({ item, addItem }: ItemCardProps) => {
                 className="rounded-full opacity-0 group-hover:opacity-100 bg-white shadow-md  transition-all duration-300"
                 onClick={handleFavoriteClick}
               >
-                <Heart
+                <Icon
+                  name="Heart"
                   className={`h-4 w-4 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-700'}`}
                 />
               </Button>
