@@ -1,5 +1,7 @@
 import type { IconNames } from '@/components/icons'
 
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL
+
 export const FIELD_NAMES = {
   fullName: 'Full name',
   email: 'Email',

@@ -23,7 +23,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import Link from 'next/link'
-import { toast } from '@/hooks/use-toast'
+import { toast } from 'sonner'
 import { FIELD_NAMES, FIELD_TYPES } from '@/constants'
 import { useRouter } from 'next/navigation'
 // import { useSearchParams } from 'next/navigation';
@@ -55,12 +55,7 @@ const AuthForm = <T extends FieldValues>({
       const result = await onSubmit(data)
 
       if (result.success) {
-        toast({
-          title: 'Success',
-          description: isSignIn
-            ? 'You have successfully signed in.'
-            : 'You have successfully signed up.',
-        })
+        toast.success(`Successfully ${isSignIn ? 'signed in' : 'signed up'}!`)
 
         // await new Promise(resolve => setTimeout(resolve, 100));
 
@@ -69,18 +64,12 @@ const AuthForm = <T extends FieldValues>({
         // router.refresh(); // Refresh server components
         router.push('/')
       } else {
-        toast({
-          title: `Error ${isSignIn ? 'signing in' : 'signing up'}`,
-          description: result.error ?? 'An error occurred.',
-          variant: 'destructive',
+        toast.warning(`Failed to ${isSignIn ? 'sign in' : 'sign up'}.`, {
+          description: result.error,
         })
       }
     } catch (error: any) {
-      toast({
-        title: 'Error',
-        description: error.message || 'An unexpected error occurred.',
-        variant: 'destructive',
-      })
+      toast.error('An unexpected error occurred. Please try again.')
       console.error('Unexpected error:', error)
     }
   }
