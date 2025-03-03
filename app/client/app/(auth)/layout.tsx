@@ -22,8 +22,8 @@ const Layout = async ({ children }: { children: ReactNode }) => {
 
       <section className="auth-illustration">
         <Image
-          src="https://img.freepik.com/free-vector/school-supplies-abstract-concept-vector-illustration-back-school-shopping-list-online-wholesale-kids-stationery-verified-supplier-materials-buy-classroom-equipment-abstract-metaphor_335657-5882.jpg"
-          alt="auth illustration"
+          src="https://littletonpublicschools.net/sites/default/files/styles/default/public/Emily%20Foster%20Painting%202010.jpg?itok=_jZCs1rP"
+          alt="Illustration"
           height={1000}
           width={1000}
           className="size-full object-cover"

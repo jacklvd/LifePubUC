@@ -13,7 +13,6 @@ import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/icons'
 import { toast } from 'sonner'
 
-
 interface ItemCardProps {
   item: Item
   addItem: (item: Item) => void
@@ -53,8 +52,8 @@ const ItemCard = ({ item, addItem }: ItemCardProps) => {
   const handleCartClick = () => {
     setIsInCart(!isInCart)
 
-    addItem(item);
-    toast.success('Item added to cart');
+    addItem(item)
+    toast.success('Item added to cart')
     // Reset to cart icon after 1.5 seconds if added to cart
     if (!isInCart) {
       setTimeout(() => {
