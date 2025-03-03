@@ -189,7 +189,7 @@ const Navbar = () => {
                 <Tooltip key={index} delayDuration={100}>
                   <TooltipTrigger>
                     <Link href={icon.route} className="relative">
-                      <div className="p-2 rounded-full transition-all hover:bg-gray-200">
+                      <div className="p-2 rounded-full transition-all hover:bg-primary-50">
                         <Icon name={icon.name} className={icon.className} />
                       </div>
                     </Link>
@@ -214,7 +214,9 @@ const Navbar = () => {
             <DropdownMenuContent className="bg-primary-500 text-white-100">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem ><Link href="/profile">Profile</Link></DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link href="/profile">Profile</Link>
+              </DropdownMenuItem>
               <DropdownMenuItem onClick={handleSignOut}>
                 Sign out
               </DropdownMenuItem>

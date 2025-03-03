@@ -3,7 +3,7 @@
 
 import { useSearchParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+import { verifyEmail } from '@/lib/actions/auth'
 
 export default function VerifyEmail() {
   const searchParams = useSearchParams()
@@ -13,31 +13,14 @@ export default function VerifyEmail() {
   const [isVerified, setIsVerified] = useState(false)
 
   useEffect(() => {
-    if (!emailToken) {
-      setMessage('Invalid verification link.')
-      return
-    }
+    const processVerification = async () => {
+      const result = await verifyEmail(emailToken)
 
-    const verifyUser = async () => {
-      try {
-        const response = await axios.patch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/verify-email`,
-          {
-            emailToken: emailToken,
-          },
-        )
-
-        if (response.data.status === 'Success') {
-          setIsVerified(true)
-          setMessage('Email verified successfully!')
-        } else {
-          setMessage(response.data.message || 'Verification failed.')
-        }
-
-        console.log('Verification Response:', response)
-      } catch (error: any) {
-        console.error('Verification error:', error)
-        setMessage('Error verifying email. Please try again.')
+      if (result.success) {
+        setIsVerified(true)
+        setMessage(result.message)
+      } else {
+        setMessage(result.message)
       }
 
       // Redirect to sign-in page after 5 seconds
@@ -46,7 +29,7 @@ export default function VerifyEmail() {
       }, 5000)
     }
 
-    verifyUser()
+    processVerification()
   }, [emailToken, router])
 
   return (
