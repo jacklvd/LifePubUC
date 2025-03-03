@@ -7,6 +7,15 @@ export interface IUser extends mongoose.Document {
   universityId: string;
   isVerified: boolean;
   verificationToken?: string;
+  
+  // Stripe Connect fields
+  stripeCustomerId?: string;        // For buyers to save payment methods
+  stripeConnectAccountId?: string;  // For sellers to receive payments
+  stripeConnectOnboardingComplete?: boolean;
+  
+  // Optional: Saved payment methods
+  defaultPaymentMethodId?: string;
+  
   createdAt: Date;
   updatedAt: Date;
 }
@@ -39,12 +48,29 @@ const userSchema = new mongoose.Schema<IUser>(
       type: Boolean,
       default: false,
     },
+    
+    // Stripe Connect fields
+    stripeCustomerId: {
+      type: String,
+      sparse: true,
+    },
+    stripeConnectAccountId: {
+      type: String,
+      sparse: true,
+    },
+    stripeConnectOnboardingComplete: {
+      type: Boolean,
+      default: false,
+    },
+    defaultPaymentMethodId: {
+      type: String,
+      sparse: true,
+    },
   },
   {
     timestamps: true,
   }
 );
-
 
 export const User = mongoose?.models?.User || mongoose.model('User', userSchema);
 export default User;
