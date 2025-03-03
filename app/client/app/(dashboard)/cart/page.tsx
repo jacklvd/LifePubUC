@@ -4,11 +4,11 @@ import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useCartStore } from '@/store/cart'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent,  CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { useToast } from '@/hooks/use-toast'
 import Image from 'next/image'
-import { Check, ChevronLeft, CreditCard, ShoppingCart, Trash } from 'lucide-react'
+import { Icon } from '@/components/icons'
 import Link from 'next/link'
 
 const CheckoutPage = () => {
@@ -37,7 +37,7 @@ const CheckoutPage = () => {
     setIsLoading(true)
 
     try {
-      const lineItems = items.map(item => ({
+      const lineItems = items.map((item) => ({
         price_data: {
           currency: 'usd',
           product_data: {
@@ -56,7 +56,7 @@ const CheckoutPage = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           lineItems,
         }),
       })
@@ -69,12 +69,12 @@ const CheckoutPage = () => {
 
       // Redirect to Stripe Checkout
       router.push(data.url)
-      
     } catch (error) {
       console.error('Error during checkout:', error)
       toast({
         title: 'Checkout failed',
-        description: error instanceof Error ? error.message : 'An unknown error occurred',
+        description:
+          error instanceof Error ? error.message : 'An unknown error occurred',
         variant: 'destructive',
       })
     } finally {
@@ -85,8 +85,11 @@ const CheckoutPage = () => {
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       <div className="mb-6">
-        <Link href="/categories" className="flex items-center text-sm text-gray-600 hover:text-gray-900">
-          <ChevronLeft className="w-4 h-4 mr-1" />
+        <Link
+          href="/categories"
+          className="flex items-center text-sm text-gray-600 hover:text-gray-900"
+        >
+          <Icon name="ChevronLeft" className="w-4 h-4 mr-1" />
           Continue Shopping
         </Link>
       </div>
@@ -99,7 +102,7 @@ const CheckoutPage = () => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <ShoppingCart className="w-5 h-5" />
+                <Icon name="ShoppingCart" className="w-5 h-5" />
                 Cart Summary
                 <span className="text-sm font-normal text-gray-500">
                   ({totalQuantity} {totalQuantity === 1 ? 'item' : 'items'})
@@ -117,7 +120,10 @@ const CheckoutPage = () => {
               ) : (
                 <div className="space-y-4">
                   {items.map((item) => (
-                    <div key={item._id} className="flex items-center gap-4 pb-4 border-b">
+                    <div
+                      key={item._id}
+                      className="flex items-center gap-4 pb-4 border-b"
+                    >
                       <div className="relative w-16 h-16 overflow-hidden rounded">
                         <Image
                           src={item.images[0] || '/placeholder-image.jpg'}
@@ -146,15 +152,15 @@ const CheckoutPage = () => {
                         onClick={() => removeItem(item._id)}
                         className="text-gray-400 hover:text-red-500"
                       >
-                        <Trash className="w-4 h-4" />
+                        <Icon name="Trash" className="w-4 h-4" />
                       </Button>
                     </div>
                   ))}
 
                   <div className="flex justify-end">
-                    <Button variant="ghost" className="text-red-500" 
-                    onClick={() => clearCart()}
-                    
+                    <Button variant="ghost" className="text-red-500"
+                      onClick={clearCart}
+
                     >
                       Clear Cart
                     </Button>
@@ -203,7 +209,7 @@ const CheckoutPage = () => {
                   </div>
                 ) : (
                   <div className="flex items-center gap-2">
-                    <CreditCard className="w-4 h-4" />
+                    <Icon name="CreditCard" className="w-4 h-4" />
                     <span>Pay with Stripe</span>
                   </div>
                 )}
