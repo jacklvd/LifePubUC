@@ -1,5 +1,7 @@
 import NextAuth, { User } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
+import axios from 'axios'
+import { API_BASE_URL } from './constants'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   session: {
@@ -13,29 +15,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             return null
           }
 
-          const response = await fetch(
-            `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/login`,
-            {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                email: credentials.email,
-                password: credentials.password,
-              }),
-            },
-          )
+          const { data } = await axios.post(`${API_BASE_URL}/api/auth/login`, {
+            email: credentials.email,
+            password: credentials.password,
+          })
 
-          if (!response.ok) {
-            return null
-          }
-
-          const data = await response.json()
-          // Make sure data.data exists and has the required fields
           if (!data?.data) {
             return null
           }
+
           // Check if the user is verified
           if (!data.data.user.isVerified) {
             throw new Error('Email not verified. Please check your email.')
@@ -46,7 +34,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             email: data.data.email || '',
             name: data.data.fullName || '',
           } as User
-        } catch (error) {
+        } catch (error: any) {
           console.error('Authorization error:', error)
           return null
         }
@@ -97,6 +85,5 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return true
     },
   },
-
   trustHost: true,
 })

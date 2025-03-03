@@ -60,7 +60,6 @@ const CategoryPage = () => {
         </Button>
       </div>
 
-
       {/* Item List */}
       <div className="max-w-7xl mx-auto px-4">
         {items.length > 0 && (
