@@ -6,7 +6,8 @@
     "build": "rimraf dist && npx tsc",
     "start": "npm run build && node dist/index.js",
     "dev": "npm run build && concurrently \"npx tsc -w\" \"nodemon --exec ts-node src/index.ts\"",
-    "seed": "ts-node src/scripts/seed.ts"
+    "seed": "ts-node src/scripts/seed.ts",
+    "format": "prettier --write ."
   },
   "keywords": [],
   "author": "",
@@ -33,6 +34,7 @@
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.10.0",
     "pluralize": "^8.0.0",
+    "prettier": "^3.5.3",
     "serverless-http": "^3.2.0",
     "stripe": "^17.3.1",
     "uuid": "^11.0.3"

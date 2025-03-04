@@ -1,10 +1,5 @@
-import dotenv from "dotenv";
-dotenv.config({ path: "./.env" });
+import dotenv from 'dotenv'
+dotenv.config({ path: './.env' })
 
-export const {
-    MONGO_URI,
-    JWT_SECRET,
-    EMAIL_USER,
-    EMAIL_PASS,
-    FRONTEND_URL,
-} = process.env;
+export const { MONGO_URI, JWT_SECRET, EMAIL_USER, EMAIL_PASS, FRONTEND_URL } =
+  process.env
