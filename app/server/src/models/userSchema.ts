@@ -1,14 +1,14 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
 export interface IUser extends mongoose.Document {
-  fullName: string;
-  email: string;
-  password: string;
-  universityId: string;
-  isVerified: boolean;
-  verificationToken?: string;
-  createdAt: Date;
-  updatedAt: Date;
+  fullName: string
+  email: string
+  password: string
+  universityId: string
+  isVerified: boolean
+  verificationToken?: string
+  createdAt: Date
+  updatedAt: Date
 }
 
 // Define the User schema
@@ -42,9 +42,8 @@ const userSchema = new mongoose.Schema<IUser>(
   },
   {
     timestamps: true,
-  }
-);
+  },
+)
 
-
-export const User = mongoose?.models?.User || mongoose.model('User', userSchema);
-export default User;
+export const User = mongoose?.models?.User || mongoose.model('User', userSchema)
+export default User

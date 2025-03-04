@@ -1,4 +1,4 @@
-import express from 'express';
+import express from 'express'
 import {
   getItems,
   getItemById,
@@ -6,21 +6,21 @@ import {
   updateItem,
   deleteItem,
   searchItems,
-  updateItemStatus
-} from '../controllers/itemController';
+  updateItemStatus,
+} from '../controllers/itemController'
 
-const router = express.Router();
+const router = express.Router()
 
 // GET routes
-router.get('/search', searchItems);
-router.get('/', getItems);
-router.get('/:id', getItemById);
+router.get('/search', searchItems)
+router.get('/', getItems)
+router.get('/:id', getItemById)
 // POST routes
-router.post('/', createItem);
+router.post('/', createItem)
 // PUT routes
-router.put('/:id', updateItem);
-router.put('/:id/status', updateItemStatus);
+router.put('/:id', updateItem)
+router.put('/:id/status', updateItemStatus)
 // DELETE routes
-router.delete('/:id', deleteItem);
+router.delete('/:id', deleteItem)
 
-export default router;
+export default router

@@ -43,6 +43,9 @@ export const signUp = async (params: AuthCredentials) => {
       `${API_BASE_URL}/api/auth/register`,
       params,
     )
+    if (!response.data) {
+      throw new Error('No response data')
+    }
 
     return {
       success: true,
