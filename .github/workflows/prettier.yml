@@ -17,17 +17,18 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "20.x"
+          node-version: "20.x" # Use a stable Node.js version
+          cache: "yarn" # Caches Yarn dependencies for faster installs
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Install dependencies (Yarn)
+        run: yarn install --frozen-lockfile # Ensures it installs using yarn.lock
 
       - name: Run Prettier
-        run: npm run format
+        run: yarn format
 
       - name: Commit changes if any
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: "Apply formatting changes"
           branch: ${{ github.head_ref }}
-          file_pattern: "**/*.js **/*.ts **/*.tsx **/*.json"
+          file_pattern: "**/*.js **/*.ts **/*.tsx **/*.json" # Adjust as needed
