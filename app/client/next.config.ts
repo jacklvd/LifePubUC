@@ -41,6 +41,10 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'littletonpublicschools.net',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn-icons-png.flaticon.com',
       }
     ],
   },

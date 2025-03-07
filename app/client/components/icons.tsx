@@ -46,6 +46,7 @@ import {
   Info,
   Upload,
   Download,
+  LayoutList
 } from 'lucide-react'
 
 const ICONS = {
@@ -96,6 +97,7 @@ const ICONS = {
   Info: Info,
   Upload: Upload,
   Download: Download,
+  LayoutList: LayoutList
 } as const
 
 export type IconNames = keyof typeof ICONS
