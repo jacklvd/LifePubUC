@@ -22,27 +22,23 @@ jobs:
 
       # Install dependencies for client
       - name: Install dependencies for client
-        run: |
-          cd app/client
-          yarn install --frozen-lockfile
+        working-directory: app/client
+        run: yarn install --frozen-lockfile
 
       # Install dependencies for server
       - name: Install dependencies for server
-        run: |
-          cd app/server
-          yarn install --frozen-lockfile
+        working-directory: app/server
+        run: yarn install --frozen-lockfile
 
       # Run Prettier on the client
       - name: Run Prettier on client
-        run: |
-          cd app/client
-          yarn format
+        working-directory: app/client
+        run: yarn format
 
       # Run Prettier on the server (if needed)
       - name: Run Prettier on server
-        run: |
-          cd app/server
-          yarn format
+        working-directory: app/server
+        run: yarn format
 
       - name: Commit changes if any
         uses: stefanzweifel/git-auto-commit-action@v4
