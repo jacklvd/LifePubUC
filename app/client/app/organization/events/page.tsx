@@ -1,24 +1,24 @@
 'use client'
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import React, { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 // import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { useRouter } from 'next/navigation';
-import Image from 'next/image';
-import { Icon } from '@/components/icons';
-import EventCalendar from '@/components/event-calendar';
+} from '@/components/ui/dropdown-menu'
+import { useRouter } from 'next/navigation'
+import Image from 'next/image'
+import { Icon } from '@/components/icons'
+import EventCalendar from '@/components/event-calendar'
 
 const EventsPage = () => {
   // const [activeTab, setActiveTab] = useState('events');
-  const [viewMode, setViewMode] = useState('list');
-  const [filterValue, setFilterValue] = useState('upcoming');
-  const router = useRouter();
+  const [viewMode, setViewMode] = useState('list')
+  const [filterValue, setFilterValue] = useState('upcoming')
+  const router = useRouter()
 
   return (
     <div className="container mx-auto max-w-6xl py-8 px-4">
@@ -55,7 +55,10 @@ const EventsPage = () => {
       <div className="flex flex-col md:flex-row justify-between mb-10 gap-4">
         <div className="flex-1 md:max-w-xs">
           <div className="relative">
-            <Icon name="Search" className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Icon
+              name="Search"
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4"
+            />
             <Input
               placeholder="Search events"
               className="pl-10 bg-white border-gray-300"
@@ -68,8 +71,11 @@ const EventsPage = () => {
             <Button
               variant={viewMode === 'list' ? 'default' : 'outline'}
               onClick={() => setViewMode('list')}
-              className={`rounded-l-md rounded-r-none px-4 ${viewMode === 'list' ? 'bg-blue-600 hover:bg-blue-700' : 'border-r-0'
-                }`}
+              className={`rounded-l-md rounded-r-none px-4 ${
+                viewMode === 'list'
+                  ? 'bg-blue-600 hover:bg-blue-700'
+                  : 'border-r-0'
+              }`}
             >
               <Icon name="LayoutList" className="h-5 w-5 mr-2" />
               List
@@ -77,8 +83,9 @@ const EventsPage = () => {
             <Button
               variant={viewMode === 'calendar' ? 'default' : 'outline'}
               onClick={() => setViewMode('calendar')}
-              className={`rounded-r-md rounded-l-none px-4 ${viewMode === 'calendar' ? 'bg-blue-600 hover:bg-blue-700' : ''
-                }`}
+              className={`rounded-r-md rounded-l-none px-4 ${
+                viewMode === 'calendar' ? 'bg-blue-600 hover:bg-blue-700' : ''
+              }`}
             >
               <Icon name="Calendar" className="h-5 w-5 mr-2" />
               Calendar
@@ -87,8 +94,12 @@ const EventsPage = () => {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="bg-blue-600 text-white hover:bg-blue-700 hover:text-white">
-                {filterValue.charAt(0).toUpperCase() + filterValue.slice(1)} events
+              <Button
+                variant="outline"
+                className="bg-blue-600 text-white hover:bg-blue-700 hover:text-white"
+              >
+                {filterValue.charAt(0).toUpperCase() + filterValue.slice(1)}{' '}
+                events
                 <Icon name="ChevronDown" className="ml-2 h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
@@ -108,7 +119,11 @@ const EventsPage = () => {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <Button className="bg-red-600 hover:bg-red-700 text-white" type='submit' onClick={() => router.push('/organization/events/create')}>
+          <Button
+            className="bg-red-600 hover:bg-red-700 text-white"
+            type="submit"
+            onClick={() => router.push('/organization/events/create')}
+          >
             Create Event
           </Button>
         </div>
@@ -130,8 +145,8 @@ const EventsPage = () => {
           <p className="text-gray-500 mb-8">No events to show</p>
         </div>
       )}
-    </div >
-  );
-};
+    </div>
+  )
+}
 
-export default EventsPage;
+export default EventsPage
