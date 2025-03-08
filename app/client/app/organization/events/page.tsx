@@ -71,11 +71,10 @@ const EventsPage = () => {
             <Button
               variant={viewMode === 'list' ? 'default' : 'outline'}
               onClick={() => setViewMode('list')}
-              className={`rounded-l-md rounded-r-none px-4 ${
-                viewMode === 'list'
-                  ? 'bg-blue-600 hover:bg-blue-700'
-                  : 'border-r-0'
-              }`}
+              className={`rounded-l-md rounded-r-none px-4 ${viewMode === 'list'
+                ? 'bg-blue-600 hover:bg-blue-700'
+                : 'border-r-0'
+                }`}
             >
               <Icon name="LayoutList" className="h-5 w-5 mr-2" />
               List
@@ -83,9 +82,8 @@ const EventsPage = () => {
             <Button
               variant={viewMode === 'calendar' ? 'default' : 'outline'}
               onClick={() => setViewMode('calendar')}
-              className={`rounded-r-md rounded-l-none px-4 ${
-                viewMode === 'calendar' ? 'bg-blue-600 hover:bg-blue-700' : ''
-              }`}
+              className={`rounded-r-md rounded-l-none px-4 ${viewMode === 'calendar' ? 'bg-blue-600 hover:bg-blue-700' : ''
+                }`}
             >
               <Icon name="Calendar" className="h-5 w-5 mr-2" />
               Calendar
@@ -96,14 +94,14 @@ const EventsPage = () => {
             <DropdownMenuTrigger asChild>
               <Button
                 variant="outline"
-                className="bg-blue-600 text-white hover:bg-blue-700 hover:text-white"
+                className="bg-blue-600 text-white-100 hover:bg-blue-700 hover:text-white-100"
               >
                 {filterValue.charAt(0).toUpperCase() + filterValue.slice(1)}{' '}
                 events
                 <Icon name="ChevronDown" className="ml-2 h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
+            <DropdownMenuContent className="bg-white-100 hover:bg-slate-200">
               <DropdownMenuItem onClick={() => setFilterValue('upcoming')}>
                 Upcoming events
               </DropdownMenuItem>
@@ -120,7 +118,7 @@ const EventsPage = () => {
           </DropdownMenu>
 
           <Button
-            className="bg-red-600 hover:bg-red-700 text-white"
+            className="bg-green-400 hover:bg-green-500 text-white-100"
             type="submit"
             onClick={() => router.push('/organization/events/create')}
           >
