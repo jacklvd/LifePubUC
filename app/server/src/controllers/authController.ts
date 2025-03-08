@@ -113,7 +113,7 @@ export const signUp = async (req: any, res: any) => {
       subject: '🎉 Confirm Your Email - Welcome to LifePub!',
       html: `
                 <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-                    <h2>Hi there! 😊</h2>
+                    <h2>Hi ${fullName}! 😊</h2>
                     <p>Thank you for signing up for LifePub! 🎉</p>
                     <p>To get started, please confirm your email address by clicking the link below:</p>
                     <p style="text-align: center; margin: 20px 0;">

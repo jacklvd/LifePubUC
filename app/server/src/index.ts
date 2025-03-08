@@ -17,7 +17,7 @@ const isProduction = process.env.NODE_ENV === 'production'
 
 const app = express()
 //middleware
-app.use(cors())
+
 app.use(express.json())
 app.use(helmet())
 app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }))
@@ -28,7 +28,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 const corsOptions = {
   origin: process.env.FRONTEND_URL || 'http://localhost:3000',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'application/json'],
   credentials: true,
 }
 
