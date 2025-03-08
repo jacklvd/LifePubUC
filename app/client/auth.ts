@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import NextAuth, { User } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import axios from 'axios'
@@ -6,6 +7,11 @@ import { API_BASE_URL } from './constants'
 export const { handlers, signIn, signOut, auth } = NextAuth({
   session: {
     strategy: 'jwt',
+    maxAge: 4 * 60 * 60, // expires in 4 hour
+    updateAge: 60 * 30, // Check every 30 minutes
+  },
+  jwt: {
+    maxAge: 4 * 60 * 60, // expires in 4 hour
   },
   providers: [
     CredentialsProvider({
@@ -55,7 +61,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id as string
+        session.user.id = token.email as string
         session.user.email = token.email as string
         session.user.name = token.name as string
       }
