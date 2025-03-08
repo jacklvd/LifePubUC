@@ -7,11 +7,11 @@ import { API_BASE_URL } from './constants'
 export const { handlers, signIn, signOut, auth } = NextAuth({
   session: {
     strategy: 'jwt',
-    maxAge: 60 * 60, // expires in 1 hour
-    updateAge: 60 * 5, // Check every 5 minutes
+    maxAge: 4 * 60 * 60, // expires in 4 hour
+    updateAge: 60 * 30, // Check every 30 minutes
   },
   jwt: {
-    maxAge: 60 * 60, // expires in 1 hour
+    maxAge: 4 * 60 * 60, // expires in 4 hour
   },
   providers: [
     CredentialsProvider({
