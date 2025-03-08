@@ -7,6 +7,11 @@ import { API_BASE_URL } from './constants'
 export const { handlers, signIn, signOut, auth } = NextAuth({
   session: {
     strategy: 'jwt',
+    maxAge: 60 * 60, // expires in 1 hour
+    updateAge: 60 * 5, // Check every 5 minutes
+  },
+  jwt: {
+    maxAge: 60 * 60, // expires in 1 hour
   },
   providers: [
     CredentialsProvider({
@@ -56,7 +61,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id as string
+        session.user.id = token.email as string
         session.user.email = token.email as string
         session.user.name = token.name as string
       }
