@@ -1,9 +1,17 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import NextAuth, { User } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
+import axios from 'axios'
+import { API_BASE_URL } from './constants'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   session: {
     strategy: 'jwt',
+    maxAge: 4 * 60 * 60, // expires in 4 hour
+    updateAge: 60 * 30, // Check every 30 minutes
+  },
+  jwt: {
+    maxAge: 4 * 60 * 60, // expires in 4 hour
   },
   providers: [
     CredentialsProvider({
@@ -13,31 +21,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             return null
           }
 
-          const response = await fetch(
-            `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/login`,
-            {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                email: credentials.email,
-                password: credentials.password,
-              }),
-            },
-          )
+          const { data } = await axios.post(`${API_BASE_URL}/api/auth/login`, {
+            email: credentials.email,
+            password: credentials.password,
+          })
 
-          if (!response.ok) {
+          if (!data?.data) {
             return null
           }
 
-          const res = await response.json()
-
-          if (!res?.data) {
-            return null
-          }
-
-          if (!res.data.user.isVerified) {
+          // Check if the user is verified
+          if (!data.data.user.isVerified) {
             throw new Error('Email not verified. Please check your email.')
           }
 
@@ -50,7 +44,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             name: data.user.fullName || '',
             universityId: data.user.universityId,
           } as User
-        } catch (error) {
+        } catch (error: any) {
           console.error('Authorization error:', error)
           return null
         }
@@ -71,7 +65,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id as string
+        session.user.id = token.email as string
         session.user.email = token.email as string
         session.user.name = token.name as string
       }
@@ -101,6 +95,5 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return true
     },
   },
-
   trustHost: true,
 })

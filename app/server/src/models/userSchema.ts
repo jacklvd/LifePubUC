@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
 export interface IUser extends mongoose.Document {
   fullName: string;

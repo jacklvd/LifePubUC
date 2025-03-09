@@ -42,6 +42,11 @@ import {
   LayoutGrid,
   Settings2,
   ArrowUpDown,
+  Clock,
+  Info,
+  Upload,
+  Download,
+  LayoutList,
 } from 'lucide-react'
 
 const ICONS = {
@@ -88,6 +93,11 @@ const ICONS = {
   LayoutGrid: LayoutGrid,
   Settings2: Settings2,
   ArrowUpDown: ArrowUpDown,
+  Clock: Clock,
+  Info: Info,
+  Upload: Upload,
+  Download: Download,
+  LayoutList: LayoutList,
 } as const
 
 export type IconNames = keyof typeof ICONS
