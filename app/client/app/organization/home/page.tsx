@@ -93,7 +93,7 @@ const OrganizationHome = () => {
           {/* Get to Know Section */}
           <div className="mb-12">
             <h2 className="text-2xl font-bold text-gray-800 mb-6">
-              Get to know Eventbrite
+              Get to know LifePub
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Card className="border-gray-200">
@@ -143,7 +143,7 @@ const OrganizationHome = () => {
           {/* Stats Section */}
           <div>
             <h2 className="text-2xl font-bold text-gray-800 mb-6">
-              Eventbrite helps <span className="text-purple-700">comedy</span>{' '}
+              LifePub helps <span className="text-purple-700">comedy</span>{' '}
               organizers
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">

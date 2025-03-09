@@ -4,6 +4,7 @@ import { SessionProvider } from 'next-auth/react'
 import { auth } from '@/auth'
 import { ReactNode } from 'react'
 import { Toaster } from 'sonner'
+import SessionTimeout from '@/components/timeout'
 
 export const metadata: Metadata = {
   title: 'LifePub',
@@ -27,6 +28,7 @@ const RootLayout = async ({ children }: { children: ReactNode }) => {
         <body className={` antialiased`}>
           {children}
           <Toaster richColors />
+          <SessionTimeout />
         </body>
       </SessionProvider>
     </html>
