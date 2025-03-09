@@ -4,6 +4,14 @@ import User from "../models/userSchema";
 import Item from "../models/itemSchema";
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
+interface CartItem {
+  _id: string;
+  title: string;
+  price: { amount: number };  // Matching your schema
+  quantity: number;
+  seller: string;  // This will be the seller ID
+}
+
 /****************
  * Connected Account Creation
  **************** */
@@ -117,7 +125,7 @@ const createStripeCheckoutSession = async (
 
   try {
     // Group cart items by seller
-      const itemsBySeller: Record<string, typeof Item[]> = {};
+      const itemsBySeller: Record<string, CartItem[]> = {};
 
 
       for (const item of cartItems) {
@@ -142,20 +150,20 @@ const createStripeCheckoutSession = async (
       }
       
       // Add line items for this seller
-      for (const item of cartItems) {
+      for (const item of items) {
         lineItems.push({
           price_data: {
             currency: 'usd',
             product_data: {
-              name: item.name,
-              description: item.description || '',
+              name: item.title,
+           
             },
-            unit_amount: Math.round(item.price * 100), 
+            unit_amount: Math.round(item.price.amount * 100), 
           },
           quantity: item.quantity,
         });
         
-        const itemTotal = Math.round(item.price * item.quantity * 100);
+        const itemTotal = Math.round(item.price.amount * item.quantity * 100);
         const platformFee = Math.round(itemTotal * 0.1); 
         
         transferData.push({
