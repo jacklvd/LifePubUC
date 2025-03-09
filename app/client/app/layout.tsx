@@ -20,6 +20,7 @@ export const metadata: Metadata = {
 
 const RootLayout = async ({ children }: { children: ReactNode }) => {
   const session = await auth()
+
   return (
     <html lang="en">
       <SessionProvider session={session}>

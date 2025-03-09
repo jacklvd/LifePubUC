@@ -47,7 +47,7 @@ export const navbarIcons: {
     name: 'Plus',
     className: 'h-6 w-6',
     title: 'Events',
-    route: '/organization/home',
+    route: '/organization/onboarding',
   },
   {
     name: 'LayoutGrid',
