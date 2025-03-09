@@ -31,20 +31,24 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             return null
           }
 
-          const data = await response.json()
-          // Make sure data.data exists and has the required fields
-          if (!data?.data) {
+          const res = await response.json()
+
+          if (!res?.data) {
             return null
           }
-          // Check if the user is verified
-          if (!data.data.user.isVerified) {
+
+          if (!res.data.user.isVerified) {
             throw new Error('Email not verified. Please check your email.')
           }
 
+          const { data } = res
+          // console.log(data);
+
           return {
-            id: data.data._id || data.data.id || '',
-            email: data.data.email || '',
-            name: data.data.fullName || '',
+            id: data.user._id || data.user.id || '',
+            email: data.user.email || '',
+            name: data.user.fullName || '',
+            universityId: data.user.universityId,
           } as User
         } catch (error) {
           console.error('Authorization error:', error)

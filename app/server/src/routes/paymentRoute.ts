@@ -1,14 +1,16 @@
 import express from 'express';
 import {
-    createAccount, 
-    createAccountLink, 
+    createStripeAccount, 
+    createStripeAccountLink, 
+    createStripeCheckoutSession
 } from '../controllers/paymentController';
 
 const router = express.Router();
 
 
 // POST routes
-router.post('/account', createAccount);
-router.post('/account-link', createAccountLink)
+router.post('/accounts', createStripeAccount);
+router.post('/account-links', createStripeAccountLink)
+router.post('/payment-intent', createStripeCheckoutSession)
 
 export default router;

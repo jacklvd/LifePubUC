@@ -15,6 +15,13 @@ const ItemSchema = new Schema({
     trim: true,
     maxLength: 1000
   },
+  // Add the seller field to reference User model
+  seller: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+    index: true // Add index for faster lookup of items by seller
+  },
   category: {
     type: String,
     required: true,
@@ -60,23 +67,17 @@ const ItemSchema = new Schema({
   toObject: { virtuals: true }
 });
 
-// Indexes
+// Virtual for seller information that can be populated
+ItemSchema.virtual('sellerInfo', {
+  ref: 'User',
+  localField: 'seller',
+  foreignField: '_id',
+  justOne: true
+});
+
 ItemSchema.index({ title: 'text', description: 'text' }); // Enable text search
 ItemSchema.index({ 'price.amount': 1 }); // Index for price-based queries
 
-// Virtual for formatted price
-
-// Pre-save middleware
-
-// Instance method to increment views
-
-// Static method to find available items by category
-
-// Static method to find items within a price range
-
-// Query middleware to automatically populate seller information
-
-// Create compound index for complex queries
 
 const Item = mongoose.model('Item', ItemSchema);
 

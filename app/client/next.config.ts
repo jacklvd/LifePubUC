@@ -12,6 +12,7 @@ const nextConfig: NextConfig = {
       'as2.ftcdn.net',
       'cdnp.sanmar.com',
       'www.flinnsci.com',
+      'i.pinimg.com'  
     ],
     remotePatterns: [
       {

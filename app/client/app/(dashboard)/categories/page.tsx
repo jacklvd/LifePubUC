@@ -15,7 +15,7 @@ const CategoryPage = () => {
   const [loading, setLoading] = useState(true)
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
 
-  const addItem = useCartStore((state) => state.addItem)
+  const addItem = useCartStore((state) => state.addItem);
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -59,7 +59,6 @@ const CategoryPage = () => {
           <p>More</p>
         </Button>
       </div>
-
 
       {/* Item List */}
       <div className="max-w-7xl mx-auto px-4">

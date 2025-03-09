@@ -153,29 +153,38 @@ export const signIn = async (req: any, res: any) => {
     try {
         const { email, password } = req.body;
 
-        // Check if user exists
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(400).json({ message: "Invalid email" });
+            return res.status(400).json({ message: "User does not exist" });
         }
-        // Check if user is verified
+
         if (!user.isVerified) {
             return res.status(403).json({ message: "Email not verified. Please check your email." });
         }
-        // Check if password is correct
+
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.status(400).json({ message: "Incorrect password. Please try again." });
         }
-        // Generate a token
+
         const token = jwt.sign({ userId: user._id }, JWT_SECRET as string, {
             expiresIn: "1h",
         });
+
+        const userResponse = {
+            _id: user._id,
+            id: user._id, 
+            fullName: user.fullName,
+            email: user.email,
+            universityId: user.universityId,
+            isVerified: user.isVerified
+        };
+        
         res.status(200).json({
             success: true,
             message: "Signed in successfully",
             data: {
-                user,
+                user: userResponse,
                 token,
             },
         });
