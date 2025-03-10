@@ -7,3 +7,5 @@ router.post("/login", getUser);
 router.post("/onboarding", getUserOnboardingStripe);
 // get all the info of user
 router.post("/user", getUserOnboardingStripeData)
+
+export default router;

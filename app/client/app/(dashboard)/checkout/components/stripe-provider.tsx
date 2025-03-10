@@ -39,8 +39,6 @@ const StripeProvider = ({ children }: { children: React.ReactNode }) => {
         return <div>Please be patient</div>
     }
 
-    console.log("clientSecret: ", clientSecret);
-
     const options: StripeElementsOptions = {
         clientSecret,
         
