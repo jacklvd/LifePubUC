@@ -25,7 +25,6 @@ export default function OrganizationOnboarding() {
   const [connectedAccountId, setConnectedAccountId] = useState(null)
   const [step, setStep] = useState(1)
 
-
   const createConnectAccount = async () => {
     setAccountCreatePending(true)
     setError(null)
@@ -34,7 +33,6 @@ export default function OrganizationOnboarding() {
     // console.log(session);
 
     try {
-
       const data = await createStripeAccount()
 
       console.log('API Response:', data)

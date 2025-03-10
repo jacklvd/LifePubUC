@@ -182,7 +182,7 @@ export const signIn = async (req: any, res: any) => {
       expiresIn: '1h',
     })
 
-    console.log(user);
+    console.log(user)
     res.status(200).json({
       success: true,
       message: 'Signed in successfully',

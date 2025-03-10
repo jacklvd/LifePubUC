@@ -8,10 +8,10 @@ import helmet from 'helmet'
 
 import morgan from 'morgan'
 
-import itemRoute from "./routes/itemRoute";
-import authRoute from "./routes/authRoute";
-import paymentRoute from './routes/paymentRoute';
-import userRoute from './routes/userRoute';
+import itemRoute from './routes/itemRoute'
+import authRoute from './routes/authRoute'
+import paymentRoute from './routes/paymentRoute'
+import userRoute from './routes/userRoute'
 /* CONFIGURATIONS */
 dotenv.config()
 
@@ -49,16 +49,15 @@ if (process.env.MONGO_URI) {
 
 /* ROUTES */
 /* ROUTES */
-const apiRouter = express.Router();
+const apiRouter = express.Router()
 
 // Mount routes to apiRouter
-apiRouter.use("/items", itemRoute);
-apiRouter.use("/auth", authRoute);  
-apiRouter.use("/payment", paymentRoute);
-apiRouter.use("/user", userRoute);
+apiRouter.use('/items', itemRoute)
+apiRouter.use('/auth', authRoute)
+apiRouter.use('/payment', paymentRoute)
+apiRouter.use('/user', userRoute)
 
-app.use("/api", apiRouter);
-
+app.use('/api', apiRouter)
 
 /* SERVER */
 const port = process.env.PORT || 8000

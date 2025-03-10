@@ -157,7 +157,6 @@ export async function getUserStripe() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ userId: session?.user?.id }),
-   
       },
     )
 
@@ -187,11 +186,13 @@ export async function getUserStripe() {
   }
 }
 
-export async function createStripePaymentIntent({ cartItems  }: { cartItems: Item[], }) {
+export async function createStripePaymentIntent({
+  cartItems,
+}: {
+  cartItems: Item[]
+}) {
   try {
     const session = await auth()
-    
-
 
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/payment/payment-intent`,
@@ -200,7 +201,10 @@ export async function createStripePaymentIntent({ cartItems  }: { cartItems: Ite
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ buyerId: session?.user?.id, cartItems: cartItems }),
+        body: JSON.stringify({
+          buyerId: session?.user?.id,
+          cartItems: cartItems,
+        }),
       },
     )
 
@@ -216,12 +220,10 @@ export async function createStripePaymentIntent({ cartItems  }: { cartItems: Ite
     const responseData = await response.json()
     const data = responseData?.data || false
 
-    
     return {
       success: true,
       data: data.clientSecret,
     }
-
   } catch (error) {
     console.error('Error checking onboarding status:', error)
     return {

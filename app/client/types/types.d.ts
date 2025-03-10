@@ -20,7 +20,7 @@ interface Item {
   _id: string
   title: string
   description: string
-  seller?: string  // User ID reference
+  seller?: string // User ID reference
   category: string
   condition: string
   price: {
