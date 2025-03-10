@@ -10,6 +10,8 @@ import morgan from 'morgan'
 
 import itemRoute from './routes/itemRoute'
 import authRoute from './routes/authRoute'
+import paymentRoute from './routes/paymentRoute'
+import userRoute from './routes/userRoute'
 /* CONFIGURATIONS */
 dotenv.config()
 
@@ -51,9 +53,10 @@ const apiRouter = express.Router()
 
 // Mount routes to apiRouter
 apiRouter.use('/items', itemRoute)
-apiRouter.use('/auth', authRoute) // Use authRoute here, not itemRoute
+apiRouter.use('/auth', authRoute)
+apiRouter.use('/payment', paymentRoute)
+apiRouter.use('/user', userRoute)
 
-// Mount apiRouter to app with /api prefix
 app.use('/api', apiRouter)
 
 /* SERVER */

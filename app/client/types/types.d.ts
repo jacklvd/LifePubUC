@@ -3,6 +3,7 @@ interface AuthCredentials {
   email: string
   password: string
   universityId: string
+  stripeConnectOnboardingComplete?: boolean
 }
 
 interface User {
@@ -10,6 +11,7 @@ interface User {
   email: string
   password: string
   universityId: string
+  stripeConnectOnboardingComplete?: boolean
   createdAt: Date
   updatedAt: Date
 }
@@ -18,6 +20,7 @@ interface Item {
   _id: string
   title: string
   description: string
+  seller?: string // User ID reference
   category: string
   condition: string
   price: {
@@ -26,6 +29,8 @@ interface Item {
   images: string[]
   status: string
   views: number
+  createdAt?: Date
+  updatedAt?: Date
 }
 
 interface Category {
