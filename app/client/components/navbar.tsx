@@ -29,6 +29,8 @@ import { navbarIcons } from '@/constants'
 import { slide as Menu } from 'react-burger-menu'
 import { Twirl as Hamburger } from 'hamburger-react'
 
+import { IconNames } from './icons'
+
 // Custom styles for the burger menu - fixed TypeScript error by using strings for all values
 const burgerStyles = {
   bmMenuWrap: {
@@ -150,10 +152,21 @@ const Navbar = () => {
                   href={icon.route}
                   className="menu-item block py-3 text-primary"
                 >
-                  <Icon
-                    name={icon.name}
-                    className="h-6 w-6 inline-block mr-2"
-                  />
+                  {icon.title === 'Events' ? ( // Use a string, not the Event object
+                    <div>
+                      <p>Become an Organizer</p>
+                      <Icon
+                        name={icon.name}
+                        className="h-6 w-6 inline-block mr-2"
+                      />
+                    </div>
+                  ) : (
+                    <Icon
+                      name={icon.name}
+                      className="h-6 w-6 inline-block mr-2"
+                    />
+                  )}
+
                   {icon.title}
                 </Link>
               ))}
@@ -189,9 +202,16 @@ const Navbar = () => {
                 <Tooltip key={index} delayDuration={100}>
                   <TooltipTrigger>
                     <Link href={icon.route} className="relative">
-                      <div className="p-2 rounded-full transition-all hover:bg-primary-50">
-                        <Icon name={icon.name} className={icon.className} />
-                      </div>
+                      {icon.title === 'Events' ? (
+                        <div className="p-2 text-md hover:font-normal flex flex-row gap-3 rounded-full transition-all bg-primary-50">
+                          <p className="text-md">Create Events</p>
+                          <Icon name={icon.name} className={icon.className} />
+                        </div>
+                      ) : (
+                        <div className="p-2 rounded-full transition-all hover:bg-primary-50">
+                          <Icon name={icon.name} className={icon.className} />
+                        </div>
+                      )}
                     </Link>
                   </TooltipTrigger>
                   <TooltipContent className="bg-primary-500 text-sm px-3">
@@ -217,6 +237,9 @@ const Navbar = () => {
               <DropdownMenuItem>
                 <Link href="/profile">Profile</Link>
               </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link href="/profile">Profile</Link>
+              </DropdownMenuItem>
               <DropdownMenuItem onClick={handleSignOut}>
                 Sign out
               </DropdownMenuItem>
@@ -226,7 +249,7 @@ const Navbar = () => {
           <TooltipProvider>
             <Tooltip delayDuration={100}>
               <TooltipTrigger className="">
-                <Link href="/cart" className="relative">
+                <Link href="/checkout" className="relative">
                   <div className="p-2 hover:bg-primary-50 hover:rounded-full transition-all">
                     <Icon name="ShoppingCart" className="h-6 w-6" />
                     <span className="absolute -top-2 -right-2 bg-primary-500 text-white-100 text-xs rounded-full h-5 w-5 flex items-center justify-center">
