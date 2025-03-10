@@ -157,7 +157,6 @@ const CheckoutPage = () => {
 
         {/* Payment Section */}
         <div>
-          {/* Show payment form if checkout is initiated */}
           {isCheckingOut ? (
             <Card>
               <CardHeader>
@@ -166,6 +165,8 @@ const CheckoutPage = () => {
               <CardContent>
                 <StripeProvider>
                   <EmbeddedCheckout 
+                    
+                    onComplete={handlePaymentSuccess}
                   />
                 </StripeProvider>
                 

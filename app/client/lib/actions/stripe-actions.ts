@@ -192,6 +192,7 @@ export async function createStripePaymentIntent({ cartItems  }: { cartItems: Ite
     const session = await auth()
     
 
+
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/payment/payment-intent`,
       {

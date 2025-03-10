@@ -1,7 +1,7 @@
 import mongoose from "mongoose"
 
 const transactionSchema = new mongoose.Schema({
-    // Core payment information
+    // core payment information
     stripePaymentIntentId: {
       type: String,
       required: true,
@@ -30,7 +30,7 @@ const transactionSchema = new mongoose.Schema({
       default: 'pending',
     },
   
-    // Relationships
+    // relationships
     buyerId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
@@ -49,7 +49,8 @@ const transactionSchema = new mongoose.Schema({
       required: true,
     },
     
-    // Stripe-specific information
+    // stripe information
+    checkoutSessionId: String,
     stripeTransferId: String,
     stripeChargeId: String,
     stripeRefundId: String,
@@ -60,7 +61,7 @@ const transactionSchema = new mongoose.Schema({
     },
     lastFourDigits: String,
     
-    // Dates
+    // dates
     createdAt: {
       type: Date,
       default: Date.now,
@@ -69,7 +70,7 @@ const transactionSchema = new mongoose.Schema({
     completedAt: Date,
     refundedAt: Date,
     
-    // Metadata
+    // metadata
     notes: String,
     refundReason: String,
     disputeDetails: Object,
