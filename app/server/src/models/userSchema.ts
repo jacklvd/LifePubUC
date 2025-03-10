@@ -1,23 +1,23 @@
 import mongoose from 'mongoose'
 
 export interface IUser extends mongoose.Document {
-  fullName: string;
-  email: string;
-  password: string;
-  universityId: string;
-  isVerified: boolean;
-  verificationToken?: string;
-  
+  fullName: string
+  email: string
+  password: string
+  universityId: string
+  isVerified: boolean
+  verificationToken?: string
+
   // Stripe Connect fields
-  stripeCustomerId?: string;        // For buyers to save payment methods
-  stripeConnectAccountId?: string;  // For sellers to receive payments
-  stripeConnectOnboardingComplete?: boolean;
-  
+  stripeCustomerId?: string // For buyers to save payment methods
+  stripeConnectAccountId?: string // For sellers to receive payments
+  stripeConnectOnboardingComplete?: boolean
+
   // Optional: Saved payment methods
-  defaultPaymentMethodId?: string;
-  
-  createdAt: Date;
-  updatedAt: Date;
+  defaultPaymentMethodId?: string
+
+  createdAt: Date
+  updatedAt: Date
 }
 
 // Define the User schema
@@ -48,7 +48,7 @@ const userSchema = new mongoose.Schema<IUser>(
       type: Boolean,
       default: false,
     },
-    
+
     // Stripe Connect fields
     stripeCustomerId: {
       type: String,
@@ -69,8 +69,8 @@ const userSchema = new mongoose.Schema<IUser>(
   },
   {
     timestamps: true,
-  }
-);
+  },
+)
 
-export const User = mongoose?.models?.User || mongoose.model('User', userSchema);
-export default User;
+export const User = mongoose?.models?.User || mongoose.model('User', userSchema)
+export default User

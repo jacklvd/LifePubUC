@@ -12,10 +12,11 @@ import Link from 'next/link'
 import StripeProvider from './components/stripe-provider'
 import CheckoutForm from './components/checkout-form'
 
-import { EmbeddedCheckout } from '@stripe/react-stripe-js';
+import { EmbeddedCheckout } from '@stripe/react-stripe-js'
 
 const CheckoutPage = () => {
-  const { items, totalAmount, totalQuantity, removeItem, clearCart } = useCartStore()
+  const { items, totalAmount, totalQuantity, removeItem, clearCart } =
+    useCartStore()
   const [isCheckingOut, setIsCheckingOut] = useState(false)
   const [isPaymentComplete, setIsPaymentComplete] = useState(false)
   const router = useRouter()
@@ -35,7 +36,7 @@ const CheckoutPage = () => {
   const handlePaymentSuccess = () => {
     setIsPaymentComplete(true)
     clearCart()
-    
+
     toast({
       title: 'Payment Successful',
       description: 'Your payment was successful!',
@@ -46,7 +47,8 @@ const CheckoutPage = () => {
   const handlePaymentError = (error) => {
     toast({
       title: 'Payment Failed',
-      description: error.message || 'There was an issue processing your payment.',
+      description:
+        error.message || 'There was an issue processing your payment.',
       variant: 'destructive',
     })
   }
@@ -58,8 +60,19 @@ const CheckoutPage = () => {
           href="/categories"
           className="flex items-center text-sm text-gray-600 hover:text-gray-900"
         >
-          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path>
+          <svg
+            className="w-4 h-4 mr-1"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M15 19l-7-7 7-7"
+            ></path>
           </svg>
           Continue Shopping
         </Link>
@@ -73,8 +86,19 @@ const CheckoutPage = () => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                  ></path>
                 </svg>
                 Cart Summary
                 <span className="text-sm font-normal text-gray-500">
@@ -111,9 +135,7 @@ const CheckoutPage = () => {
                         <p className="text-sm text-gray-500">
                           {item.condition.replace('_', ' ').toUpperCase()}
                         </p>
-                        <p className="text-xs text-gray-400">
-                          Seller 
-                        </p>
+                        <p className="text-xs text-gray-400">Seller</p>
                         <div className="flex justify-between items-center mt-1">
                           <span>
                             {formatPrice(item.price.amount)} × {item.quantity}
@@ -130,8 +152,19 @@ const CheckoutPage = () => {
                           onClick={() => removeItem(item._id)}
                           className="text-gray-400 hover:text-red-500"
                         >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                            ></path>
                           </svg>
                         </Button>
                       )}
@@ -164,15 +197,12 @@ const CheckoutPage = () => {
               </CardHeader>
               <CardContent>
                 <StripeProvider>
-                  <EmbeddedCheckout 
-                    
-                    onComplete={handlePaymentSuccess}
-                  />
+                  <EmbeddedCheckout onComplete={handlePaymentSuccess} />
                 </StripeProvider>
-                
+
                 {!isPaymentComplete && (
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     className="w-full mt-4"
                     onClick={() => setIsCheckingOut(false)}
                   >
@@ -204,9 +234,9 @@ const CheckoutPage = () => {
                   <span>Total</span>
                   <span>{formatPrice(totalAmount * 1.1)}</span>
                 </div>
-                
+
                 {items.length > 0 && !isPaymentComplete ? (
-                  <Button 
+                  <Button
                     className="w-full mt-4"
                     onClick={initiateCheckout}
                     disabled={items.length === 0}

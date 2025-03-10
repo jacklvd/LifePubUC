@@ -7,8 +7,8 @@ import { API_BASE_URL } from './constants'
 export const { handlers, signIn, signOut, auth } = NextAuth({
   session: {
     strategy: 'jwt',
-    maxAge: 4 * 60 * 60, 
-    updateAge: 60 * 30, 
+    maxAge: 4 * 60 * 60,
+    updateAge: 60 * 30,
   },
   jwt: {
     maxAge: 4 * 60 * 60, // expires in 4 hour
@@ -21,7 +21,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             return null
           }
 
-          const { data: { data } } = await axios.post(`${API_BASE_URL}/api/auth/login`, {
+          const {
+            data: { data },
+          } = await axios.post(`${API_BASE_URL}/api/auth/login`, {
             email: credentials.email,
             password: credentials.password,
           })
@@ -29,7 +31,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           if (!data.user) {
             return null
           }
-          const user = data.user 
+          const user = data.user
 
           // Check if the user is verified
           if (!user.isVerified) {

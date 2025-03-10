@@ -1,6 +1,7 @@
-import mongoose from "mongoose"
+import mongoose from 'mongoose'
 
-const transactionSchema = new mongoose.Schema({
+const transactionSchema = new mongoose.Schema(
+  {
     // core payment information
     stripePaymentIntentId: {
       type: String,
@@ -26,10 +27,17 @@ const transactionSchema = new mongoose.Schema({
     },
     status: {
       type: String,
-      enum: ['pending', 'completed', 'failed', 'refunded', 'partially_refunded', 'disputed'],
+      enum: [
+        'pending',
+        'completed',
+        'failed',
+        'refunded',
+        'partially_refunded',
+        'disputed',
+      ],
       default: 'pending',
     },
-  
+
     // relationships
     buyerId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -39,7 +47,7 @@ const transactionSchema = new mongoose.Schema({
     },
     sellerId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User', 
+      ref: 'User',
       required: true,
       index: true,
     },
@@ -48,7 +56,7 @@ const transactionSchema = new mongoose.Schema({
       ref: 'Order',
       required: true,
     },
-    
+
     // stripe information
     checkoutSessionId: String,
     stripeTransferId: String,
@@ -60,7 +68,7 @@ const transactionSchema = new mongoose.Schema({
       default: 'card',
     },
     lastFourDigits: String,
-    
+
     // dates
     createdAt: {
       type: Date,
@@ -69,14 +77,15 @@ const transactionSchema = new mongoose.Schema({
     },
     completedAt: Date,
     refundedAt: Date,
-    
+
     // metadata
     notes: String,
     refundReason: String,
     disputeDetails: Object,
-  }, { timestamps: true });
-  
+  },
+  { timestamps: true },
+)
 
-const Transaction = mongoose.model('Transaction', transactionSchema);
-  
-export default Transaction;
+const Transaction = mongoose.model('Transaction', transactionSchema)
+
+export default Transaction

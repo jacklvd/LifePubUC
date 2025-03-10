@@ -15,7 +15,7 @@ const CategoryPage = () => {
   const [loading, setLoading] = useState(true)
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
 
-  const addItem = useCartStore((state) => state.addItem);
+  const addItem = useCartStore((state) => state.addItem)
 
   useEffect(() => {
     const fetchItems = async () => {
