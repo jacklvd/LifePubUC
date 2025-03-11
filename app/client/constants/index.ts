@@ -89,6 +89,12 @@ export const eventSideBarIcons: {
     className: 'text-grey-500 hover:bg-grey-100',
     route: '/organization/settings',
   },
+
+  {
+    name: 'FilePlus2',
+    className: 'text-grey-500 hover:bg-grey-100',
+    route: '/organization/items',
+  },
 ]
 
 export const landingPageIcons: { name: IconNames; title: string }[] = [

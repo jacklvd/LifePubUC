@@ -197,7 +197,7 @@ const CheckoutPage = () => {
               </CardHeader>
               <CardContent>
                 <StripeProvider>
-                  <EmbeddedCheckout onComplete={handlePaymentSuccess} />
+                  <EmbeddedCheckout />
                 </StripeProvider>
 
                 {!isPaymentComplete && (
