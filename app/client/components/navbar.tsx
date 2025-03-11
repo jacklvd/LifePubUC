@@ -237,9 +237,6 @@ const Navbar = () => {
               <DropdownMenuItem>
                 <Link href="/profile">Profile</Link>
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Link href="/profile">Profile</Link>
-              </DropdownMenuItem>
               <DropdownMenuItem onClick={handleSignOut}>
                 Sign out
               </DropdownMenuItem>

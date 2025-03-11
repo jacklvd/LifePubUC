@@ -5,6 +5,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
 import { Icon } from '@/components/icons'
+import Link from 'next/link'
 
 const OrganizationHome = () => {
   return (
@@ -68,21 +69,24 @@ const OrganizationHome = () => {
                     />
                   </div>
                   <div className="p-6">
-                    <h3 className="text-xl font-bold text-gray-800 mb-2">
-                      Start from scratch
-                    </h3>
+                  
+                      <h3 className="text-xl font-bold text-gray-800 mb-2">
+                        Start from scratch
+                      </h3>
                     <p className="text-gray-600 mb-4">
                       Craft every detail from ticket types to reserved seating
                       and more advanced tools
                     </p>
                     <div className="flex justify-end">
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="rounded-full bg-white"
-                      >
-                        <Icon name="CirclePlus" />
-                      </Button>
+                      <Link href="/organization/events/create">
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="rounded-full bg-white"
+                        >
+                          <Icon name="CirclePlus" />
+                        </Button>
+                      </Link>
                     </div>
                   </div>
                 </CardContent>
