@@ -12,6 +12,8 @@ import itemRoute from './routes/itemRoute'
 import authRoute from './routes/authRoute'
 import paymentRoute from './routes/paymentRoute'
 import userRoute from './routes/userRoute'
+import sellerRoute from './routes/sellerRoute'
+
 /* CONFIGURATIONS */
 dotenv.config()
 
@@ -56,6 +58,7 @@ apiRouter.use('/items', itemRoute)
 apiRouter.use('/auth', authRoute)
 apiRouter.use('/payment', paymentRoute)
 apiRouter.use('/user', userRoute)
+apiRouter.use('/sellers', sellerRoute)
 
 app.use('/api', apiRouter)
 
