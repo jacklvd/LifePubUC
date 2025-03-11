@@ -99,7 +99,7 @@ const ICONS = {
   Upload: Upload,
   Download: Download,
   LayoutList: LayoutList,
-  FilePlus2: FilePlus2
+  FilePlus2: FilePlus2,
 } as const
 
 export type IconNames = keyof typeof ICONS
