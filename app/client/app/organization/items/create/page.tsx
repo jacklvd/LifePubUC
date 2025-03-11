@@ -1,43 +1,43 @@
-"use client"
-import { useState, ChangeEvent, FormEvent } from 'react';
-import { useRouter } from 'next/navigation';
-import Image from 'next/image';
+'use client'
+import { useState, ChangeEvent, FormEvent } from 'react'
+import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 
 // Define types for the form data
 interface PriceData {
-  amount: string | number;
+  amount: string | number
 }
 
 interface FormData {
-  title: string;
-  description: string;
-  category: string;
-  condition: string;
-  price: PriceData;
-  images: File[];
+  title: string
+  description: string
+  category: string
+  condition: string
+  price: PriceData
+  images: File[]
 }
 
 // Define types for form errors
 interface FormErrors {
-  title?: string;
-  description?: string;
-  category?: string;
-  condition?: string;
-  price?: string;
-  images?: string;
-  form?: string;
+  title?: string
+  description?: string
+  category?: string
+  condition?: string
+  price?: string
+  images?: string
+  form?: string
 }
 
 // Section type definition
 interface Section {
-  id: string;
-  label: string;
+  id: string
+  label: string
 }
 
 const CreateItemPage = () => {
-  const router = useRouter();
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [activeSection, setActiveSection] = useState<string>('photos');
+  const router = useRouter()
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
+  const [activeSection, setActiveSection] = useState<string>('photos')
   const [formData, setFormData] = useState<FormData>({
     title: '',
     description: '',
@@ -47,10 +47,10 @@ const CreateItemPage = () => {
       amount: '',
     },
     images: [],
-  });
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [uploadedImages, setUploadedImages] = useState<File[]>([]);
-  const [previewImages, setPreviewImages] = useState<string[]>([]);
+  })
+  const [errors, setErrors] = useState<FormErrors>({})
+  const [uploadedImages, setUploadedImages] = useState<File[]>([])
+  const [previewImages, setPreviewImages] = useState<string[]>([])
 
   // Category options based on Etsy-like categories
   const categories: string[] = [
@@ -64,27 +64,23 @@ const CreateItemPage = () => {
     'Books',
     'Toys & Games',
     'Other',
-  ];
+  ]
 
   // Condition options
-  const conditions: string[] = [
-    'New', 
-    'Like New', 
-    'Good', 
-    'Fair', 
-    'Poor'
-  ];
+  const conditions: string[] = ['New', 'Like New', 'Good', 'Fair', 'Poor']
 
   const sections: Section[] = [
     { id: 'photos', label: 'Photos' },
     { id: 'details', label: 'Item details' },
     { id: 'pricing', label: 'Pricing' },
     { id: 'review', label: 'Review' },
-  ];
+  ]
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+  ) => {
+    const { name, value } = e.target
+
     if (name === 'price') {
       setFormData({
         ...formData,
@@ -92,158 +88,165 @@ const CreateItemPage = () => {
           ...formData.price,
           amount: parseFloat(value) || '',
         },
-      });
+      })
     } else {
       setFormData({
         ...formData,
         [name]: value,
-      });
+      })
     }
-    
+
     // Clear error for this field when user makes a change
     if (errors[name as keyof FormErrors]) {
       setErrors({
         ...errors,
         [name]: '',
-      });
+      })
     }
-  };
+  }
 
   const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files || e.target.files.length === 0) return;
-    
-    const files = Array.from(e.target.files);
-    
+    if (!e.target.files || e.target.files.length === 0) return
+
+    const files = Array.from(e.target.files)
+
     // Create preview URLs
-    const newPreviewImages = files.map(file => URL.createObjectURL(file));
-    
-    setUploadedImages([...uploadedImages, ...files]);
-    setPreviewImages([...previewImages, ...newPreviewImages]);
-    
+    const newPreviewImages = files.map((file) => URL.createObjectURL(file))
+
+    setUploadedImages([...uploadedImages, ...files])
+    setPreviewImages([...previewImages, ...newPreviewImages])
+
     // For the actual form data that will be sent to the server
     setFormData({
       ...formData,
       images: [...formData.images, ...files],
-    });
-    
+    })
+
     // Clear any error related to images
     if (errors.images) {
       setErrors({
         ...errors,
         images: '',
-      });
+      })
     }
-  };
+  }
 
   const removeImage = (index: number) => {
-    const updatedUploads = [...uploadedImages];
-    const updatedPreviews = [...previewImages];
-    const updatedFormImages = [...formData.images];
-    
-    updatedUploads.splice(index, 1);
-    updatedPreviews.splice(index, 1);
-    updatedFormImages.splice(index, 1);
-    
-    setUploadedImages(updatedUploads);
-    setPreviewImages(updatedPreviews);
+    const updatedUploads = [...uploadedImages]
+    const updatedPreviews = [...previewImages]
+    const updatedFormImages = [...formData.images]
+
+    updatedUploads.splice(index, 1)
+    updatedPreviews.splice(index, 1)
+    updatedFormImages.splice(index, 1)
+
+    setUploadedImages(updatedUploads)
+    setPreviewImages(updatedPreviews)
     setFormData({
       ...formData,
       images: updatedFormImages,
-    });
-  };
+    })
+  }
 
   const validateForm = (): boolean => {
-    const newErrors: FormErrors = {};
-    
+    const newErrors: FormErrors = {}
+
     // Required fields validation
-    if (!formData.title.trim()) newErrors.title = 'Title is required';
-    if (!formData.description.trim()) newErrors.description = 'Description is required';
-    if (!formData.category) newErrors.category = 'Category is required';
-    if (!formData.condition) newErrors.condition = 'Condition is required';
-    if (!formData.price.amount) newErrors.price = 'Price is required';
-    if (typeof formData.price.amount === 'number' && formData.price.amount < 0) newErrors.price = 'Price cannot be negative';
-    if (formData.images.length === 0) newErrors.images = 'At least one image is required';
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+    if (!formData.title.trim()) newErrors.title = 'Title is required'
+    if (!formData.description.trim())
+      newErrors.description = 'Description is required'
+    if (!formData.category) newErrors.category = 'Category is required'
+    if (!formData.condition) newErrors.condition = 'Condition is required'
+    if (!formData.price.amount) newErrors.price = 'Price is required'
+    if (typeof formData.price.amount === 'number' && formData.price.amount < 0)
+      newErrors.price = 'Price cannot be negative'
+    if (formData.images.length === 0)
+      newErrors.images = 'At least one image is required'
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    
+    e.preventDefault()
+
     if (!validateForm()) {
-      return;
+      return
     }
-    
-    setIsSubmitting(true);
-    
+
+    setIsSubmitting(true)
+
     try {
       // In a real application, you'd use FormData to handle file uploads
-      const formDataToSend = new FormData();
-      formDataToSend.append('title', formData.title);
-      formDataToSend.append('description', formData.description);
-      formDataToSend.append('category', formData.category);
-      formDataToSend.append('condition', formData.condition);
-      formDataToSend.append('price[amount]', formData.price.amount.toString());
-      
+      const formDataToSend = new FormData()
+      formDataToSend.append('title', formData.title)
+      formDataToSend.append('description', formData.description)
+      formDataToSend.append('category', formData.category)
+      formDataToSend.append('condition', formData.condition)
+      formDataToSend.append('price[amount]', formData.price.amount.toString())
+
       formData.images.forEach((image) => {
-        formDataToSend.append('images', image);
-      });
-      
+        formDataToSend.append('images', image)
+      })
+
       const response = await fetch('/api/items', {
         method: 'POST',
         body: formDataToSend,
-      });
-      
+      })
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to create item');
+        const errorData = await response.json()
+        throw new Error(errorData.message || 'Failed to create item')
       }
-      
-      const data = await response.json();
-      
+
+      const data = await response.json()
+
       // Redirect to the item page or a success page
-      router.push(`/items/${data.data._id}`);
-      
+      router.push(`/items/${data.data._id}`)
     } catch (error) {
-      console.error('Error creating item:', error);
+      console.error('Error creating item:', error)
       setErrors({
         ...errors,
-        form: error instanceof Error ? error.message : 'An unknown error occurred',
-      });
+        form:
+          error instanceof Error ? error.message : 'An unknown error occurred',
+      })
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false)
     }
-  };
+  }
 
   const goToSection = (sectionId: string) => {
     if (sectionId === 'review') {
       // Validate before going to review
       if (!validateForm()) {
-        return;
+        return
       }
     }
-    setActiveSection(sectionId);
-  };
+    setActiveSection(sectionId)
+  }
 
   const goToNextSection = () => {
-    const currentIndex = sections.findIndex(section => section.id === activeSection);
+    const currentIndex = sections.findIndex(
+      (section) => section.id === activeSection,
+    )
     if (currentIndex < sections.length - 1) {
-      goToSection(sections[currentIndex + 1].id);
+      goToSection(sections[currentIndex + 1].id)
     }
-  };
+  }
 
   const goToPrevSection = () => {
-    const currentIndex = sections.findIndex(section => section.id === activeSection);
+    const currentIndex = sections.findIndex(
+      (section) => section.id === activeSection,
+    )
     if (currentIndex > 0) {
-      goToSection(sections[currentIndex - 1].id);
+      goToSection(sections[currentIndex - 1].id)
     }
-  };
+  }
 
   return (
     <div className="max-w-5xl mx-auto p-4 md:p-6">
       <h1 className="text-3xl font-bold mb-6">Create a new listing</h1>
-      
+
       <div className="mb-8">
         <div className="flex flex-wrap mb-4">
           {sections.map((section, index) => (
@@ -252,8 +255,8 @@ const CreateItemPage = () => {
                 type="button"
                 onClick={() => goToSection(section.id)}
                 className={`px-3 py-1 ${
-                  activeSection === section.id 
-                    ? 'font-semibold text-orange-500 border-b-2 border-orange-500' 
+                  activeSection === section.id
+                    ? 'font-semibold text-orange-500 border-b-2 border-orange-500'
                     : 'text-gray-500'
                 }`}
               >
@@ -272,17 +275,19 @@ const CreateItemPage = () => {
           {errors.form}
         </div>
       )}
-      
+
       <form onSubmit={handleSubmit}>
         {/* Photos Section */}
         {activeSection === 'photos' && (
           <div className="mb-8">
-            <h2 className="text-xl font-semibold mb-4">Add photos of your item</h2>
+            <h2 className="text-xl font-semibold mb-4">
+              Add photos of your item
+            </h2>
             <p className="text-gray-600 mb-4">
-              Add up to 10 photos to show your item from all angles. 
-              Photos should be at least 1000px wide.
+              Add up to 10 photos to show your item from all angles. Photos
+              should be at least 1000px wide.
             </p>
-            
+
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-6">
               {/* Image upload box */}
               <div className="border-2 border-dashed border-gray-300 rounded p-4 flex flex-col items-center justify-center aspect-square cursor-pointer hover:bg-gray-50">
@@ -295,30 +300,36 @@ const CreateItemPage = () => {
                   onChange={handleImageUpload}
                   className="hidden"
                 />
-                <label htmlFor="images" className="w-full h-full flex flex-col items-center justify-center cursor-pointer">
-                  <svg 
-                    className="w-10 h-10 text-gray-400 mb-2" 
-                    fill="none" 
-                    stroke="currentColor" 
+                <label
+                  htmlFor="images"
+                  className="w-full h-full flex flex-col items-center justify-center cursor-pointer"
+                >
+                  <svg
+                    className="w-10 h-10 text-gray-400 mb-2"
+                    fill="none"
+                    stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
-                    <path 
-                      strokeLinecap="round" 
-                      strokeLinejoin="round" 
-                      strokeWidth="2" 
-                      d="M12 4v16m8-8H4" 
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M12 4v16m8-8H4"
                     />
                   </svg>
                   <span className="text-sm text-gray-500">Add photos</span>
                 </label>
               </div>
-              
+
               {/* Preview images */}
               {previewImages.map((src, index) => (
-                <div key={index} className="relative border border-gray-200 rounded overflow-hidden aspect-square">
-                  <img 
-                    src={src} 
-                    alt={`Preview ${index + 1}`} 
+                <div
+                  key={index}
+                  className="relative border border-gray-200 rounded overflow-hidden aspect-square"
+                >
+                  <img
+                    src={src}
+                    alt={`Preview ${index + 1}`}
                     className="w-full h-full object-cover"
                   />
                   <button
@@ -326,27 +337,39 @@ const CreateItemPage = () => {
                     onClick={() => removeImage(index)}
                     className="absolute top-2 right-2 bg-white rounded-full p-1 shadow hover:bg-gray-100"
                   >
-                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                    <svg
+                      className="w-5 h-5 text-gray-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M6 18L18 6M6 6l12 12"
+                      />
                     </svg>
                   </button>
                 </div>
               ))}
             </div>
-            
+
             {errors.images && (
               <p className="text-red-500 text-sm mt-1">{errors.images}</p>
             )}
           </div>
         )}
-        
+
         {/* Item Details Section */}
         {activeSection === 'details' && (
           <div className="mb-8">
             <h2 className="text-xl font-semibold mb-4">Item details</h2>
-            
+
             <div className="mb-6">
-              <label htmlFor="title" className="block font-medium mb-1">Title</label>
+              <label htmlFor="title" className="block font-medium mb-1">
+                Title
+              </label>
               <input
                 type="text"
                 id="title"
@@ -360,9 +383,11 @@ const CreateItemPage = () => {
                 <p className="text-red-500 text-sm mt-1">{errors.title}</p>
               )}
             </div>
-            
+
             <div className="mb-6">
-              <label htmlFor="description" className="block font-medium mb-1">Description</label>
+              <label htmlFor="description" className="block font-medium mb-1">
+                Description
+              </label>
               <textarea
                 id="description"
                 name="description"
@@ -373,13 +398,17 @@ const CreateItemPage = () => {
                 placeholder="Describe your item in detail - condition, features, what makes it special..."
               ></textarea>
               {errors.description && (
-                <p className="text-red-500 text-sm mt-1">{errors.description}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.description}
+                </p>
               )}
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label htmlFor="category" className="block font-medium mb-1">Category</label>
+                <label htmlFor="category" className="block font-medium mb-1">
+                  Category
+                </label>
                 <select
                   id="category"
                   name="category"
@@ -389,16 +418,20 @@ const CreateItemPage = () => {
                 >
                   <option value="">Select a category</option>
                   {categories.map((category) => (
-                    <option key={category} value={category}>{category}</option>
+                    <option key={category} value={category}>
+                      {category}
+                    </option>
                   ))}
                 </select>
                 {errors.category && (
                   <p className="text-red-500 text-sm mt-1">{errors.category}</p>
                 )}
               </div>
-              
+
               <div>
-                <label htmlFor="condition" className="block font-medium mb-1">Condition</label>
+                <label htmlFor="condition" className="block font-medium mb-1">
+                  Condition
+                </label>
                 <select
                   id="condition"
                   name="condition"
@@ -408,24 +441,30 @@ const CreateItemPage = () => {
                 >
                   <option value="">Select condition</option>
                   {conditions.map((condition) => (
-                    <option key={condition} value={condition}>{condition}</option>
+                    <option key={condition} value={condition}>
+                      {condition}
+                    </option>
                   ))}
                 </select>
                 {errors.condition && (
-                  <p className="text-red-500 text-sm mt-1">{errors.condition}</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.condition}
+                  </p>
                 )}
               </div>
             </div>
           </div>
         )}
-        
+
         {/* Pricing Section */}
         {activeSection === 'pricing' && (
           <div className="mb-8">
             <h2 className="text-xl font-semibold mb-4">Pricing</h2>
-            
+
             <div className="mb-6">
-              <label htmlFor="price" className="block font-medium mb-1">Price</label>
+              <label htmlFor="price" className="block font-medium mb-1">
+                Price
+              </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <span className="text-gray-500">$</span>
@@ -451,21 +490,21 @@ const CreateItemPage = () => {
             </div>
           </div>
         )}
-        
+
         {/* Review Section */}
         {activeSection === 'review' && (
           <div className="mb-8">
             <h2 className="text-xl font-semibold mb-4">Review your listing</h2>
-            
+
             <div className="bg-gray-50 p-6 rounded-lg mb-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
                   {/* Images preview */}
                   <div className="border border-gray-200 rounded overflow-hidden mb-4">
                     {previewImages.length > 0 ? (
-                      <img 
-                        src={previewImages[0]} 
-                        alt="Item preview" 
+                      <img
+                        src={previewImages[0]}
+                        alt="Item preview"
                         className="w-full h-48 object-cover"
                       />
                     ) : (
@@ -474,14 +513,17 @@ const CreateItemPage = () => {
                       </div>
                     )}
                   </div>
-                  
+
                   {previewImages.length > 1 && (
                     <div className="grid grid-cols-5 gap-2 mb-4">
                       {previewImages.slice(1, 6).map((src, index) => (
-                        <div key={index} className="border border-gray-200 rounded overflow-hidden">
-                          <img 
-                            src={src} 
-                            alt={`Preview ${index + 2}`} 
+                        <div
+                          key={index}
+                          className="border border-gray-200 rounded overflow-hidden"
+                        >
+                          <img
+                            src={src}
+                            alt={`Preview ${index + 2}`}
                             className="w-full h-14 object-cover"
                           />
                         </div>
@@ -489,25 +531,28 @@ const CreateItemPage = () => {
                     </div>
                   )}
                 </div>
-                
+
                 <div>
-                  <h3 className="text-xl font-medium mb-2">{formData.title || 'No title'}</h3>
+                  <h3 className="text-xl font-medium mb-2">
+                    {formData.title || 'No title'}
+                  </h3>
                   <p className="text-2xl font-bold text-gray-800 mb-4">
-                    ${typeof formData.price.amount === 'number' 
-                      ? formData.price.amount.toFixed(2) 
+                    $
+                    {typeof formData.price.amount === 'number'
+                      ? formData.price.amount.toFixed(2)
                       : parseFloat(formData.price.amount || '0').toFixed(2)}
                   </p>
-                  
+
                   <div className="mb-4">
                     <h4 className="font-medium text-gray-700">Category</h4>
                     <p>{formData.category || 'Not specified'}</p>
                   </div>
-                  
+
                   <div className="mb-4">
                     <h4 className="font-medium text-gray-700">Condition</h4>
                     <p>{formData.condition || 'Not specified'}</p>
                   </div>
-                  
+
                   <div>
                     <h4 className="font-medium text-gray-700">Description</h4>
                     <p className="text-gray-600 whitespace-pre-line">
@@ -519,7 +564,7 @@ const CreateItemPage = () => {
             </div>
           </div>
         )}
-        
+
         <div className="flex justify-between mt-8">
           {activeSection !== 'photos' && (
             <button
@@ -530,7 +575,7 @@ const CreateItemPage = () => {
               Back
             </button>
           )}
-          
+
           {activeSection !== 'review' ? (
             <button
               type="button"
@@ -551,7 +596,7 @@ const CreateItemPage = () => {
         </div>
       </form>
     </div>
-  );
-};
+  )
+}
 
-export default CreateItemPage;
+export default CreateItemPage
