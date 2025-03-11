@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { useCartStore } from '@/store/cart'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -10,7 +9,6 @@ import { useToast } from '@/hooks/use-toast'
 import Image from 'next/image'
 import Link from 'next/link'
 import StripeProvider from './components/stripe-provider'
-import CheckoutForm from './components/checkout-form'
 
 import { EmbeddedCheckout } from '@stripe/react-stripe-js'
 
@@ -19,8 +17,6 @@ const CheckoutPage = () => {
     useCartStore()
   const [isCheckingOut, setIsCheckingOut] = useState(false)
   const [isPaymentComplete, setIsPaymentComplete] = useState(false)
-  const router = useRouter()
-  const { toast } = useToast()
 
   const formatPrice = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -31,26 +27,6 @@ const CheckoutPage = () => {
 
   const initiateCheckout = () => {
     setIsCheckingOut(true)
-  }
-
-  const handlePaymentSuccess = () => {
-    setIsPaymentComplete(true)
-    clearCart()
-
-    toast({
-      title: 'Payment Successful',
-      description: 'Your payment was successful!',
-      variant: 'default',
-    })
-  }
-
-  const handlePaymentError = (error) => {
-    toast({
-      title: 'Payment Failed',
-      description:
-        error.message || 'There was an issue processing your payment.',
-      variant: 'destructive',
-    })
   }
 
   return (
