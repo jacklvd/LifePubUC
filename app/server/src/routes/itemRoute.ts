@@ -7,11 +7,10 @@ import {
   deleteItem,
   searchItems,
   updateItemStatus,
-  createCloudinaryStorage
+  createCloudinaryStorage,
 } from '../controllers/itemController'
 
-const upload = createCloudinaryStorage();
-
+const upload = createCloudinaryStorage()
 
 const router = express.Router()
 

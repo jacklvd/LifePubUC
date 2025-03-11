@@ -35,8 +35,8 @@ const ItemManagementDashboard = () => {
     fetchItems()
   }, [currentPage, statusFilter, sortBy])
 
- // Updated fetchItems function
-const fetchItems = async () => {
+  // Updated fetchItems function
+  const fetchItems = async () => {
     setLoading(true)
     try {
       // Call getItemsForSeller with proper parameters
@@ -45,8 +45,8 @@ const fetchItems = async () => {
         page: currentPage,
         sort: sortBy,
         q: searchQuery || undefined,
-      });
-      
+      })
+
       // response is the parsed JSON, not a fetch Response object
       setItems(response.data)
       setTotalPages(response.pagination.pages)
