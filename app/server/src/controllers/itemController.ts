@@ -1,34 +1,34 @@
 import { Request, Response } from 'express'
 import Item from '../models/itemSchema'
-import { v2 as cloudinary } from 'cloudinary';
+import { v2 as cloudinary } from 'cloudinary'
 
 import multer from 'multer'
 import { CloudinaryStorage } from 'multer-storage-cloudinary'
 import User from '../models/userSchema'
-import { CLOUDINARY_NAME } from '../../config/env';
+import { CLOUDINARY_NAME } from '../../config/env'
 
 interface StorageOptions {
-  cloudinary: typeof cloudinary;
+  cloudinary: typeof cloudinary
   params: {
-    resource_type?: string;
-    allowed_formats?: string[];
-    public_id?: (req: Request, file: Express.Multer.File) => string;
-    transformation?: Array<Record<string, any>>;
+    resource_type?: string
+    allowed_formats?: string[]
+    public_id?: (req: Request, file: Express.Multer.File) => string
+    transformation?: Array<Record<string, any>>
     // Add other properties you need
-  };
+  }
 }
 
 export function createCloudinaryStorage() {
   cloudinary.config({
     cloud_name: CLOUDINARY_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET
-  });
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  })
 
   console.log('Cloudinary config:', {
     cloud_name: CLOUDINARY_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY?.substring(0, 3) + '...' // Don't log the full key
-  });
+    api_key: process.env.CLOUDINARY_API_KEY?.substring(0, 3) + '...', // Don't log the full key
+  })
 
   // Create storage
   const storage = new CloudinaryStorage({
@@ -36,17 +36,17 @@ export function createCloudinaryStorage() {
     params: {
       folder: 'items',
       allowed_formats: ['jpg', 'jpeg', 'png', 'gif'],
-      transformation: [{ width: 1000, crop: 'limit' }]
-    } as any
-  });
+      transformation: [{ width: 1000, crop: 'limit' }],
+    } as any,
+  })
 
   // Return the middleware
   return multer({
     storage: storage,
     limits: {
-      fileSize: 5 * 1024 * 1024 // 5MB limit
-    }
-  });
+      fileSize: 5 * 1024 * 1024, // 5MB limit
+    },
+  })
 }
 
 // Interface for query parameters
@@ -151,13 +151,15 @@ export const createItem = async (
   try {
     const { title, description, category, condition, price, images, userId } =
       req.body
-      if (!process.env.CLOUDINARY_CLOUD_NAME || 
-        !process.env.CLOUDINARY_API_KEY || 
-        !process.env.CLOUDINARY_API_SECRET) {
-      console.error('Missing Cloudinary credentials');
+    if (
+      !process.env.CLOUDINARY_CLOUD_NAME ||
+      !process.env.CLOUDINARY_API_KEY ||
+      !process.env.CLOUDINARY_API_SECRET
+    ) {
+      console.error('Missing Cloudinary credentials')
       // You might want to throw an error or use default values
     }
-      console.log(process.env.CLOUDINARY_API_SECRET);
+    console.log(process.env.CLOUDINARY_API_SECRET)
 
     // Validate required fields
     if (!title || !description || !category || !condition || !price) {
@@ -175,20 +177,21 @@ export const createItem = async (
       return
     }
 
-    const seller = await User.findById(userId);
+    const seller = await User.findById(userId)
 
-    console.log(seller, userId);
+    console.log(seller, userId)
     if (!seller?.stripeConnectOnboardingComplete) {
       res.status(404).json({
         message: 'User is not a seller',
       })
-      return; 
+      return
     }
 
-    const imageUrls = req.files ? 
-      (req.files as Express.Multer.File[]).map(file => 
-        (file as any).path || (file as any).secure_url
-      ) : []
+    const imageUrls = req.files
+      ? (req.files as Express.Multer.File[]).map(
+          (file) => (file as any).path || (file as any).secure_url,
+        )
+      : []
 
     // Create new item
     const newItem = new Item({
