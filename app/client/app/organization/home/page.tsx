@@ -69,10 +69,9 @@ const OrganizationHome = () => {
                     />
                   </div>
                   <div className="p-6">
-                  
-                      <h3 className="text-xl font-bold text-gray-800 mb-2">
-                        Start from scratch
-                      </h3>
+                    <h3 className="text-xl font-bold text-gray-800 mb-2">
+                      Start from scratch
+                    </h3>
                     <p className="text-gray-600 mb-4">
                       Craft every detail from ticket types to reserved seating
                       and more advanced tools

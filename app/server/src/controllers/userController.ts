@@ -39,12 +39,10 @@ export const getUserOnboardingStripe = async (req: Request, res: Response) => {
       return
     }
 
-    res
-      .status(200)
-      .json({
-        message: 'Found user',
-        data: user.stripeConnectOnboardingComplete,
-      })
+    res.status(200).json({
+      message: 'Found user',
+      data: user.stripeConnectOnboardingComplete,
+    })
     return
   } catch (error) {
     res.status(500).json({ message: 'Get user failed' })
