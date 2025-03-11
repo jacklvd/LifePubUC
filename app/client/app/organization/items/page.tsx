@@ -445,7 +445,7 @@ const ItemManagementDashboard = () => {
 
                                     <div className="flex items-center text-xs text-gray-500 mb-3">
                                         <span className="bg-gray-100 rounded px-2 py-1 mr-2">{item.category || ""}</span>
-                                        <span>Added {format(new Date(item?.createdAt | ""), 'MMM d, yyyy')}</span>
+                                        <span>Added {format(new Date(item.createdAt), 'MMM d, yyyy')}</span>
                                     </div>
 
                                     <div className="flex flex-wrap gap-2 pt-3 border-t">
