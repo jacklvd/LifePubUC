@@ -2,8 +2,8 @@
 import { useState, ChangeEvent, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import { createItem } from '@/lib/actions/item-actions'
 
-// Define types for the form data
 interface PriceData {
   amount: string | number
 }
@@ -54,6 +54,7 @@ const CreateItemPage = () => {
 
   // Category options based on Etsy-like categories
   const categories: string[] = [
+    'textbook',
     'Clothing & Accessories',
     'Home & Living',
     'Jewelry',
@@ -67,7 +68,7 @@ const CreateItemPage = () => {
   ]
 
   // Condition options
-  const conditions: string[] = ['New', 'Like New', 'Good', 'Fair', 'Poor']
+  const conditions: string[] = ['New', 'Like New', 'Good', 'fair', 'Poor']
 
   const sections: Section[] = [
     { id: 'photos', label: 'Photos' },
@@ -110,19 +111,16 @@ const CreateItemPage = () => {
 
     const files = Array.from(e.target.files)
 
-    // Create preview URLs
     const newPreviewImages = files.map((file) => URL.createObjectURL(file))
 
     setUploadedImages([...uploadedImages, ...files])
     setPreviewImages([...previewImages, ...newPreviewImages])
 
-    // For the actual form data that will be sent to the server
     setFormData({
       ...formData,
       images: [...formData.images, ...files],
     })
 
-    // Clear any error related to images
     if (errors.images) {
       setErrors({
         ...errors,
@@ -151,7 +149,6 @@ const CreateItemPage = () => {
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {}
 
-    // Required fields validation
     if (!formData.title.trim()) newErrors.title = 'Title is required'
     if (!formData.description.trim())
       newErrors.description = 'Description is required'
@@ -177,7 +174,6 @@ const CreateItemPage = () => {
     setIsSubmitting(true)
 
     try {
-      // In a real application, you'd use FormData to handle file uploads
       const formDataToSend = new FormData()
       formDataToSend.append('title', formData.title)
       formDataToSend.append('description', formData.description)
@@ -189,20 +185,9 @@ const CreateItemPage = () => {
         formDataToSend.append('images', image)
       })
 
-      const response = await fetch('/api/items', {
-        method: 'POST',
-        body: formDataToSend,
-      })
+      const result = await createItem({ formData: formDataToSend })
 
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.message || 'Failed to create item')
-      }
-
-      const data = await response.json()
-
-      // Redirect to the item page or a success page
-      router.push(`/items/${data.data._id}`)
+      router.push(`/organization/items/${result.data._id}`)
     } catch (error) {
       console.error('Error creating item:', error)
       setErrors({
@@ -327,9 +312,11 @@ const CreateItemPage = () => {
                   key={index}
                   className="relative border border-gray-200 rounded overflow-hidden aspect-square"
                 >
-                  <img
+                  <Image
                     src={src}
                     alt={`Preview ${index + 1}`}
+                    width={400}
+                    height={400}
                     className="w-full h-full object-cover"
                   />
                   <button
@@ -502,8 +489,10 @@ const CreateItemPage = () => {
                   {/* Images preview */}
                   <div className="border border-gray-200 rounded overflow-hidden mb-4">
                     {previewImages.length > 0 ? (
-                      <img
+                      <Image
                         src={previewImages[0]}
+                        width={400}
+                        height={400}
                         alt="Item preview"
                         className="w-full h-48 object-cover"
                       />
@@ -521,8 +510,10 @@ const CreateItemPage = () => {
                           key={index}
                           className="border border-gray-200 rounded overflow-hidden"
                         >
-                          <img
+                          <Image
                             src={src}
+                            width={400}
+                            height={400}
                             alt={`Preview ${index + 2}`}
                             className="w-full h-14 object-cover"
                           />
