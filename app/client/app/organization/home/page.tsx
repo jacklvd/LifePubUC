@@ -5,6 +5,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
 import { Icon } from '@/components/icons'
+import Link from 'next/link'
 
 const OrganizationHome = () => {
   return (
@@ -76,13 +77,15 @@ const OrganizationHome = () => {
                       and more advanced tools
                     </p>
                     <div className="flex justify-end">
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="rounded-full bg-white"
-                      >
-                        <Icon name="CirclePlus" />
-                      </Button>
+                      <Link href="/organization/events/create">
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="rounded-full bg-white"
+                        >
+                          <Icon name="CirclePlus" />
+                        </Button>
+                      </Link>
                     </div>
                   </div>
                 </CardContent>
