@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { format } from 'date-fns'
 import Image from 'next/image'
+import { getItemsForSeller } from '@/lib/actions/item-actions'
 
 interface ApiResponse {
   message: string
@@ -34,28 +35,21 @@ const ItemManagementDashboard = () => {
     fetchItems()
   }, [currentPage, statusFilter, sortBy])
 
+  // Updated fetchItems function
   const fetchItems = async () => {
     setLoading(true)
     try {
-      let url = `/api/items?page=${currentPage}&sort=${sortBy}`
+      // Call getItemsForSeller with proper parameters
+      const response = await getItemsForSeller({
+        status: statusFilter !== 'all' ? statusFilter : undefined,
+        page: currentPage,
+        sort: sortBy,
+        q: searchQuery || undefined,
+      })
 
-      if (statusFilter !== 'all') {
-        url += `&status=${statusFilter}`
-      }
-
-      if (searchQuery) {
-        url += `&q=${encodeURIComponent(searchQuery)}`
-      }
-
-      const response = await fetch(url)
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch items')
-      }
-
-      const data: ApiResponse = await response.json()
-      setItems(data.data)
-      setTotalPages(data.pagination.pages)
+      // response is the parsed JSON, not a fetch Response object
+      setItems(response.data)
+      setTotalPages(response.pagination.pages)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
@@ -444,6 +438,8 @@ const ItemManagementDashboard = () => {
                     <Image
                       src={item.images[0]}
                       alt={item.title}
+                      width={400}
+                      height={400}
                       className="w-full h-full object-cover"
                     />
                   ) : (
@@ -465,7 +461,7 @@ const ItemManagementDashboard = () => {
                   )}
 
                   <span
-                    className={`absolute top-2 right-2 px-2 py-1 rounded-full text-xs font-medium ${getStatusBadgeClass(item.status)}`}
+                    className={`absolute top-2 z-30 right-2 px-2 py-1 rounded-full text-xs font-medium ${getStatusBadgeClass(item.status)}`}
                   >
                     {item.status === 'available'
                       ? 'Active'

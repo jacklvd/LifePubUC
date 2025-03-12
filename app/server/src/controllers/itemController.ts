@@ -1,5 +1,53 @@
 import { Request, Response } from 'express'
 import Item from '../models/itemSchema'
+import { v2 as cloudinary } from 'cloudinary'
+
+import multer from 'multer'
+import { CloudinaryStorage } from 'multer-storage-cloudinary'
+import User from '../models/userSchema'
+import { CLOUDINARY_NAME } from '../../config/env'
+
+interface StorageOptions {
+  cloudinary: typeof cloudinary
+  params: {
+    resource_type?: string
+    allowed_formats?: string[]
+    public_id?: (req: Request, file: Express.Multer.File) => string
+    transformation?: Array<Record<string, any>>
+    // Add other properties you need
+  }
+}
+
+export function createCloudinaryStorage() {
+  cloudinary.config({
+    cloud_name: CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  })
+
+  console.log('Cloudinary config:', {
+    cloud_name: CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY?.substring(0, 3) + '...', // Don't log the full key
+  })
+
+  // Create storage
+  const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+      folder: 'items',
+      allowed_formats: ['jpg', 'jpeg', 'png', 'gif'],
+      transformation: [{ width: 1000, crop: 'limit' }],
+    } as any,
+  })
+
+  // Return the middleware
+  return multer({
+    storage: storage,
+    limits: {
+      fileSize: 5 * 1024 * 1024, // 5MB limit
+    },
+  })
+}
 
 // Interface for query parameters
 interface ItemQueryParams {
@@ -13,7 +61,9 @@ interface ItemQueryParams {
   limit?: number
 }
 
-// Get all items with filtering, sorting, and pagination
+/***************************
+ *  User Route
+ ****************************/
 export const getItems = async (req: Request, res: Response): Promise<void> => {
   try {
     const {
@@ -39,13 +89,10 @@ export const getItems = async (req: Request, res: Response): Promise<void> => {
       if (maxPrice) query['price.amount'].$lte = maxPrice
     }
 
-    // Calculate skip value for pagination
     const skip = (page - 1) * limit
 
-    // Execute query with pagination
     const items = await Item.find(query).sort(sort).skip(skip).limit(limit)
 
-    // Get total count for pagination
     const total = await Item.countDocuments(query)
 
     res.status(200).json({
@@ -93,13 +140,26 @@ export const getItemById = async (
   }
 }
 
-// Create new item
+/***************************
+ *  Seller Route
+ ****************************/
+
 export const createItem = async (
   req: Request,
   res: Response,
 ): Promise<void> => {
   try {
-    const { title, description, category, condition, price, images } = req.body
+    const { title, description, category, condition, price, images, userId } =
+      req.body
+    if (
+      !process.env.CLOUDINARY_CLOUD_NAME ||
+      !process.env.CLOUDINARY_API_KEY ||
+      !process.env.CLOUDINARY_API_SECRET
+    ) {
+      console.error('Missing Cloudinary credentials')
+      // You might want to throw an error or use default values
+    }
+    console.log(process.env.CLOUDINARY_API_SECRET)
 
     // Validate required fields
     if (!title || !description || !category || !condition || !price) {
@@ -110,13 +170,28 @@ export const createItem = async (
       return
     }
 
-    // Validate price
     if (price.amount < 0) {
       res.status(400).json({
         message: 'Price amount cannot be negative',
       })
       return
     }
+
+    const seller = await User.findById(userId)
+
+    console.log(seller, userId)
+    if (!seller?.stripeConnectOnboardingComplete) {
+      res.status(404).json({
+        message: 'User is not a seller',
+      })
+      return
+    }
+
+    const imageUrls = req.files
+      ? (req.files as Express.Multer.File[]).map(
+          (file) => (file as any).path || (file as any).secure_url,
+        )
+      : []
 
     // Create new item
     const newItem = new Item({
@@ -127,7 +202,8 @@ export const createItem = async (
       price: {
         amount: price.amount,
       },
-      images: images || [],
+      seller: seller?._id || seller?.id,
+      images: imageUrls || [],
       status: 'available',
       views: 0,
     })
@@ -207,7 +283,6 @@ export const deleteItem = async (
   }
 }
 
-// Search items
 export const searchItems = async (
   req: Request,
   res: Response,
