@@ -1,6 +1,15 @@
 import type { IconNames } from '@/components/icons'
 
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL
+export const API_BYTESCALE = process.env.NEXT_PUBLIC_API_BYTESCALE
+export const GOOGLE_MAP_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAP_KEY
+
+export const options = {
+  apiKey: API_BYTESCALE as string,
+  maxFileCount: 1,
+  mimeTypes: ['image/jpeg', 'image/png', 'video/mp4', 'video/mpeg', 'video/quicktime', 'image/gif'],
+  maxFileSize: 5 * 1024 * 1024, // 5MB
+}
 
 export const FIELD_NAMES = {
   fullName: 'Full name',
@@ -62,32 +71,38 @@ export const navbarIcons: {
 export const eventSideBarIcons: {
   name: IconNames
   className: string
-  route: string
+  route: string,
+  title: string
 }[] = [
   {
     name: 'Home',
     className: 'bg-blue-100 text-blue-600',
     route: '/organization/home',
+    title: 'Event Home',
   },
   {
     name: 'Calendar',
     className: 'text-grey-500 hover:bg-grey-100',
     route: '/organization/events',
+    title: 'Events',
   },
   {
     name: 'Newspaper',
     className: 'text-grey-500 hover:bg-grey-100',
     route: '/organization/orders',
+    title: 'Orders',
   },
   {
     name: 'ChartColumnDecreasing',
     className: 'text-grey-500 hover:bg-grey-100',
     route: '/organization/reports',
+    title: 'Reports',
   },
   {
     name: 'Settings',
     className: 'text-grey-500 hover:bg-grey-100',
     route: '/organization/settings',
+    title: 'Settings',
   },
 
   {

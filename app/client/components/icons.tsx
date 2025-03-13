@@ -47,6 +47,9 @@ import {
   Upload,
   Download,
   LayoutList,
+  RefreshCcw,
+  BadgeCheck,
+  X,
   FilePlus2,
 } from 'lucide-react'
 
@@ -99,6 +102,9 @@ const ICONS = {
   Upload: Upload,
   Download: Download,
   LayoutList: LayoutList,
+  RefreshCcw: RefreshCcw,
+  BadgeCheck: BadgeCheck,
+  X: X,
   FilePlus2: FilePlus2,
 } as const
 
