@@ -10,6 +10,7 @@ import morgan from 'morgan'
 
 import itemRoute from './routes/itemRoute'
 import authRoute from './routes/authRoute'
+import eventRoute from './routes/eventRoute'
 import paymentRoute from './routes/paymentRoute'
 import userRoute from './routes/userRoute'
 import sellerRoute from './routes/sellerRoute'
@@ -32,7 +33,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 const corsOptions = {
   origin: process.env.FRONTEND_URL || 'http://localhost:3000',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'application/json'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
 }
 
@@ -59,6 +60,7 @@ apiRouter.use('/auth', authRoute)
 apiRouter.use('/payment', paymentRoute)
 apiRouter.use('/user', userRoute)
 apiRouter.use('/sellers', sellerRoute)
+apiRouter.use('/events', eventRoute) // Uncomment if you have an event route
 
 app.use('/api', apiRouter)
 

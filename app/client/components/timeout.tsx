@@ -2,6 +2,7 @@
 
 import { signOut, useSession } from 'next-auth/react'
 import { useEffect, useState, useRef } from 'react'
+import { Icon } from './icons'
 
 const SessionTimeout = () => {
   const { data: session, update } = useSession()
@@ -98,13 +99,13 @@ const SessionTimeout = () => {
               className="flex-1 px-4 py-2 bg-green-500 text-white font-medium rounded-lg transition hover:bg-green-600 text-gray-200"
               onClick={continueSession}
             >
-              🔄 Continue
+              <Icon name="RefreshCcw" /> Continue
             </button>
             <button
               className="flex-1 px-4 py-2 bg-slate-600 text-white font-medium rounded-lg transition hover:bg-slate-700 text-gray-200"
               onClick={() => signOut()}
             >
-              🚪 Log Out
+              <Icon name="LogOut" /> Log Out
             </button>
           </div>
         </div>

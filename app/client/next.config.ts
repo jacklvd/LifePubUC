@@ -105,6 +105,9 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'www.flinnsci.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'upcdn.io',}
     ],
   },
 }
