@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+"use server"
 import axios from 'axios';
 import { API_BASE_URL } from '@/constants';
 
@@ -8,7 +9,7 @@ export const createEvent = async (eventData: any) => {
       console.log('Sending event data:', eventData);
       
       // Add headers for content type
-      const response = await axios.post(`${API_BASE_URL}/events/create-event`, eventData, {
+      const response = await axios.post(`${API_BASE_URL}/api/events/create-event`, eventData, {
         headers: {
           'Content-Type': 'application/json'
         }

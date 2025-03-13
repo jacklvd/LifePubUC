@@ -5,7 +5,7 @@ import { v2 as cloudinary } from 'cloudinary'
 import multer from 'multer'
 import { CloudinaryStorage } from 'multer-storage-cloudinary'
 import User from '../models/userSchema'
-import { CLOUDINARY_NAME } from '../../config/env'
+import { CLOUDINARY_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET } from '../../config/env'
 
 interface StorageOptions {
   cloudinary: typeof cloudinary
@@ -21,13 +21,13 @@ interface StorageOptions {
 export function createCloudinaryStorage() {
   cloudinary.config({
     cloud_name: CLOUDINARY_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
+    api_key: CLOUDINARY_API_KEY,
+    api_secret: CLOUDINARY_API_SECRET,
   })
 
   console.log('Cloudinary config:', {
     cloud_name: CLOUDINARY_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY?.substring(0, 3) + '...', // Don't log the full key
+    api_key: CLOUDINARY_API_KEY?.substring(0, 3) + '...', // Don't log the full key
   })
 
   // Create storage

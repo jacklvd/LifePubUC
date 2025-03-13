@@ -51,6 +51,9 @@ import {
   BadgeCheck,
   X,
   FilePlus2,
+  Pencil,
+  MoreVertical,
+  Edit
 } from 'lucide-react'
 
 const ICONS = {
@@ -106,6 +109,9 @@ const ICONS = {
   BadgeCheck: BadgeCheck,
   X: X,
   FilePlus2: FilePlus2,
+  Pencil: Pencil,
+  MoreVertical: MoreVertical,
+  Edit: Edit
 } as const
 
 export type IconNames = keyof typeof ICONS

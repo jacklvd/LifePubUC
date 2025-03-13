@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react'
-import { Button } from './ui/button'
-import { Icon } from './icons'
+import { Button } from '../ui/button'
+import { Icon } from '../icons'
 
 // Helper function to get days of the month
 const getDaysInMonth = (year: number, month: number) => {
@@ -375,11 +375,10 @@ const EventCalendar = () => {
                   key={month}
                   variant="ghost"
                   size="lg"
-                  className={`text-lg py-3 rounded-md transition-all duration-200 ${
-                    idx === date.month
+                  className={`text-lg py-3 rounded-md transition-all duration-200 ${idx === date.month
                       ? 'bg-blue-500 text-white font-semibold'
                       : 'hover:bg-gray-200'
-                  }`}
+                    }`}
                   onClick={() => {
                     setDate((prev) => ({ ...prev, month: idx }))
                     setShowMonthSelector(false)
