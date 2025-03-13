@@ -3,8 +3,9 @@ import Stripe from 'stripe'
 import User from '../models/userSchema'
 import Item from '../models/itemSchema'
 import Transaction from '../models/transactionSchema'
+import { STRIPE_SECRET_KEY } from '../../config/env'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
+const stripe = new Stripe(STRIPE_SECRET_KEY as string)
 
 interface CartItem {
   _id: string

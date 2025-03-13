@@ -12,7 +12,7 @@ import {
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { Icon } from '@/components/icons'
-import EventCalendar from '@/components/event-calendar'
+import EventCalendar from '@/components/event-ui/event-calendar'
 
 const EventsPage = () => {
   // const [activeTab, setActiveTab] = useState('events');
@@ -71,11 +71,10 @@ const EventsPage = () => {
             <Button
               variant={viewMode === 'list' ? 'default' : 'outline'}
               onClick={() => setViewMode('list')}
-              className={`rounded-l-md rounded-r-none px-4 ${
-                viewMode === 'list'
+              className={`rounded-l-md rounded-r-none px-4 ${viewMode === 'list'
                   ? 'bg-blue-600 hover:bg-blue-700'
                   : 'border-r-0'
-              }`}
+                }`}
             >
               <Icon name="LayoutList" className="h-5 w-5 mr-2" />
               List
@@ -83,9 +82,8 @@ const EventsPage = () => {
             <Button
               variant={viewMode === 'calendar' ? 'default' : 'outline'}
               onClick={() => setViewMode('calendar')}
-              className={`rounded-r-md rounded-l-none px-4 ${
-                viewMode === 'calendar' ? 'bg-blue-600 hover:bg-blue-700' : ''
-              }`}
+              className={`rounded-r-md rounded-l-none px-4 ${viewMode === 'calendar' ? 'bg-blue-600 hover:bg-blue-700' : ''
+                }`}
             >
               <Icon name="Calendar" className="h-5 w-5 mr-2" />
               Calendar

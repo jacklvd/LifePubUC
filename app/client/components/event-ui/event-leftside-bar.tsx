@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
-import { Badge } from './ui/badge'
-import { Button } from './ui/button'
+import { Badge } from '../ui/badge'
+import { Button } from '../ui/button'
 import { useState } from 'react'
 import { Icon } from '@/components/icons'
 import { Card, CardContent } from '@/components/ui/card'

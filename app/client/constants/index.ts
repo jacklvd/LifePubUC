@@ -1,15 +1,8 @@
 import type { IconNames } from '@/components/icons'
 
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL
-export const API_BYTESCALE = process.env.NEXT_PUBLIC_API_BYTESCALE
 export const GOOGLE_MAP_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAP_KEY
-
-export const options = {
-  apiKey: API_BYTESCALE as string,
-  maxFileCount: 1,
-  mimeTypes: ['image/jpeg', 'image/png', 'video/mp4', 'video/mpeg', 'video/quicktime', 'image/gif'],
-  maxFileSize: 5 * 1024 * 1024, // 5MB
-}
+export const UPLOAD_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
 
 export const FIELD_NAMES = {
   fullName: 'Full name',
@@ -104,11 +97,11 @@ export const eventSideBarIcons: {
     route: '/organization/settings',
     title: 'Settings',
   },
-
   {
     name: 'FilePlus2',
     className: 'text-grey-500 hover:bg-grey-100',
     route: '/organization/items',
+    title: 'Items',
   },
 ]
 

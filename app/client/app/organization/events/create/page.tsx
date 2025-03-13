@@ -4,47 +4,26 @@
 
 import React, { useState, useEffect, useRef } from 'react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Badge } from '@/components/ui/badge'
 import { Icon } from '@/components/icons'
 import { createEvent } from '@/lib/actions/events'
 import { useSession } from 'next-auth/react'
-import { UploadButton } from '@bytescale/upload-widget-react'
-import { options, GOOGLE_MAP_KEY } from '@/constants'
-import Image from 'next/image'
 import { useLoadScript, GoogleMap, Marker } from '@react-google-maps/api'
 import { useRouter } from 'next/navigation'
 import { format } from 'date-fns'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { cn } from '@/lib/utils'
-import { DateTimePicker } from '@/components/ui/time-picker'
-import LeftSideBar from '@/components/leftside-bar'
-import Additional from '@/components/additional'
 
-interface EventData {
-  email: string;
-  title: string;
-  description: string;
-  media: string;
-  mediaType: 'image' | 'video';
-  location: string;
-  date: string; // Stored as YYYY-MM-DD
-  startTime: string; // Stored as HH:MM
-  endTime: string; // Stored as HH:MM
-  agenda: Array<{
-    title: string;
-    startTime: string;
-    endTime: string;
-  }>;
-}
-
-interface LocationSuggestion {
-  place_id: string;
-  description: string;
-}
-
+import { toast } from 'sonner'
+import { eventSchema } from '@/lib/validations'
+import { z } from 'zod'
+import { GOOGLE_MAP_KEY } from '@/constants'
+// event components
+import EventDateTimePicker from '@/components/event-ui/event-datetime-picker'
+import EventTitleInput from '@/components/event-ui/event-title-picker'
+import LeftSideBar from '@/components/event-ui/event-leftside-bar'
+import EventAdditional from '@/components/event-ui/event-additional'
+import EventLocationPicker from '@/components/event-ui/event-location'
+import EventPhotoUpload from '@/components/event-ui/event-photo'
+import EventAgenda from '@/components/event-ui/event-agenda'
+import EventInsight from '@/components/event-ui/event-insight'
 
 const EventCreationPage = () => {
   const router = useRouter()
@@ -54,16 +33,27 @@ const EventCreationPage = () => {
   const [locationName, setLocationName] = useState('')
   const [showMap, setShowMap] = useState(true)
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [date, setDate] = useState<Date | undefined>(new Date('2025-04-11'))
-  const [startTime, setStartTime] = useState<string>('10:00')
-  const [endTime, setEndTime] = useState<string>('12:00')
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [date, setDate] = useState<Date | undefined>(new Date());
   const [locationSuggestions, setLocationSuggestions] = useState<LocationSuggestion[]>([])
   const [showSuggestions, setShowSuggestions] = useState(false)
+  const [calendarOpen, setCalendarOpen] = useState(false)
+  const [highlights, setHighlights] = useState({});
+  const [faqs, setFaqs] = useState([]);
+  const [agendas, setAgendas] = useState<Agenda[]>([]);
+
+  // Time state with hours and minutes
+  const [startHour, setStartHour] = useState('01')
+  const [startMinute, setStartMinute] = useState('00')
+  const [startPeriod, setStartPeriod] = useState<'AM' | 'PM'>('AM')
+  const [endHour, setEndHour] = useState('01')
+  const [endMinute, setEndMinute] = useState('00')
+  const [endPeriod, setEndPeriod] = useState<'AM' | 'PM'>('PM')
 
   // References
   const autocompleteService = useRef<google.maps.places.AutocompleteService | null>(null)
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null)
+  const locationInputRef = useRef<HTMLInputElement>(null)
 
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: GOOGLE_MAP_KEY as string,
@@ -72,16 +62,19 @@ const EventCreationPage = () => {
 
   const [eventData, setEventData] = useState<EventData>({
     email: '',
-    title: 'Event Title',
+    title: '',
+    summary: '',
     description: '',
-    media: '',
+    media: undefined,
     mediaType: 'image',
     location: '',
-    date: '2025-04-11',
-    startTime: '10:00',
-    endTime: '12:00',
-    agenda: [{ title: '', startTime: '', endTime: '' }],
-  })
+    date: format(new Date(), 'yyyy-MM-dd'),
+    startTime: '',
+    endTime: '',
+    agenda: [],
+    highlights: {},
+    faqs: [],
+  });
 
   useEffect(() => {
     if (session?.user?.email) {
@@ -96,42 +89,48 @@ const EventCreationPage = () => {
     }
   }, [isLoaded])
 
-  // Update eventData when date or time changes
+  // Update eventData when date changes
   useEffect(() => {
-    if (date) {
-      const formattedDate = format(date, 'yyyy-MM-dd')
-      setEventData(prev => ({ ...prev, date: formattedDate }))
-    }
-  }, [date])
+    const formattedDate = date ? format(date, 'yyyy-MM-dd') : '';
+    setEventData(prev => ({ ...prev, date: formattedDate }));
+  }, [date]);
 
+
+  // Update eventData when time changes
   useEffect(() => {
+    // Convert 12-hour format to 24-hour format for startTime
+    let startHour24 = parseInt(startHour)
+    if (startPeriod === 'PM' && startHour24 < 12) startHour24 += 12
+    if (startPeriod === 'AM' && startHour24 === 12) startHour24 = 0
+
+    // Convert 12-hour format to 24-hour format for endTime
+    let endHour24 = parseInt(endHour)
+    if (endPeriod === 'PM' && endHour24 < 12) endHour24 += 12
+    if (endPeriod === 'AM' && endHour24 === 12) endHour24 = 0
+    const startTime = `${startHour}:${startMinute} ${startPeriod}`;
+    const endTime = `${endHour}:${endMinute} ${endPeriod}`;
+
     setEventData(prev => ({ ...prev, startTime, endTime }))
-  }, [startTime, endTime])
+  }, [startHour, startMinute, startPeriod, endHour, endMinute, endPeriod])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, field: keyof EventData) => {
     setEventData({ ...eventData, [field]: e.target.value })
   }
 
-  const handleUpload = (files: any) => {
-    if (files.length > 0) {
-      const uploadedFile = files[0]
-      const fileUrl = uploadedFile.fileUrl
-
-      // Ensure fileType exists, fallback to checking file extension
-      let fileType: 'image' | 'video' = 'image'
-      if (uploadedFile.fileType && typeof uploadedFile.fileType === 'string') {
-        fileType = uploadedFile.fileType.startsWith('video') ? 'video' : 'image'
-      } else if (fileUrl.match(/\.(mp4|mov|avi|webm)$/i)) {
-        fileType = 'video'
-      }
-
-      setEventData({ ...eventData, media: fileUrl, mediaType: fileType })
+  const handleCloudinaryUpload = (result: any) => {
+    if (result.event === 'success') {
+      const fileUrl = result.info.secure_url;
+      const fileType: 'image' | 'video' = result.info.resource_type === 'video' ? 'video' : 'image';
+      toast.success('File uploaded successfully!')
+      setEventData(prev => ({ ...prev, media: fileUrl, mediaType: fileType }));
     }
   }
 
+
   const handleRemoveMedia = () => {
-    setEventData({ ...eventData, media: '', mediaType: 'image' })
+    setEventData(prev => ({ ...prev, media: undefined, mediaType: 'image' }));
   }
+
 
   const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
@@ -152,7 +151,7 @@ const EventCreationPage = () => {
 
     // Debounce location search
     debounceTimeout.current = setTimeout(() => {
-      if (autocompleteService.current) {
+      if (isLoaded && autocompleteService.current) {
         autocompleteService.current.getPlacePredictions(
           { input: value },
           (predictions, status) => {
@@ -245,52 +244,130 @@ const EventCreationPage = () => {
     setShowMap(!showMap)
   }
 
-  const handleSubmit = async () => {
-    setLoading(true)
-    setError('')
+  const validateEventData = () => {
+    // Format agenda data properly to match zod schema
+    const formattedAgendas = agendas.map(agenda => {
+      // Make sure all agenda items have required fields with proper defaults
+      const formattedItems = agenda.items.map(item => ({
+        id: item.id,
+        title: item.title || "Untitled Item", // Ensure title is not empty
+        description: item.description || "",
+        host: item.host || "",
+        startTime: item.startTime || "",
+        endTime: item.endTime || ""
+      }));
+
+      // Filter out any incomplete items that would fail validation
+      const validItems = formattedItems.filter(item =>
+        item.title.length >= 3 &&
+        item.startTime.match(/^(0[1-9]|1[0-2]):[0-5][0-9] (AM|PM)$/) &&
+        item.endTime.match(/^(0[1-9]|1[0-2]):[0-5][0-9] (AM|PM)$/)
+      );
+
+      return {
+        id: agenda.id,
+        title: agenda.title || "Untitled Agenda", // Ensure title is not empty
+        items: validItems
+      };
+    });
+
+    // Filter out empty agendas
+    const validAgendas = formattedAgendas.filter(agenda => agenda.items.length > 0);
+
+    const fullEventData = {
+      ...eventData,
+      agenda: validAgendas
+    };
 
     try {
-      // Ensure all required fields are set
-      const submissionData = {
+      eventSchema.parse(fullEventData);
+      setErrors({});
+      return true;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        console.log('Validation errors:', error.errors);
+        const newErrors: Record<string, string> = {};
+        error.errors.forEach((err) => {
+          // Extract the field name from the path
+          const field = err.path[0] as string;
+          newErrors[field] = err.message;
+        });
+        setErrors(newErrors);
+      }
+      return false;
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (!validateEventData()) {
+      toast.error("Please fix the errors in the form.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const formattedAgenda = agendas.map(agenda => ({
+        id: agenda.id,
+        title: agenda.title || "Untitled Agenda",
+        items: agenda.items.map(item => ({
+          id: item.id,
+          title: item.title || "Untitled Item",
+          description: item.description || "",
+          host: item.host || "",
+          startTime: item.startTime || "",
+          endTime: item.endTime || ""
+        }))
+      }));
+
+      const eventPayload = {
         ...eventData,
-        // Ensure location meets minimum requirements
-        location: eventData.location || "Online Event",
-        // Ensure title meets minimum requirements
-        title: eventData.title.length >= 3 ? eventData.title : "Untitled Event",
-        // Set default description if empty
-        description: eventData.description || "No description provided",
-        // Ensure media URL is valid if present
-        media: eventData.media || "https://via.placeholder.com/800x400",
+        agenda: formattedAgenda,
       };
 
-      console.log("Submitting event data:", submissionData);
+      // console.log("Sending event data to backend:", eventPayload); // Debugging Log
 
-      // Submit the event
-      const result = await createEvent(submissionData);
-      alert('Event created successfully!');
+      const result = await createEvent(eventPayload);
+
+      if (!result) {
+        throw new Error('Failed to create event');
+      }
+
+      toast.success("Event created successfully!");
       router.replace('/organization/events');
     } catch (error: any) {
-      console.error("Error creating event:", error);
-      setError(error.message || 'Error creating event');
-      alert(`Error creating event: ${error.message}`);
+      console.error("Error creating event:", error); // Debugging Log
+      toast.warning("Failed to create event. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  // Format date for display
-  const formattedDate = date ? format(date, 'EEEE, MMMM d, yyyy') : '';
 
-  // Format times for display
-  const formatDisplayTime = (time24: string): string => {
-    const [hours, minutes] = time24.split(':').map(Number);
-    const period = hours >= 12 ? 'pm' : 'am';
-    const hour12 = hours % 12 || 12;
-    return `${hour12}${minutes > 0 ? `:${minutes}` : ''}${period}`;
+
+  const handleUpdateHighlights = (newHighlights: any) => {
+    setHighlights(newHighlights);
+    setEventData(prev => ({ ...prev, highlights: newHighlights }));
   };
 
-  const formattedStartTime = formatDisplayTime(startTime);
-  const formattedEndTime = formatDisplayTime(endTime);
+  const handleUpdateFaqs = (newFaqs: any) => {
+    setFaqs(newFaqs);
+    setEventData(prev => ({ ...prev, faqs: newFaqs }));
+  };
+
+  // Handle click outside of location suggestions
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (locationInputRef.current && !locationInputRef.current.contains(event.target as Node)) {
+        setShowSuggestions(false)
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [])
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -301,107 +378,65 @@ const EventCreationPage = () => {
       <div className="flex-1 overflow-auto">
         <div className="max-w-4xl mx-auto p-6">
           {/* Event Photo Section */}
-          <div className="mb-6">
-            <div className="relative rounded-md overflow-hidden border bg-white">
-              <div className="h-64 flex items-center justify-center">
-                {!eventData.media ? (
-                  <div className="flex flex-col items-center">
-                    <div className="mb-2 w-12 h-12 flex items-center justify-center rounded-full bg-white">
-                      <Icon name="Upload" className="h-6 w-6 text-blue-500" />
-                    </div>
-                    <UploadButton options={options} onComplete={handleUpload}>
-                      {({ onClick }) => (
-                        <Button variant="outline" onClick={onClick}>
-                          Upload an Image or a Video
-                        </Button>
-                      )}
-                    </UploadButton>
-                  </div>
-                ) : (
-                  <div className="relative w-full h-full">
-                    {eventData.mediaType === 'image' ? (
-                      <Image
-                        src={eventData.media}
-                        alt="Event media"
-                        className="w-full h-full object-cover"
-                        layout="fill"
-                      />
-                    ) : (
-                      <video controls className="w-full h-full">
-                        <source src={eventData.media} type="video/mp4" />
-                        Your browser does not support the video tag.
-                      </video>
-                    )}
-                    <Button
-                      variant="destructive"
-                      className="absolute top-2 right-2 h-8 w-8 p-0 rounded-full bg-white-100 shadow-md"
-                      onClick={handleRemoveMedia}
-                    >
-                      <Icon name="X" className="h-4 w-4 text-black" />
-                    </Button>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
+          <EventPhotoUpload
+            media={eventData.media}
+            mediaType={eventData.mediaType}
+            handleCloudinaryUpload={handleCloudinaryUpload}
+            handleRemoveMedia={handleRemoveMedia}
+            errors={errors}
+          />
 
           {/* Event Title Section */}
           <div className="mb-6">
-            <div className="relative rounded-md overflow-hidden border bg-white p-6">
-              <h2 className="text-2xl font-bold mb-4">Event Title</h2>
-              <Input
-                placeholder="A short and sweet sentence about your event."
-                className="text-gray-500"
-              />
-              <Button
-                variant="ghost"
-                className="absolute top-4 right-4 h-8 w-8 p-0 rounded-full border"
-              >
-                <Icon name="Plus" className="h-4 w-4" />
-              </Button>
-            </div>
+            <EventTitleInput
+              title={eventData.title}
+              summary={eventData.summary}
+              error={errors.title}
+              onTitleChange={(title) => setEventData(prev => ({ ...prev, title }))}
+              onSummaryChange={(summary) => setEventData(prev => ({ ...prev, summary }))}
+            />
           </div>
 
           {/* Date and Location Section */}
           <div className="mb-6">
-            <div className="relative rounded-md overflow-hidden border bg-white p-6">
+            <div className="relative rounded-md overflow-hidden border bg-white-100 p-6">
               <div className="flex justify-between mb-4">
                 <div className="w-1/2 pr-4">
-                  <h3 className="text-lg font-medium mb-4">Date and time</h3>
-                  <div className="flex items-center p-2 border rounded-md bg-gray-50">
-                    <Icon
-                      name="Calendar"
-                      className="h-5 w-5 mr-2 text-gray-500"
-                    />
-                    <span>Friday, April 11 · 10am - 12pm EDT</span>
-                  </div>
+
+                  <EventDateTimePicker
+                    date={date}
+                    setDate={setDate}
+                    calendarOpen={calendarOpen}
+                    setCalendarOpen={setCalendarOpen}
+                    startHour={startHour}
+                    startMinute={startMinute}
+                    startPeriod={startPeriod}
+                    endHour={endHour}
+                    endMinute={endMinute}
+                    endPeriod={endPeriod}
+                    setStartHour={setStartHour}
+                    setStartMinute={setStartMinute}
+                    setStartPeriod={setStartPeriod}
+                    setEndHour={setEndHour}
+                    setEndMinute={setEndMinute}
+                    setEndPeriod={setEndPeriod}
+                    errors={errors}
+                  />
                 </div>
+
                 <div className="w-1/2 pl-4">
-                  <h3 className="text-lg font-medium mb-4">Location</h3>
-                  <div className="flex flex-col">
-                    <div className="flex items-center mb-2">
-                      <Input
-                        placeholder="Enter a location"
-                        className="mr-2"
-                        value={locationName}
-                        onChange={handleLocationChange}
-                      />
-                      <Button
-                        variant="outline"
-                        className="shrink-0"
-                        onClick={handleLocationSearch}
-                      >
-                        <Icon name="Search" className="h-4 w-4" />
-                      </Button>
-                    </div>
-                    <Button
-                      variant="link"
-                      className="text-blue-500 mt-1 h-auto p-0 self-start"
-                      onClick={toggleMap}
-                    >
-                      <span>{showMap ? 'Hide map' : 'Show map'}</span>
-                    </Button>
-                  </div>
+                  <EventLocationPicker
+                    locationName={locationName}
+                    handleLocationChange={handleLocationChange}
+                    handleLocationSearch={handleLocationSearch}
+                    locationSuggestions={locationSuggestions}
+                    showSuggestions={showSuggestions}
+                    handleSelectSuggestion={handleSelectSuggestion}
+                    showMap={showMap}
+                    toggleMap={toggleMap}
+                    errors={errors}
+                    locationInputRef={locationInputRef}
+                  />
                 </div>
                 <Button
                   variant="ghost"
@@ -435,32 +470,39 @@ const EventCreationPage = () => {
 
           {/* Overview Section */}
           <div className="mb-6">
-            <div className="relative rounded-md overflow-hidden border bg-white p-6">
-              <h3 className="text-lg font-medium mb-4">Overview</h3>
-              <Textarea
-                placeholder="Use this section to provide more details about your event. You can include things to know, venue information, accessibility options—anything that will help people know what to expect."
-                className="resize-none"
-                rows={3}
-              />
-              <Button
-                variant="ghost"
-                className="absolute top-4 right-4 h-8 w-8 p-0 rounded-full border"
-              >
-                <Icon name="Plus" className="h-4 w-4" />
-              </Button>
-            </div>
+            <EventInsight
+              description={eventData.description}
+              handleChange={(e) => handleChange(e, 'description')}
+              error={errors.description}
+            />
           </div>
 
           {/* Good to Know Section */}
-          <Additional />
+          <EventAdditional
+            highlights={highlights}
+            faqs={faqs}
+            onUpdateHighlights={handleUpdateHighlights}
+            onUpdateFaqs={handleUpdateFaqs}
+          />
 
           {/* Agenda Section */}
-
+          <EventAgenda
+            agendas={agendas}
+            setAgendas={setAgendas}
+            eventStartTime={eventData.startTime}
+            eventEndTime={eventData.endTime}
+            errors={errors}
+          />
 
           {/* Finish */}
           <div className="flex justify-end mb-6">
-            <Button className="bg-green-300 hover:bg-green-500 text-white" type="button" onClick={handleSubmit}>
-              Save and continue
+            <Button
+              className="bg-green-300 hover:bg-green-500 text-white"
+              type="button"
+              onClick={handleSubmit}
+              disabled={loading}
+            >
+              {loading ? 'Saving...' : 'Save and continue'}
             </Button>
           </div>
         </div>
@@ -468,5 +510,4 @@ const EventCreationPage = () => {
     </div>
   )
 }
-
 export default EventCreationPage

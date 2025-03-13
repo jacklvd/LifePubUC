@@ -9,7 +9,7 @@ import SessionTimeout from '@/components/timeout'
 export const metadata: Metadata = {
   title: 'LifePub',
   description:
-    'A place for student to understand more about their school life and collaborate with other student to deal with more shit',
+    'A place for student to understand more about their school life and collaborate with other student to deal with more sh*t',
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: 'any' },

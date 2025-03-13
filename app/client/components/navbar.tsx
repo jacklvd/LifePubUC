@@ -30,8 +30,6 @@ import { navbarIcons } from '@/constants'
 import { slide as Menu } from 'react-burger-menu'
 import { Twirl as Hamburger } from 'hamburger-react'
 
-import { IconNames } from './icons'
-
 // Custom styles for the burger menu - adjusted for sidebar
 const burgerStyles = {
   // bmBurgerButton: {
@@ -190,7 +188,7 @@ const Navbar = () => {
                 >
                   {icon.title === 'Events' ? ( // Use a string, not the Event object
                     <div>
-                      <p>Become an Organizer</p>
+                      {/* <p>Become an Organizer</p> */}
                       <Icon
                         name={icon.name}
                         className="h-6 w-6 inline-block mr-2"
