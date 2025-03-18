@@ -239,11 +239,10 @@ const CreateItemPage = () => {
               <button
                 type="button"
                 onClick={() => goToSection(section.id)}
-                className={`px-3 py-1 ${
-                  activeSection === section.id
+                className={`px-3 py-1 ${activeSection === section.id
                     ? 'font-semibold text-orange-500 border-b-2 border-orange-500'
                     : 'text-gray-500'
-                }`}
+                  }`}
               >
                 {section.label}
               </button>
@@ -472,7 +471,7 @@ const CreateItemPage = () => {
                 <p className="text-red-500 text-sm mt-1">{errors.price}</p>
               )}
               <p className="text-gray-500 text-sm mt-2">
-                Set a fair price that reflects your item's condition and value
+                Set a fair price that reflects your item&apos;s condition and value
               </p>
             </div>
           </div>

@@ -5,7 +5,7 @@ import Link from 'next/link'
 import React, { useState, useEffect } from 'react'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { Input } from '@/components/ui/input'
-import { signOutUser } from '@/lib/actions/auth'
+import { signOutUser } from '@/lib/actions/auth-actions'
 
 import {
   DropdownMenu,

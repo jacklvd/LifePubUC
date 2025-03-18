@@ -3,7 +3,7 @@
 
 import { useSearchParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { verifyEmail } from '@/lib/actions/auth'
+import { verifyEmail } from '@/lib/actions/auth-actions'
 import { Icon } from '@/components/icons'
 
 export default function VerifyEmail() {
