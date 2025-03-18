@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { parse, isBefore, isEqual, isSameDay, isAfter, isToday } from 'date-fns'
+import { parse, isBefore, isEqual, isSameDay } from 'date-fns'
 
 export const signUpSchema = z.object({
   fullName: z.string().min(2, 'Full name must be at least 2 characters.'),
@@ -110,19 +110,6 @@ export const eventSchema = z
     highlights: highlightsSchema.optional().default({}),
     faqs: z.array(faqSchema).optional().default([]),
   })
-  .refine(
-    (data) => {
-      const eventDate = new Date(data.date)
-      const today = new Date()
-      today.setHours(0, 0, 0, 0) // Reset to start of today for precise comparison
-
-      return isAfter(eventDate, today) || isToday(eventDate)
-    },
-    {
-      path: ['date'],
-      message: 'Event date must be today or a future date.',
-    },
-  )
   // Ensure startTime < endTime within the same day
   .refine(
     (data) => {
