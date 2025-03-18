@@ -11,7 +11,7 @@ import morgan from 'morgan'
 import itemRoute from './routes/itemRoute'
 import authRoute from './routes/authRoute'
 import eventRoute from './routes/eventRoute'
-// import paymentRoute from './routes/paymentRoute'
+import paymentRoute from './routes/paymentRoute'
 import userRoute from './routes/userRoute'
 import sellerRoute from './routes/sellerRoute'
 
@@ -57,10 +57,10 @@ const apiRouter = express.Router()
 // Mount routes to apiRouter
 apiRouter.use('/items', itemRoute)
 apiRouter.use('/auth', authRoute)
-// apiRouter.use('/payment', paymentRoute)
+apiRouter.use('/payment', paymentRoute)
 apiRouter.use('/user', userRoute)
 apiRouter.use('/sellers', sellerRoute)
-apiRouter.use('/events', eventRoute) // Uncomment if you have an event route
+apiRouter.use('/events', eventRoute)
 
 app.use('/api', apiRouter)
 
