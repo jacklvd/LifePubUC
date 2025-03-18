@@ -193,7 +193,7 @@ const EventCreationPage = () => {
       ...prev,
       date: formattedDate,
       startTime: formattedStartTime,
-      endTime: formattedEndTime
+      endTime: formattedEndTime,
     }))
   }, [formattedDate, formattedStartTime, formattedEndTime])
 
@@ -220,9 +220,9 @@ const EventCreationPage = () => {
       e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
       field: keyof EventData,
     ) => {
-      setEventData(prev => ({ ...prev, [field]: e.target.value }))
+      setEventData((prev) => ({ ...prev, [field]: e.target.value }))
     },
-    []
+    [],
   )
 
   const handleCloudinaryUpload = useCallback((result: any) => {
@@ -239,66 +239,75 @@ const EventCreationPage = () => {
     setEventData((prev) => ({ ...prev, media: undefined, mediaType: 'image' }))
   }, [])
 
-  const handleLocationChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    setLocationName(value)
-    setEventData(prev => ({ ...prev, location: value }))
+  const handleLocationChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value
+      setLocationName(value)
+      setEventData((prev) => ({ ...prev, location: value }))
 
-    // Clear previous timeout
-    if (debounceTimeout.current) {
-      clearTimeout(debounceTimeout.current)
-    }
+      // Clear previous timeout
+      if (debounceTimeout.current) {
+        clearTimeout(debounceTimeout.current)
+      }
 
-    // Don't search if input is empty
-    if (!value.trim()) {
-      setLocationSuggestions([])
+      // Don't search if input is empty
+      if (!value.trim()) {
+        setLocationSuggestions([])
+        setShowSuggestions(false)
+        return
+      }
+
+      // Debounce location search
+      debounceTimeout.current = setTimeout(() => {
+        if (isLoaded && autocompleteService.current) {
+          autocompleteService.current.getPlacePredictions(
+            { input: value },
+            (predictions, status) => {
+              if (
+                status === google.maps.places.PlacesServiceStatus.OK &&
+                predictions
+              ) {
+                setLocationSuggestions(
+                  predictions.map((prediction) => ({
+                    place_id: prediction.place_id,
+                    description: prediction.description,
+                  })),
+                )
+                setShowSuggestions(true)
+              } else {
+                setLocationSuggestions([])
+                setShowSuggestions(false)
+              }
+            },
+          )
+        }
+      }, 300)
+    },
+    [isLoaded],
+  )
+
+  const handleSelectSuggestion = useCallback(
+    (suggestion: LocationSuggestion) => {
+      setLocationName(suggestion.description)
+      setEventData((prev) => ({ ...prev, location: suggestion.description }))
       setShowSuggestions(false)
-      return
-    }
 
-    // Debounce location search
-    debounceTimeout.current = setTimeout(() => {
-      if (isLoaded && autocompleteService.current) {
-        autocompleteService.current.getPlacePredictions(
-          { input: value },
-          (predictions, status) => {
-            if (
-              status === google.maps.places.PlacesServiceStatus.OK &&
-              predictions
-            ) {
-              setLocationSuggestions(
-                predictions.map((prediction) => ({
-                  place_id: prediction.place_id,
-                  description: prediction.description,
-                })),
-              )
-              setShowSuggestions(true)
-            } else {
-              setLocationSuggestions([])
-              setShowSuggestions(false)
+      if (isLoaded && window.google) {
+        const geocoder = new google.maps.Geocoder()
+        geocoder.geocode(
+          { placeId: suggestion.place_id },
+          (results, status) => {
+            if (status === 'OK' && results && results.length > 0) {
+              const { lat, lng } = results[0].geometry.location.toJSON()
+              setMapCenter({ lat, lng })
+              setMarkerPosition({ lat, lng })
             }
           },
         )
       }
-    }, 300)
-  }, [isLoaded])
-
-  const handleSelectSuggestion = useCallback((suggestion: LocationSuggestion) => {
-    setLocationName(suggestion.description)
-    setEventData(prev => ({ ...prev, location: suggestion.description }))
-    setShowSuggestions(false)
-
-    if (isLoaded && window.google) {
-      const geocoder = new google.maps.Geocoder()
-      geocoder.geocode({ placeId: suggestion.place_id }, (results, status) => {
-        if (status === 'OK' && results && results.length > 0) {
-          const { lat, lng } = results[0].geometry.location.toJSON()
-          setMapCenter({ lat, lng })
-          setMarkerPosition({ lat, lng })
-        }
-      })
-    }
-  }, [isLoaded])
+    },
+    [isLoaded],
+  )
 
   const handleLocationSearch = useCallback(async () => {
     if (!locationName || !window.google) return
@@ -321,7 +330,7 @@ const EventCreationPage = () => {
         const { lat, lng } = results[0].geometry.location.toJSON()
         setMapCenter({ lat, lng })
         setMarkerPosition({ lat, lng })
-        setEventData(prev => ({
+        setEventData((prev) => ({
           ...prev,
           location: results[0].formatted_address,
         }))
@@ -343,7 +352,7 @@ const EventCreationPage = () => {
       geocoder.geocode({ location: { lat, lng } }, (results, status) => {
         if (status === 'OK' && results && results.length > 0) {
           setLocationName(results[0].formatted_address)
-          setEventData(prev => ({
+          setEventData((prev) => ({
             ...prev,
             location: results[0].formatted_address,
           }))
@@ -353,7 +362,7 @@ const EventCreationPage = () => {
   }, [])
 
   const toggleMap = useCallback(() => {
-    setShowMap(prev => !prev)
+    setShowMap((prev) => !prev)
   }, [])
 
   const handleUpdateHighlights = useCallback((newHighlights: any) => {

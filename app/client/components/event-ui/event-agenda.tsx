@@ -105,45 +105,63 @@ const EventAgenda = ({
   // const timeSlots = generateTimeSlots(eventStartTime, eventEndTime)
 
   const parseTime = useCallback((time: string) => {
-    const [timePart, period] = time.split(' ');
+    const [timePart, period] = time.split(' ')
     // eslint-disable-next-line prefer-const
-    let [hour, minute] = timePart.split(':').map(Number);
-    if (period === 'PM' && hour !== 12) hour += 12;
-    if (period === 'AM' && hour === 12) hour = 0;
-    return hour * 60 + minute;
-  }, []);
+    let [hour, minute] = timePart.split(':').map(Number)
+    if (period === 'PM' && hour !== 12) hour += 12
+    if (period === 'AM' && hour === 12) hour = 0
+    return hour * 60 + minute
+  }, [])
 
-  const generateTimeSlots = useCallback((startTime?: string, endTime?: string) => {
-    if (!startTime || !endTime || startTime.trim() === 'H' || endTime.trim() === 'H') return [];
+  const generateTimeSlots = useCallback(
+    (startTime?: string, endTime?: string) => {
+      if (
+        !startTime ||
+        !endTime ||
+        startTime.trim() === 'H' ||
+        endTime.trim() === 'H'
+      )
+        return []
 
-    const startMinutes = parseTime(startTime);
-    const endMinutes = parseTime(endTime);
-    if (isNaN(startMinutes) || isNaN(endMinutes)) return [];
+      const startMinutes = parseTime(startTime)
+      const endMinutes = parseTime(endTime)
+      if (isNaN(startMinutes) || isNaN(endMinutes)) return []
 
-    const timeSlots: string[] = [];
-    for (let minutes = startMinutes; minutes <= endMinutes; minutes += 30) {
-      let hour = Math.floor(minutes / 60);
-      const minute = minutes % 60;
-      const period = hour >= 12 ? 'PM' : 'AM';
-      if (hour > 12) hour -= 12;
-      if (hour === 0) hour = 12;
-      timeSlots.push(`${hour}:${minute.toString().padStart(2, '0')} ${period}`);
-    }
-    return timeSlots;
-  }, [parseTime]);
+      const timeSlots: string[] = []
+      for (let minutes = startMinutes; minutes <= endMinutes; minutes += 30) {
+        let hour = Math.floor(minutes / 60)
+        const minute = minutes % 60
+        const period = hour >= 12 ? 'PM' : 'AM'
+        if (hour > 12) hour -= 12
+        if (hour === 0) hour = 12
+        timeSlots.push(
+          `${hour}:${minute.toString().padStart(2, '0')} ${period}`,
+        )
+      }
+      return timeSlots
+    },
+    [parseTime],
+  )
 
-  const timeSlots = useMemo(() => generateTimeSlots(eventStartTime, eventEndTime), [eventStartTime, eventEndTime, generateTimeSlots]);
+  const timeSlots = useMemo(
+    () => generateTimeSlots(eventStartTime, eventEndTime),
+    [eventStartTime, eventEndTime, generateTimeSlots],
+  )
 
-  const validateItem = useCallback((item: AgendaItem) => {
-    const errors: Record<string, string> = {};
-    if (!item.title.trim()) errors.title = "Title can't be left blank";
-    if (item.startTime && item.endTime) {
-      const startMinutes = parseTime(item.startTime);
-      const endMinutes = parseTime(item.endTime);
-      if (endMinutes < startMinutes) errors.time = 'End time cannot be before start time';
-    }
-    return errors;
-  }, [parseTime]);
+  const validateItem = useCallback(
+    (item: AgendaItem) => {
+      const errors: Record<string, string> = {}
+      if (!item.title.trim()) errors.title = "Title can't be left blank"
+      if (item.startTime && item.endTime) {
+        const startMinutes = parseTime(item.startTime)
+        const endMinutes = parseTime(item.endTime)
+        if (endMinutes < startMinutes)
+          errors.time = 'End time cannot be before start time'
+      }
+      return errors
+    },
+    [parseTime],
+  )
 
   // useEffect(() => {
   //   const handleClickOutside = (e: MouseEvent) => {
@@ -188,28 +206,33 @@ const EventAgenda = ({
 
   const handleClickOutside = useCallback(
     (e: MouseEvent) => {
-      if (editingRef.current && !editingRef.current.contains(e.target as Node)) {
-        const currentItem = agendas.find((agenda) => agenda.id === activeAgenda)?.items.find((item) => item.id === editingItem);
+      if (
+        editingRef.current &&
+        !editingRef.current.contains(e.target as Node)
+      ) {
+        const currentItem = agendas
+          .find((agenda) => agenda.id === activeAgenda)
+          ?.items.find((item) => item.id === editingItem)
         if (currentItem) {
-          const errors = validateItem(currentItem);
+          const errors = validateItem(currentItem)
           if (Object.keys(errors).length > 0) {
-            setFormErrors(errors);
-            return; // Prevent exiting edit mode
+            setFormErrors(errors)
+            return // Prevent exiting edit mode
           }
         }
-        setEditingItem(null);
-        setSelectedTimeField(null);
-        setOpenDropdownId(null);
-        setFormErrors({});
+        setEditingItem(null)
+        setSelectedTimeField(null)
+        setOpenDropdownId(null)
+        setFormErrors({})
       }
     },
-    [editingRef, agendas, activeAgenda, editingItem, validateItem]
-  );
+    [editingRef, agendas, activeAgenda, editingItem, validateItem],
+  )
 
   useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [handleClickOutside]);
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [handleClickOutside])
 
   const handleDeleteAgenda = (agendaId: string) => {
     setAgendas(agendas.filter((agenda) => agenda.id !== agendaId))
@@ -351,59 +374,62 @@ const EventAgenda = ({
   //   setOpenDropdownId(null)
   // }
 
-  const handleInputChange = useCallback((itemId: any, field: any, value: any) => {
-    const updatedAgendas = agendas.map((agenda) => {
-      if (agenda.id === activeAgenda) {
-        return {
-          ...agenda,
-          items: agenda.items.map((item) => {
-            if (item.id === itemId) {
-              return {
-                ...item,
-                [field]: value,
-                isNew: false,
+  const handleInputChange = useCallback(
+    (itemId: any, field: any, value: any) => {
+      const updatedAgendas = agendas.map((agenda) => {
+        if (agenda.id === activeAgenda) {
+          return {
+            ...agenda,
+            items: agenda.items.map((item) => {
+              if (item.id === itemId) {
+                return {
+                  ...item,
+                  [field]: value,
+                  isNew: false,
+                }
               }
-            }
-            return item
-          }),
+              return item
+            }),
+          }
         }
+        return agenda
+      })
+
+      setAgendas(updatedAgendas)
+
+      // Clear error when user types in a field
+      const currentItem = updatedAgendas
+        .find((agenda) => agenda.id === activeAgenda)
+        ?.items.find((item) => item.id === itemId)
+
+      if (currentItem) {
+        const newErrors = validateItem(currentItem)
+        setFormErrors((prevErrors) => ({
+          ...prevErrors,
+          [itemId]: newErrors,
+        }))
       }
-      return agenda
-    })
-
-    setAgendas(updatedAgendas)
-
-    // Clear error when user types in a field
-    const currentItem = updatedAgendas
-      .find((agenda) => agenda.id === activeAgenda)
-      ?.items.find((item) => item.id === itemId);
-
-    if (currentItem) {
-      const newErrors = validateItem(currentItem);
-      setFormErrors((prevErrors) => ({
-        ...prevErrors,
-        [itemId]: newErrors,
-      }));
-    }
-  }, [agendas, setAgendas, activeAgenda, validateItem]);
+    },
+    [agendas, setAgendas, activeAgenda, validateItem],
+  )
 
   const handleSelectTime = useCallback(
     (time: string) => {
-      if (!selectedTimeField) return;
-      handleInputChange(selectedTimeField.itemId, selectedTimeField.field, time);
-      setSelectedTimeField(null);
-      setOpenDropdownId(null);
+      if (!selectedTimeField) return
+      handleInputChange(selectedTimeField.itemId, selectedTimeField.field, time)
+      setSelectedTimeField(null)
+      setOpenDropdownId(null)
     },
-    [selectedTimeField, handleInputChange]
-  );
+    [selectedTimeField, handleInputChange],
+  )
 
   const handleTimeClick = useCallback(
     (field: 'startTime' | 'endTime', itemId: string) => {
-      setOpenDropdownId((prev) => (prev === itemId ? null : itemId));
-      setSelectedTimeField({ field, itemId });
+      setOpenDropdownId((prev) => (prev === itemId ? null : itemId))
+      setSelectedTimeField({ field, itemId })
     },
-    []
-  );
+    [],
+  )
 
   const handleDeleteItem = (itemId: string) => {
     const currentAgenda = agendas.find((agenda) => agenda.id === activeAgenda)
@@ -474,7 +500,6 @@ const EventAgenda = ({
 
           <div className="flex gap-4 mb-4">
             <div className="flex-1 relative">
-
               <Button
                 onClick={() => handleTimeClick('startTime', item.id)}
                 className="flex items-center border rounded-md p-2 w-full text-black bg-white-100 hover:bg-slate-900 hover:text-white-100"
@@ -567,7 +592,7 @@ const EventAgenda = ({
                 !item.title.trim()
                   ? 'Please enter a title before deleting'
                   : agendas.find((a) => a.id === activeAgenda)?.items.length ===
-                    1
+                      1
                     ? 'You must have at least one agenda item or delete the entire agenda'
                     : ''
               }
