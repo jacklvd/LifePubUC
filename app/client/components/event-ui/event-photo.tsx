@@ -40,6 +40,8 @@ const EventPhotoUpload = ({
                     'jpeg',
                     'png',
                     'gif',
+                    'webp',
+                    'svg',
                     'mp4',
                     'mov',
                   ],

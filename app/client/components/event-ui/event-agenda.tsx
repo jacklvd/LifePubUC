@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react'
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -37,107 +39,177 @@ const EventAgenda = ({
   const [openDropdownId, setOpenDropdownId] = useState<string | null>(null)
   const editingRef = useRef<HTMLDivElement>(null)
 
-  const generateTimeSlots = (startTime?: string, endTime?: string) => {
-    // Ensure both startTime and endTime are selected before processing
-    if (
-      !startTime ||
-      !endTime ||
-      startTime.trim() === 'H' ||
-      endTime.trim() === 'H'
-    ) {
-      console.warn(
-        '🚨 Incomplete start or end time. Skipping time slot generation.',
-      )
-      return []
+  // const generateTimeSlots = (startTime?: string, endTime?: string) => {
+  //   if (
+  //     !startTime ||
+  //     !endTime ||
+  //     startTime.trim() === 'H' ||
+  //     endTime.trim() === 'H'
+  //   ) {
+  //     console.warn(
+  //       '🚨 Incomplete start or end time. Skipping time slot generation.',
+  //     )
+  //     return []
+  //   }
+
+  //   const parseTime = (time: string) => {
+  //     const parts = time.match(/^(\d{1,2}):(\d{2})\s?(AM|PM)$/)
+  //     if (!parts) {
+  //       console.error('🚨 Invalid time format detected:', time)
+  //       return null
+  //     }
+  //     return {
+  //       hour: parseInt(parts[1], 10),
+  //       minute: parseInt(parts[2], 10),
+  //       period: parts[3] as 'AM' | 'PM',
+  //     }
+  //   }
+
+  //   const start = parseTime(startTime)
+  //   const end = parseTime(endTime)
+  //   if (!start || !end) return []
+
+  //   let {
+  //     hour: currentHour,
+  //     minute: currentMinute,
+  //     period: currentPeriod,
+  //   } = start
+  //   const { hour: endHour, minute: endMinute, period: endPeriod } = end
+  //   const timeSlots = []
+
+  //   while (
+  //     (currentPeriod === endPeriod &&
+  //       (currentHour < endHour ||
+  //         (currentHour === endHour && currentMinute <= endMinute))) ||
+  //     (currentPeriod === 'AM' && endPeriod === 'PM')
+  //   ) {
+  //     timeSlots.push(
+  //       `${currentHour}:${currentMinute.toString().padStart(2, '0')} ${currentPeriod}`,
+  //     )
+
+  //     // Increment time by 30 minutes
+  //     currentMinute += 30
+  //     if (currentMinute === 60) {
+  //       currentMinute = 0
+  //       currentHour++
+  //     }
+
+  //     if (currentHour === 12 && currentMinute === 0) {
+  //       currentPeriod = currentPeriod === 'AM' ? 'PM' : 'AM'
+  //     }
+  //   }
+
+  //   return timeSlots
+  // }
+
+  // const timeSlots = generateTimeSlots(eventStartTime, eventEndTime)
+
+  const parseTime = useCallback((time: string) => {
+    const [timePart, period] = time.split(' ');
+    // eslint-disable-next-line prefer-const
+    let [hour, minute] = timePart.split(':').map(Number);
+    if (period === 'PM' && hour !== 12) hour += 12;
+    if (period === 'AM' && hour === 12) hour = 0;
+    return hour * 60 + minute;
+  }, []);
+
+  const generateTimeSlots = useCallback((startTime?: string, endTime?: string) => {
+    if (!startTime || !endTime || startTime.trim() === 'H' || endTime.trim() === 'H') return [];
+
+    const startMinutes = parseTime(startTime);
+    const endMinutes = parseTime(endTime);
+    if (isNaN(startMinutes) || isNaN(endMinutes)) return [];
+
+    const timeSlots: string[] = [];
+    for (let minutes = startMinutes; minutes <= endMinutes; minutes += 30) {
+      let hour = Math.floor(minutes / 60);
+      const minute = minutes % 60;
+      const period = hour >= 12 ? 'PM' : 'AM';
+      if (hour > 12) hour -= 12;
+      if (hour === 0) hour = 12;
+      timeSlots.push(`${hour}:${minute.toString().padStart(2, '0')} ${period}`);
     }
+    return timeSlots;
+  }, [parseTime]);
 
-    const parseTime = (time: string) => {
-      const parts = time.match(/^(\d{1,2}):(\d{2})\s?(AM|PM)$/)
-      if (!parts) {
-        console.error('🚨 Invalid time format detected:', time)
-        return null
-      }
-      return {
-        hour: parseInt(parts[1], 10),
-        minute: parseInt(parts[2], 10),
-        period: parts[3] as 'AM' | 'PM',
-      }
+  const timeSlots = useMemo(() => generateTimeSlots(eventStartTime, eventEndTime), [eventStartTime, eventEndTime, generateTimeSlots]);
+
+  const validateItem = useCallback((item: AgendaItem) => {
+    const errors: Record<string, string> = {};
+    if (!item.title.trim()) errors.title = "Title can't be left blank";
+    if (item.startTime && item.endTime) {
+      const startMinutes = parseTime(item.startTime);
+      const endMinutes = parseTime(item.endTime);
+      if (endMinutes < startMinutes) errors.time = 'End time cannot be before start time';
     }
+    return errors;
+  }, [parseTime]);
 
-    const start = parseTime(startTime)
-    const end = parseTime(endTime)
-    if (!start || !end) return []
+  // useEffect(() => {
+  //   const handleClickOutside = (e: MouseEvent) => {
+  //     if (
+  //       editingRef.current &&
+  //       !editingRef.current.contains(e.target as Node)
+  //     ) {
+  //       const currentAgenda = agendas.find(
+  //         (agenda) => agenda.id === activeAgenda,
+  //       )
+  //       const currentItem = currentAgenda?.items.find(
+  //         (item) => item.id === editingItem,
+  //       )
 
-    let {
-      hour: currentHour,
-      minute: currentMinute,
-      period: currentPeriod,
-    } = start
-    const { hour: endHour, minute: endMinute, period: endPeriod } = end
-    const timeSlots = []
+  //       if (currentItem) {
+  //         const error = validateItem(currentItem)
+  //         if (error.title) {
+  //           setFormErrors({ title: error.title })
+  //           return // Prevent exiting edit mode
+  //         }
+  //         if (error.time) {
+  //           setFormErrors({ time: error.time })
+  //           return // Prevent exiting edit mode
+  //         }
+  //       }
 
-    while (
-      (currentPeriod === endPeriod &&
-        (currentHour < endHour ||
-          (currentHour === endHour && currentMinute <= endMinute))) ||
-      (currentPeriod === 'AM' && endPeriod === 'PM')
-    ) {
-      timeSlots.push(
-        `${currentHour}:${currentMinute.toString().padStart(2, '0')} ${currentPeriod}`,
-      )
+  //       if (Object.keys(errors).length > 0) {
+  //         setFormErrors(errors)
+  //         return // Prevent exiting edit mode
+  //       }
 
-      // Increment time by 30 minutes
-      currentMinute += 30
-      if (currentMinute === 60) {
-        currentMinute = 0
-        currentHour++
-      }
+  //       setEditingItem(null)
+  //       setSelectedTimeField(null)
+  //       setOpenDropdownId(null)
+  //       setFormErrors({})
+  //     }
+  //   }
 
-      if (currentHour === 12 && currentMinute === 0) {
-        currentPeriod = currentPeriod === 'AM' ? 'PM' : 'AM'
-      }
-    }
+  //   document.addEventListener('mousedown', handleClickOutside)
+  //   return () => document.removeEventListener('mousedown', handleClickOutside)
+  // }, [editingRef, agendas, activeAgenda, editingItem, errors, validateItem])
 
-    return timeSlots
-  }
-
-  const timeSlots = generateTimeSlots(eventStartTime, eventEndTime)
-
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (
-        editingRef.current &&
-        !editingRef.current.contains(e.target as Node)
-      ) {
-        const currentAgenda = agendas.find(
-          (agenda) => agenda.id === activeAgenda,
-        )
-        const currentItem = currentAgenda?.items.find(
-          (item) => item.id === editingItem,
-        )
-
+  const handleClickOutside = useCallback(
+    (e: MouseEvent) => {
+      if (editingRef.current && !editingRef.current.contains(e.target as Node)) {
+        const currentItem = agendas.find((agenda) => agenda.id === activeAgenda)?.items.find((item) => item.id === editingItem);
         if (currentItem) {
-          if (!currentItem.title.trim()) {
-            setFormErrors({ title: "Event Title can't be left blank" })
-            return // Prevent exiting edit mode
+          const errors = validateItem(currentItem);
+          if (Object.keys(errors).length > 0) {
+            setFormErrors(errors);
+            return; // Prevent exiting edit mode
           }
         }
-
-        if (Object.keys(errors).length > 0) {
-          setFormErrors(errors)
-          return // Prevent exiting edit mode
-        }
-
-        setEditingItem(null)
-        setSelectedTimeField(null)
-        setOpenDropdownId(null)
-        setFormErrors({})
+        setEditingItem(null);
+        setSelectedTimeField(null);
+        setOpenDropdownId(null);
+        setFormErrors({});
       }
-    }
+    },
+    [editingRef, agendas, activeAgenda, editingItem, validateItem]
+  );
 
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [editingRef, agendas, activeAgenda, editingItem])
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [handleClickOutside]);
 
   const handleDeleteAgenda = (agendaId: string) => {
     setAgendas(agendas.filter((agenda) => agenda.id !== agendaId))
@@ -241,48 +313,45 @@ const EventAgenda = ({
     setEditingItem(newItem.id)
   }
 
-  const handleTimeClick = (
-    fieldId: 'startTime' | 'endTime',
-    itemId: string,
-  ) => {
-    if (openDropdownId === itemId) {
-      setOpenDropdownId(null)
-    } else {
-      setSelectedTimeField({ field: fieldId, itemId })
-      setOpenDropdownId(itemId)
-    }
-  }
+  // const handleTimeClick = (
+  //   fieldId: 'startTime' | 'endTime',
+  //   itemId: string,
+  // ) => {
+  //   if (openDropdownId === itemId) {
+  //     setOpenDropdownId(null)
+  //   } else {
+  //     setSelectedTimeField({ field: fieldId, itemId })
+  //     setOpenDropdownId(itemId)
+  //   }
+  // }
 
-  const handleSelectTime = (time: string) => {
-    if (!selectedTimeField) return
+  // const handleSelectTime = (time: string) => {
+  //   if (!selectedTimeField) return
 
-    // Ensure time format matches "HH:mm AM/PM"
-    // time should already be in this format based on your timeSlots array
+  //   const updatedAgendas = agendas.map((agenda) => {
+  //     if (agenda.id === activeAgenda) {
+  //       return {
+  //         ...agenda,
+  //         items: agenda.items.map((item) => {
+  //           if (item.id === selectedTimeField.itemId) {
+  //             return {
+  //               ...item,
+  //               [selectedTimeField.field]: time, // Time is already in the correct format
+  //             }
+  //           }
+  //           return item
+  //         }),
+  //       }
+  //     }
+  //     return agenda
+  //   })
 
-    const updatedAgendas = agendas.map((agenda) => {
-      if (agenda.id === activeAgenda) {
-        return {
-          ...agenda,
-          items: agenda.items.map((item) => {
-            if (item.id === selectedTimeField.itemId) {
-              return {
-                ...item,
-                [selectedTimeField.field]: time, // Time is already in the correct format
-              }
-            }
-            return item
-          }),
-        }
-      }
-      return agenda
-    })
+  //   setAgendas(updatedAgendas)
+  //   setSelectedTimeField(null)
+  //   setOpenDropdownId(null)
+  // }
 
-    setAgendas(updatedAgendas)
-    setSelectedTimeField(null)
-    setOpenDropdownId(null)
-  }
-
-  const handleInputChange = (itemId: any, field: any, value: any) => {
+  const handleInputChange = useCallback((itemId: any, field: any, value: any) => {
     const updatedAgendas = agendas.map((agenda) => {
       if (agenda.id === activeAgenda) {
         return {
@@ -305,18 +374,36 @@ const EventAgenda = ({
     setAgendas(updatedAgendas)
 
     // Clear error when user types in a field
-    if (field === 'title' && formErrors.title) {
-      setFormErrors({ ...formErrors, title: '' })
-    }
-  }
+    const currentItem = updatedAgendas
+      .find((agenda) => agenda.id === activeAgenda)
+      ?.items.find((item) => item.id === itemId);
 
-  const validateItem = (item: AgendaItem) => {
-    const errors: Record<string, string> = {}
-    if (!item.title.trim()) {
-      errors.title = "Title can't be left blank"
+    if (currentItem) {
+      const newErrors = validateItem(currentItem);
+      setFormErrors((prevErrors) => ({
+        ...prevErrors,
+        [itemId]: newErrors,
+      }));
     }
-    return errors
-  }
+  }, [agendas, setAgendas, activeAgenda, validateItem]);
+
+  const handleSelectTime = useCallback(
+    (time: string) => {
+      if (!selectedTimeField) return;
+      handleInputChange(selectedTimeField.itemId, selectedTimeField.field, time);
+      setSelectedTimeField(null);
+      setOpenDropdownId(null);
+    },
+    [selectedTimeField, handleInputChange]
+  );
+
+  const handleTimeClick = useCallback(
+    (field: 'startTime' | 'endTime', itemId: string) => {
+      setOpenDropdownId((prev) => (prev === itemId ? null : itemId));
+      setSelectedTimeField({ field, itemId });
+    },
+    []
+  );
 
   const handleDeleteItem = (itemId: string) => {
     const currentAgenda = agendas.find((agenda) => agenda.id === activeAgenda)
@@ -387,6 +474,7 @@ const EventAgenda = ({
 
           <div className="flex gap-4 mb-4">
             <div className="flex-1 relative">
+
               <Button
                 onClick={() => handleTimeClick('startTime', item.id)}
                 className="flex items-center border rounded-md p-2 w-full text-black bg-white-100 hover:bg-slate-900 hover:text-white-100"
@@ -440,7 +528,9 @@ const EventAgenda = ({
                 )}
             </div>
           </div>
-
+          {errors.time && (
+            <p className="text-red-500 text-sm mb-2">{errors.time}</p>
+          )}
           <div className="mb-4">
             <Textarea
               placeholder="Description"
@@ -477,7 +567,7 @@ const EventAgenda = ({
                 !item.title.trim()
                   ? 'Please enter a title before deleting'
                   : agendas.find((a) => a.id === activeAgenda)?.items.length ===
-                      1
+                    1
                     ? 'You must have at least one agenda item or delete the entire agenda'
                     : ''
               }
@@ -492,15 +582,15 @@ const EventAgenda = ({
     return (
       <div
         key={item.id}
-        className="mt-4 bg-lime-50 p-4 rounded-md border-l-4 border-l-lime-300"
+        className="mt-4 bg-blue-50 p-4 rounded-md border-l-8 border-l-blue-400"
       >
         <div className="flex justify-between items-center">
           <div>
-            <p className="text-gray-600">
+            <p className="text-gray-400">
               {item.startTime}
               {item.endTime ? ` - ${item.endTime}` : ''}
             </p>
-            <h4 className="font-medium">{item.title}</h4>
+            <h4 className="font-medium text-lg">{item.title}</h4>
           </div>
           <button
             className="text-gray-500"
@@ -617,7 +707,7 @@ const EventAgenda = ({
               .find((agenda) => agenda.id === activeAgenda)
               ?.items.map((item) => renderAgendaItem(item))}
 
-          {activeAgenda &&
+          {/* {activeAgenda &&
             agendas.find((agenda) => agenda.id === activeAgenda)?.items
               .length === 0 && (
               <div className="text-center p-6 bg-gray-50 rounded-md">
@@ -625,7 +715,7 @@ const EventAgenda = ({
                   No agenda items yet. Add your first item below.
                 </p>
               </div>
-            )}
+            )} */}
         </div>
 
         {/* Add Slot Button */}

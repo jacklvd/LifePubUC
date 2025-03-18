@@ -56,6 +56,13 @@ const EventAdditional: React.FC<AdditionalProps> = ({
   const [parkingType, setParkingType] = useState('free')
   const [editingFaqIndex, setEditingFaqIndex] = useState<number | null>(null)
 
+  const handleRemoveHighlight = (type: 'age' | 'door' | 'parking') => {
+    const updatedHighlights = { ...highlights };
+    delete updatedHighlights[type === 'age' ? 'ageRestriction' : type === 'door' ? 'doorTime' : 'parkingInfo'];
+    onUpdateHighlights(updatedHighlights);
+  };
+
+
   const handleOpenHighlightsDialog = (type: 'age' | 'door' | 'parking') => {
     setHighlightType(type)
     setShowHighlightsDialog(true)
@@ -115,77 +122,57 @@ const EventAdditional: React.FC<AdditionalProps> = ({
           <div className="mb-6">
             <h4 className="font-medium mb-2">Highlights</h4>
             <div className="flex flex-wrap gap-2">
+              {/* Age Restriction */}
               {!highlights.ageRestriction && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="rounded-md"
-                  onClick={() => handleOpenHighlightsDialog('age')}
-                >
+                <Button variant="outline" size="sm" className="rounded-md" onClick={() => handleOpenHighlightsDialog('age')}>
                   <Icon name="Plus" className="h-4 w-4 mr-1" />
                   <span>Add Age info</span>
                 </Button>
               )}
               {highlights.ageRestriction && (
-                <Badge
-                  variant="secondary"
-                  className="cursor-pointer"
-                  onClick={() => handleOpenHighlightsDialog('age')}
-                >
-                  {highlights.ageRestriction === 'all'
-                    ? 'All ages allowed'
-                    : highlights.ageRestriction === 'restricted'
-                      ? 'Age restriction applies'
-                      : 'Parent/guardian needed'}
+                <Badge variant="secondary" className="cursor-pointer flex items-center">
+                  {highlights.ageRestriction === 'all' ? 'All ages allowed' :
+                    highlights.ageRestriction === 'restricted' ? 'Age restriction applies' : 'Parent/guardian needed'}
+                  <button onClick={() => handleRemoveHighlight('age')} className="ml-2 text-blue-300 hover:text-blue-500">
+                    <Icon name="X" className="h-3 w-3" />
+                  </button>
                 </Badge>
               )}
 
+              {/* Door Time */}
               {!highlights.doorTime && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="rounded-md"
-                  onClick={() => handleOpenHighlightsDialog('door')}
-                >
+                <Button variant="outline" size="sm" className="rounded-md" onClick={() => handleOpenHighlightsDialog('door')}>
                   <Icon name="Plus" className="h-4 w-4 mr-1" />
                   <span>Add Door Time</span>
                 </Button>
               )}
               {highlights.doorTime && (
-                <Badge
-                  variant="secondary"
-                  className="cursor-pointer"
-                  onClick={() => handleOpenHighlightsDialog('door')}
-                >
+                <Badge variant="secondary" className="cursor-pointer flex items-center">
                   Door opens: {highlights.doorTime} before event
+                  <button onClick={() => handleRemoveHighlight('door')} className="ml-2 text-blue-300 hover:text-blue-500">
+                    <Icon name="X" className="h-3 w-3" />
+                  </button>
                 </Badge>
               )}
 
+              {/* Parking Info */}
               {!highlights.parkingInfo && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="rounded-md"
-                  onClick={() => handleOpenHighlightsDialog('parking')}
-                >
+                <Button variant="outline" size="sm" className="rounded-md" onClick={() => handleOpenHighlightsDialog('parking')}>
                   <Icon name="Plus" className="h-4 w-4 mr-1" />
                   <span>Add Parking info</span>
                 </Button>
               )}
               {highlights.parkingInfo && (
-                <Badge
-                  variant="secondary"
-                  className="cursor-pointer"
-                  onClick={() => handleOpenHighlightsDialog('parking')}
-                >
-                  {highlights.parkingInfo === 'free'
-                    ? 'Free parking'
-                    : highlights.parkingInfo === 'paid'
-                      ? 'Paid parking'
-                      : 'No parking options'}
+                <Badge variant="secondary" className="cursor-pointer flex items-center">
+                  {highlights.parkingInfo === 'free' ? 'Free parking' :
+                    highlights.parkingInfo === 'paid' ? 'Paid parking' : 'No parking options'}
+                  <button onClick={() => handleRemoveHighlight('parking')} className="ml-2 text-blue-300 hover:text-blue-500">
+                    <Icon name="X" className="h-3 w-3" />
+                  </button>
                 </Badge>
               )}
             </div>
+
           </div>
 
           <div>
@@ -255,7 +242,7 @@ const EventAdditional: React.FC<AdditionalProps> = ({
                               e.stopPropagation()
                               handleDeleteFaq(index)
                             }}
-                            className="text-gray-500 hover:text-red-500"
+                            className="text-gray-500 hover:text-blue-500"
                           >
                             <Icon name="Trash" className="h-4 w-4" />
                           </Button>
@@ -385,7 +372,7 @@ const EventAdditional: React.FC<AdditionalProps> = ({
           <DialogFooter>
             <Button
               onClick={handleSaveHighlight}
-              className="bg-red-500 text-white hover:bg-red-600"
+              className="bg-blue-50 text-black hover:bg-blue-500"
             >
               Add to event
             </Button>

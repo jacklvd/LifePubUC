@@ -51,6 +51,18 @@ const eventSchema = new Schema<IEvent>({
   date: { type: Date, required: true },
   startTime: { type: String, required: true },
   endTime: { type: String, required: true },
+  highlights: {
+    ageRestriction: { type: String },
+    doorTime: { type: String },
+    parkingInfo: { type: String },
+  },
+  faqs: [
+    {
+      question: { type: String, required: true },
+      answer: { type: String, required: true },
+      _id: false,
+    },
+  ],
   agenda: [
     {
       id: { type: String, required: true },
@@ -63,8 +75,10 @@ const eventSchema = new Schema<IEvent>({
           host: { type: String, default: '' },
           startTime: { type: String },
           endTime: { type: String },
+          _id: false,
         },
       ],
+      _id: false,
     },
   ],
   createdAt: { type: Date, default: Date.now },
