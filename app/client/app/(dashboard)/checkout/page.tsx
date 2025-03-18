@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
 import React, { useState } from 'react'
@@ -5,10 +6,9 @@ import { useCartStore } from '@/store/cart'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
-import { useToast } from '@/hooks/use-toast'
 import Image from 'next/image'
 import Link from 'next/link'
-import StripeProvider from './components/stripe-provider'
+import StripeProvider from '../../../components/checkout-ui/stripe-provider'
 
 import { EmbeddedCheckout } from '@stripe/react-stripe-js'
 

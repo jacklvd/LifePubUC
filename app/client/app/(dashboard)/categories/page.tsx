@@ -3,8 +3,8 @@
 
 import React, { useState, useEffect } from 'react'
 import { categories } from '@/constants/categories'
-import CategoryCard from './components/category-card'
-import ItemCard from './components/item-card'
+import CategoryCard from '../../../components/category-ui/category-card'
+import ItemCard from '../../../components/category-ui/item-card'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/icons'

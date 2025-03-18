@@ -5,7 +5,7 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/icons'
-import { createEvent } from '@/lib/actions/events'
+import { createEvent } from '@/lib/actions/event-action'
 import { useSession } from 'next-auth/react'
 import { useLoadScript, GoogleMap, Marker } from '@react-google-maps/api'
 import { useRouter } from 'next/navigation'
