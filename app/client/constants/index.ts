@@ -64,7 +64,7 @@ export const navbarIcons: {
 export const eventSideBarIcons: {
   name: IconNames
   className: string
-  route: string,
+  route: string
   title: string
 }[] = [
   {

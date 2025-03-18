@@ -53,7 +53,7 @@ import {
   FilePlus2,
   Pencil,
   MoreVertical,
-  Edit
+  Edit,
 } from 'lucide-react'
 
 const ICONS = {
@@ -111,7 +111,7 @@ const ICONS = {
   FilePlus2: FilePlus2,
   Pencil: Pencil,
   MoreVertical: MoreVertical,
-  Edit: Edit
+  Edit: Edit,
 } as const
 
 export type IconNames = keyof typeof ICONS

@@ -36,61 +36,60 @@ const burgerStyles = {
   //   display: "none", // Hide the default burger button
   // },
   bmOverlay: {
-    background: "rgba(0, 0, 0, 0.1)", // Dark background
-    zIndex: "100", // Ensure menu is above content
+    background: 'rgba(0, 0, 0, 0.1)', // Dark background
+    zIndex: '100', // Ensure menu is above content
   },
   bmMenu: {
-    background: "#edf6f9",
-    padding: "2.5rem 1.5rem 1.5rem",
-    fontSize: "1rem",
+    background: '#edf6f9',
+    padding: '2.5rem 1.5rem 1.5rem',
+    fontSize: '1rem',
     // width: "calc(100vw - 130px)", // Adjust for sidebar width
-    maxWidth: "280px",
+    maxWidth: '280px',
     // boxShadow: "2px 0px 10px rgba(0, 0, 0, 0.1)",
-    zIndex: "101", // Ensure it's above overlay
+    zIndex: '101', // Ensure it's above overlay
   },
   bmMenuWrap: {
-    position: "fixed",
-    height: "100%",
-    top: "74px",
-    transition: "0.3s",
+    position: 'fixed',
+    height: '100%',
+    top: '74px',
+    transition: '0.3s',
   },
   // bmItemList: {
   //   padding: "0px",
   // },
   bmItem: {
-    display: "block",
-    padding: "0.8rem 0",
-    outline: "none",
+    display: 'block',
+    padding: '0.8rem 0',
+    outline: 'none',
   },
   // // bmCrossButton: {
   // //   display: "none",
   // // },
-};
-
+}
 
 const Navbar = () => {
   const router = useRouter()
   const totalQuantity = useCartStore((state) => state.totalQuantity)
-  const pathname = usePathname();
-  const [menuOpen, setMenuOpen] = useState(false);
+  const pathname = usePathname()
+  const [menuOpen, setMenuOpen] = useState(false)
 
   // Close menu when route changes
   useEffect(() => {
-    setMenuOpen(false);
-  }, [pathname]);
+    setMenuOpen(false)
+  }, [pathname])
 
   // Handle body scroll lock
   useEffect(() => {
     if (menuOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = 'hidden'
     } else {
-      document.body.style.overflow = '';
+      document.body.style.overflow = ''
     }
 
     return () => {
-      document.body.style.overflow = '';
-    };
-  }, [menuOpen]);
+      document.body.style.overflow = ''
+    }
+  }, [menuOpen])
 
   const handleSignOut = async () => {
     try {
@@ -113,7 +112,7 @@ const Navbar = () => {
   }
 
   const handleMenuStateChange = (state: any) => {
-    setMenuOpen(state.isOpen);
+    setMenuOpen(state.isOpen)
   }
 
   return (
@@ -142,9 +141,7 @@ const Navbar = () => {
         </div>
 
         {/* MOBILE MENU TOGGLE (Hamburger Menu) */}
-        <div
-          className="md:hidden flex items-center justify-end text-black ml-auto z-[102]"
-        >
+        <div className="md:hidden flex items-center justify-end text-black ml-auto z-[102]">
           <Hamburger
             toggled={menuOpen}
             toggle={setMenuOpen}
@@ -176,7 +173,10 @@ const Navbar = () => {
                   placeholder="Search..."
                   className="w-full bg-white text-black text-md border rounded-lg"
                 />
-                <Icon name="Search" className="absolute right-3 top-2.5 h-5 w-5" />
+                <Icon
+                  name="Search"
+                  className="absolute right-3 top-2.5 h-5 w-5"
+                />
               </div>
 
               {navbarIcons.map((icon, index) => (
@@ -195,10 +195,7 @@ const Navbar = () => {
                       />
                     </div>
                   ) : (
-                    <Icon
-                      name={icon.name}
-                      className="h-6 w-6 mr-3"
-                    />
+                    <Icon name={icon.name} className="h-6 w-6 mr-3" />
                   )}
 
                   <span>{icon.title}</span>
@@ -211,10 +208,7 @@ const Navbar = () => {
                 onClick={() => setMenuOpen(false)}
               >
                 <div className="relative">
-                  <Icon
-                    name="ShoppingCart"
-                    className="h-6 w-6 mr-3"
-                  />
+                  <Icon name="ShoppingCart" className="h-6 w-6 mr-3" />
                   {totalQuantity > 0 && (
                     <span className="absolute -top-2 -right-2 bg-primary-500 text-white-100 text-xs rounded-full h-5 w-5 flex items-center justify-center">
                       {totalQuantity}
@@ -226,8 +220,8 @@ const Navbar = () => {
 
               <button
                 onClick={() => {
-                  setMenuOpen(false);
-                  handleSignOut();
+                  setMenuOpen(false)
+                  handleSignOut()
                 }}
                 className="flex items-center w-full py-3 text-primary hover:bg-primary-50 rounded-lg px-2 transition-colors"
               >

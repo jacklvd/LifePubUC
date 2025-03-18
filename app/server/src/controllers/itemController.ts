@@ -5,7 +5,11 @@ import { v2 as cloudinary } from 'cloudinary'
 import multer from 'multer'
 import { CloudinaryStorage } from 'multer-storage-cloudinary'
 import User from '../models/userSchema'
-import { CLOUDINARY_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET } from '../../config/env'
+import {
+  CLOUDINARY_NAME,
+  CLOUDINARY_API_KEY,
+  CLOUDINARY_API_SECRET,
+} from '../../config/env'
 
 interface StorageOptions {
   cloudinary: typeof cloudinary
