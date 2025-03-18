@@ -40,7 +40,9 @@ export default function VerifyEmail() {
           <Icon name="BadgeCheck" /> Email Verified!
         </h1>
       ) : (
-        <h1 className="text-2xl font-bold text-yellow-600"><Icon name="RefreshCcw" /> Verifying...</h1>
+        <h1 className="text-2xl font-bold text-yellow-600">
+          <Icon name="RefreshCcw" /> Verifying...
+        </h1>
       )}
       <p className="text-gray-500 mt-2">{message}</p>
       <p className="text-gray-400 mt-4">Redirecting to sign-in...</p>

@@ -229,7 +229,8 @@ export default function OrganizationOnboarding() {
                   <div>
                     <p className="font-medium">Account created successfully!</p>
                     <p className="text-sm">
-                      Now let&apos;s set up your payment information with Stripe.
+                      Now let&apos;s set up your payment information with
+                      Stripe.
                     </p>
                   </div>
                 </div>

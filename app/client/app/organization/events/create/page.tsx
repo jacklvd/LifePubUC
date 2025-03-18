@@ -29,18 +29,23 @@ const EventCreationPage = () => {
   const router = useRouter()
   const { data: session } = useSession()
   const [mapCenter, setMapCenter] = useState({ lat: 40.7128, lng: -74.006 }) // Default to NYC
-  const [markerPosition, setMarkerPosition] = useState<{ lat: number; lng: number } | null>(null)
+  const [markerPosition, setMarkerPosition] = useState<{
+    lat: number
+    lng: number
+  } | null>(null)
   const [locationName, setLocationName] = useState('')
   const [showMap, setShowMap] = useState(true)
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
-  const [date, setDate] = useState<Date | undefined>(new Date());
-  const [locationSuggestions, setLocationSuggestions] = useState<LocationSuggestion[]>([])
+  const [date, setDate] = useState<Date | undefined>(new Date())
+  const [locationSuggestions, setLocationSuggestions] = useState<
+    LocationSuggestion[]
+  >([])
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [calendarOpen, setCalendarOpen] = useState(false)
-  const [highlights, setHighlights] = useState({});
-  const [faqs, setFaqs] = useState([]);
-  const [agendas, setAgendas] = useState<Agenda[]>([]);
+  const [highlights, setHighlights] = useState({})
+  const [faqs, setFaqs] = useState([])
+  const [agendas, setAgendas] = useState<Agenda[]>([])
 
   // Time state with hours and minutes
   const [startHour, setStartHour] = useState('01')
@@ -51,7 +56,8 @@ const EventCreationPage = () => {
   const [endPeriod, setEndPeriod] = useState<'AM' | 'PM'>('PM')
 
   // References
-  const autocompleteService = useRef<google.maps.places.AutocompleteService | null>(null)
+  const autocompleteService =
+    useRef<google.maps.places.AutocompleteService | null>(null)
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null)
   const locationInputRef = useRef<HTMLInputElement>(null)
 
@@ -74,11 +80,14 @@ const EventCreationPage = () => {
     agenda: [],
     highlights: {},
     faqs: [],
-  });
+  })
 
   useEffect(() => {
     if (session?.user?.email) {
-      setEventData((prev) => ({ ...prev, email: session?.user?.email as string }))
+      setEventData((prev) => ({
+        ...prev,
+        email: session?.user?.email as string,
+      }))
     }
   }, [session])
 
@@ -91,10 +100,9 @@ const EventCreationPage = () => {
 
   // Update eventData when date changes
   useEffect(() => {
-    const formattedDate = date ? format(date, 'yyyy-MM-dd') : '';
-    setEventData(prev => ({ ...prev, date: formattedDate }));
-  }, [date]);
-
+    const formattedDate = date ? format(date, 'yyyy-MM-dd') : ''
+    setEventData((prev) => ({ ...prev, date: formattedDate }))
+  }, [date])
 
   // Update eventData when time changes
   useEffect(() => {
@@ -107,30 +115,32 @@ const EventCreationPage = () => {
     let endHour24 = parseInt(endHour)
     if (endPeriod === 'PM' && endHour24 < 12) endHour24 += 12
     if (endPeriod === 'AM' && endHour24 === 12) endHour24 = 0
-    const startTime = `${startHour}:${startMinute} ${startPeriod}`;
-    const endTime = `${endHour}:${endMinute} ${endPeriod}`;
+    const startTime = `${startHour}:${startMinute} ${startPeriod}`
+    const endTime = `${endHour}:${endMinute} ${endPeriod}`
 
-    setEventData(prev => ({ ...prev, startTime, endTime }))
+    setEventData((prev) => ({ ...prev, startTime, endTime }))
   }, [startHour, startMinute, startPeriod, endHour, endMinute, endPeriod])
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, field: keyof EventData) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    field: keyof EventData,
+  ) => {
     setEventData({ ...eventData, [field]: e.target.value })
   }
 
   const handleCloudinaryUpload = (result: any) => {
     if (result.event === 'success') {
-      const fileUrl = result.info.secure_url;
-      const fileType: 'image' | 'video' = result.info.resource_type === 'video' ? 'video' : 'image';
+      const fileUrl = result.info.secure_url
+      const fileType: 'image' | 'video' =
+        result.info.resource_type === 'video' ? 'video' : 'image'
       toast.success('File uploaded successfully!')
-      setEventData(prev => ({ ...prev, media: fileUrl, mediaType: fileType }));
+      setEventData((prev) => ({ ...prev, media: fileUrl, mediaType: fileType }))
     }
   }
 
-
   const handleRemoveMedia = () => {
-    setEventData(prev => ({ ...prev, media: undefined, mediaType: 'image' }));
+    setEventData((prev) => ({ ...prev, media: undefined, mediaType: 'image' }))
   }
-
 
   const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
@@ -155,19 +165,22 @@ const EventCreationPage = () => {
         autocompleteService.current.getPlacePredictions(
           { input: value },
           (predictions, status) => {
-            if (status === google.maps.places.PlacesServiceStatus.OK && predictions) {
+            if (
+              status === google.maps.places.PlacesServiceStatus.OK &&
+              predictions
+            ) {
               setLocationSuggestions(
-                predictions.map(prediction => ({
+                predictions.map((prediction) => ({
                   place_id: prediction.place_id,
                   description: prediction.description,
-                }))
+                })),
               )
               setShowSuggestions(true)
             } else {
               setLocationSuggestions([])
               setShowSuggestions(false)
             }
-          }
+          },
         )
       }
     }, 300)
@@ -195,15 +208,17 @@ const EventCreationPage = () => {
 
     try {
       const geocoder = new window.google.maps.Geocoder()
-      const results = await new Promise<google.maps.GeocoderResult[]>((resolve, reject) => {
-        geocoder.geocode({ address: locationName }, (results, status) => {
-          if (status === 'OK' && results && results.length > 0) {
-            resolve(results)
-          } else {
-            reject(status)
-          }
-        })
-      })
+      const results = await new Promise<google.maps.GeocoderResult[]>(
+        (resolve, reject) => {
+          geocoder.geocode({ address: locationName }, (results, status) => {
+            if (status === 'OK' && results && results.length > 0) {
+              resolve(results)
+            } else {
+              reject(status)
+            }
+          })
+        },
+      )
 
       if (results && results.length > 0) {
         const { lat, lng } = results[0].geometry.location.toJSON()
@@ -246,126 +261,130 @@ const EventCreationPage = () => {
 
   const validateEventData = () => {
     // Format agenda data properly to match zod schema
-    const formattedAgendas = agendas.map(agenda => {
+    const formattedAgendas = agendas.map((agenda) => {
       // Make sure all agenda items have required fields with proper defaults
-      const formattedItems = agenda.items.map(item => ({
+      const formattedItems = agenda.items.map((item) => ({
         id: item.id,
-        title: item.title || "Untitled Item", // Ensure title is not empty
-        description: item.description || "",
-        host: item.host || "",
-        startTime: item.startTime || "",
-        endTime: item.endTime || ""
-      }));
+        title: item.title || 'Untitled Item', // Ensure title is not empty
+        description: item.description || '',
+        host: item.host || '',
+        startTime: item.startTime || '',
+        endTime: item.endTime || '',
+      }))
 
       // Filter out any incomplete items that would fail validation
-      const validItems = formattedItems.filter(item =>
-        item.title.length >= 3 &&
-        item.startTime.match(/^(0[1-9]|1[0-2]):[0-5][0-9] (AM|PM)$/) &&
-        item.endTime.match(/^(0[1-9]|1[0-2]):[0-5][0-9] (AM|PM)$/)
-      );
+      const validItems = formattedItems.filter(
+        (item) =>
+          item.title.length >= 3 &&
+          item.startTime.match(/^(0[1-9]|1[0-2]):[0-5][0-9] (AM|PM)$/) &&
+          item.endTime.match(/^(0[1-9]|1[0-2]):[0-5][0-9] (AM|PM)$/),
+      )
 
       return {
         id: agenda.id,
-        title: agenda.title || "Untitled Agenda", // Ensure title is not empty
-        items: validItems
-      };
-    });
+        title: agenda.title || 'Untitled Agenda', // Ensure title is not empty
+        items: validItems,
+      }
+    })
 
     // Filter out empty agendas
-    const validAgendas = formattedAgendas.filter(agenda => agenda.items.length > 0);
+    const validAgendas = formattedAgendas.filter(
+      (agenda) => agenda.items.length > 0,
+    )
 
     const fullEventData = {
       ...eventData,
-      agenda: validAgendas
-    };
+      agenda: validAgendas,
+    }
 
     try {
-      eventSchema.parse(fullEventData);
-      setErrors({});
-      return true;
+      eventSchema.parse(fullEventData)
+      setErrors({})
+      return true
     } catch (error) {
       if (error instanceof z.ZodError) {
-        console.log('Validation errors:', error.errors);
-        const newErrors: Record<string, string> = {};
+        console.log('Validation errors:', error.errors)
+        const newErrors: Record<string, string> = {}
         error.errors.forEach((err) => {
           // Extract the field name from the path
-          const field = err.path[0] as string;
-          newErrors[field] = err.message;
-        });
-        setErrors(newErrors);
+          const field = err.path[0] as string
+          newErrors[field] = err.message
+        })
+        setErrors(newErrors)
       }
-      return false;
+      return false
     }
-  };
+  }
 
   const handleSubmit = async () => {
     if (!validateEventData()) {
-      toast.error("Please fix the errors in the form.");
-      return;
+      toast.error('Please fix the errors in the form.')
+      return
     }
 
-    setLoading(true);
+    setLoading(true)
 
     try {
-      const formattedAgenda = agendas.map(agenda => ({
+      const formattedAgenda = agendas.map((agenda) => ({
         id: agenda.id,
-        title: agenda.title || "Untitled Agenda",
-        items: agenda.items.map(item => ({
+        title: agenda.title || 'Untitled Agenda',
+        items: agenda.items.map((item) => ({
           id: item.id,
-          title: item.title || "Untitled Item",
-          description: item.description || "",
-          host: item.host || "",
-          startTime: item.startTime || "",
-          endTime: item.endTime || ""
-        }))
-      }));
+          title: item.title || 'Untitled Item',
+          description: item.description || '',
+          host: item.host || '',
+          startTime: item.startTime || '',
+          endTime: item.endTime || '',
+        })),
+      }))
 
       const eventPayload = {
         ...eventData,
         agenda: formattedAgenda,
-      };
+      }
 
       // console.log("Sending event data to backend:", eventPayload); // Debugging Log
 
-      const result = await createEvent(eventPayload);
+      const result = await createEvent(eventPayload)
 
       if (!result) {
-        throw new Error('Failed to create event');
+        throw new Error('Failed to create event')
       }
 
-      toast.success("Event created successfully!");
-      router.replace('/organization/events');
+      toast.success('Event created successfully!')
+      router.replace('/organization/events')
     } catch (error: any) {
-      console.error("Error creating event:", error); // Debugging Log
-      toast.warning("Failed to create event. Please try again.");
+      console.error('Error creating event:', error) // Debugging Log
+      toast.warning('Failed to create event. Please try again.')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
-
-
+  }
 
   const handleUpdateHighlights = (newHighlights: any) => {
-    setHighlights(newHighlights);
-    setEventData(prev => ({ ...prev, highlights: newHighlights }));
-  };
+    setHighlights(newHighlights)
+    setEventData((prev) => ({ ...prev, highlights: newHighlights }))
+  }
 
   const handleUpdateFaqs = (newFaqs: any) => {
-    setFaqs(newFaqs);
-    setEventData(prev => ({ ...prev, faqs: newFaqs }));
-  };
+    setFaqs(newFaqs)
+    setEventData((prev) => ({ ...prev, faqs: newFaqs }))
+  }
 
   // Handle click outside of location suggestions
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (locationInputRef.current && !locationInputRef.current.contains(event.target as Node)) {
+      if (
+        locationInputRef.current &&
+        !locationInputRef.current.contains(event.target as Node)
+      ) {
         setShowSuggestions(false)
       }
     }
 
-    document.addEventListener("mousedown", handleClickOutside)
+    document.addEventListener('mousedown', handleClickOutside)
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
+      document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [])
 
@@ -392,8 +411,12 @@ const EventCreationPage = () => {
               title={eventData.title}
               summary={eventData.summary}
               error={errors.title}
-              onTitleChange={(title) => setEventData(prev => ({ ...prev, title }))}
-              onSummaryChange={(summary) => setEventData(prev => ({ ...prev, summary }))}
+              onTitleChange={(title) =>
+                setEventData((prev) => ({ ...prev, title }))
+              }
+              onSummaryChange={(summary) =>
+                setEventData((prev) => ({ ...prev, summary }))
+              }
             />
           </div>
 
@@ -402,7 +425,6 @@ const EventCreationPage = () => {
             <div className="relative rounded-md overflow-hidden border bg-white-100 p-6">
               <div className="flex justify-between mb-4">
                 <div className="w-1/2 pr-4">
-
                   <EventDateTimePicker
                     date={date}
                     setDate={setDate}
@@ -453,10 +475,9 @@ const EventCreationPage = () => {
                       mapContainerStyle={{ width: '100%', height: '100%' }}
                       center={mapCenter}
                       zoom={13}
-                      onClick={handleMapClick}>
-                      {markerPosition && (
-                        <Marker position={markerPosition} />
-                      )}
+                      onClick={handleMapClick}
+                    >
+                      {markerPosition && <Marker position={markerPosition} />}
                     </GoogleMap>
                   ) : (
                     <div className="h-full bg-gray-200 flex items-center justify-center">

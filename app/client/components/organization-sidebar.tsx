@@ -37,7 +37,9 @@ const OrganizationSideBar = () => {
                     <Icon name={icon.name} />
                   </button>
                 </TooltipTrigger>
-                <TooltipContent side="right" align="center">{icon.title}</TooltipContent>
+                <TooltipContent side="right" align="center">
+                  {icon.title}
+                </TooltipContent>
               </Tooltip>
             )
           })}

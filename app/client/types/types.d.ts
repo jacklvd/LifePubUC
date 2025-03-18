@@ -1,55 +1,54 @@
 interface AgendaItem {
-  id: string | null;
-  title: string;
-  description?: string;
-  host?: string;
-  startTime: string;
-  endTime: string;
-  isNew?: boolean; // explicitly optional
+  id: string | null
+  title: string
+  description?: string
+  host?: string
+  startTime: string
+  endTime: string
+  isNew?: boolean // explicitly optional
 }
 
 interface Agenda {
-  id: string;
-  title: string;
-  active: boolean;
-  items: AgendaItem[];
+  id: string
+  title: string
+  active: boolean
+  items: AgendaItem[]
 }
 
 interface EventData {
-  email: string;
-  title: string;
-  summary: string;
-  description: string;
-  media?: string;
-  mediaType: 'image' | 'video';
-  location: string;
-  date: string;
-  startTime: string;
-  endTime: string;
-  agenda: Agenda[];
+  email: string
+  title: string
+  summary: string
+  description: string
+  media?: string
+  mediaType: 'image' | 'video'
+  location: string
+  date: string
+  startTime: string
+  endTime: string
+  agenda: Agenda[]
   highlights?: {
-    ageRestriction?: string;
-    doorTime?: string;
-    parkingInfo?: string;
-  };
+    ageRestriction?: string
+    doorTime?: string
+    parkingInfo?: string
+  }
   faqs?: Array<{
-    question: string;
-    answer: string;
-  }>;
+    question: string
+    answer: string
+  }>
 }
 
-
 interface LocationSuggestion {
-  place_id: string;
-  description: string;
+  place_id: string
+  description: string
 }
 
 interface CloudinaryResult {
-  event: file;
+  event: file
   info: {
-    secure_url: string;
-    resource_type: string;
-  };
+    secure_url: string
+    resource_type: string
+  }
 }
 
 interface AuthCredentials {
