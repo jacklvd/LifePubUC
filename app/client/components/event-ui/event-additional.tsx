@@ -328,7 +328,10 @@ const EventAdditional: React.FC<AdditionalProps> = ({
         open={showHighlightsDialog}
         onOpenChange={setShowHighlightsDialog}
       >
-        <DialogContent className="sm:max-w-md bg-white-100" aria-describedby="highlights-description">
+        <DialogContent
+          className="sm:max-w-md bg-white-100"
+          aria-describedby="highlights-description"
+        >
           <DialogHeader>
             <DialogTitle>
               {highlightType === 'age' && 'Add age restriction'}
@@ -430,7 +433,10 @@ const EventAdditional: React.FC<AdditionalProps> = ({
 
       {/* FAQ Dialog */}
       <Dialog open={showFaqDialog} onOpenChange={setShowFaqDialog}>
-        <DialogContent className="sm:max-w-md bg-white-100" aria-describedby="faq-description">
+        <DialogContent
+          className="sm:max-w-md bg-white-100"
+          aria-describedby="faq-description"
+        >
           <DialogHeader>
             <DialogTitle>
               {editingFaqIndex !== null ? 'Edit question' : 'Add question'}
