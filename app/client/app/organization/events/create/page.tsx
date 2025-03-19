@@ -25,7 +25,7 @@ import EventPhotoUpload from '@/components/event-ui/event-photo'
 import EventAgenda from '@/components/event-ui/event-agenda'
 import EventInsight from '@/components/event-ui/event-insight'
 
-const libraries = ['places'] as any;
+const libraries = ['places'] as any
 
 const EventCreationPage = () => {
   const router = useRouter()
