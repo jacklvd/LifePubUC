@@ -67,7 +67,7 @@ const EventPhotoUpload = ({
                   src={media}
                   alt="Event media"
                   className="w-full h-full object-cover"
-                  layout="fill"
+                  fill
                 />
               ) : (
                 <video controls className="w-full h-full">

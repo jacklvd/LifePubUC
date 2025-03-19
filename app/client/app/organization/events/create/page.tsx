@@ -25,6 +25,8 @@ import EventPhotoUpload from '@/components/event-ui/event-photo'
 import EventAgenda from '@/components/event-ui/event-agenda'
 import EventInsight from '@/components/event-ui/event-insight'
 
+const libraries = ['places'] as any;
+
 const EventCreationPage = () => {
   const router = useRouter()
   const { data: session } = useSession()
@@ -79,7 +81,7 @@ const EventCreationPage = () => {
 
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: GOOGLE_MAP_KEY as string,
-    libraries: ['places'] as any,
+    libraries,
   })
 
   const [eventData, setEventData] = useState<EventData>({
@@ -511,6 +513,9 @@ const EventCreationPage = () => {
                       center={mapCenter}
                       zoom={13}
                       onClick={handleMapClick}
+                      options={{
+                        gestureHandling: 'cooperative', // Allows touch gestures without overriding default behavior
+                      }}
                     >
                       {markerPosition && <Marker position={markerPosition} />}
                     </GoogleMap>
