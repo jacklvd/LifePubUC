@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react'
-import { Button } from './ui/button'
-import { Icon } from './icons'
+import { Button } from '../ui/button'
+import { Icon } from '../icons'
 
 // Helper function to get days of the month
 const getDaysInMonth = (year: number, month: number) => {

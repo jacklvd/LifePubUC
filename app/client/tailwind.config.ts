@@ -29,7 +29,7 @@ const config = {
           '800': '#1B4965',
           '900': '#0D2532',
           '950': '#071319',
-          DEFAULT: '#1B4965', // Using the dark blue as default
+          DEFAULT: '#1B4965',
           foreground: 'hsl(var(--primary-foreground))',
         },
         secondary: {
@@ -50,7 +50,6 @@ const config = {
         accent: {
           DEFAULT: '#5FA8D3',
         },
-
         palette: {
           lightest: '#BEE9E8',
           light: '#62B6CB',
@@ -66,27 +65,26 @@ const config = {
           '50': '#E9B306',
         },
         dark: {
-          100: '#16191E',
-          200: '#3A354E',
-          300: '#232839',
-          400: '#1E293B',
-          500: '#0F172A',
-          600: '#333C5C',
-          700: '#464F6F',
-          800: '#1E2230',
+          '100': '#16191E',
+          '200': '#3A354E',
+          '300': '#232839',
+          '400': '#1E293B',
+          '500': '#0F172A',
+          '600': '#333C5C',
+          '700': '#464F6F',
+          '800': '#1E2230',
         },
         light: {
-          100: '#D6E0FF',
-          200: '#EED1AC',
-          300: '#F8F8FF',
-          400: '#EDF1F1',
-          500: '#8D8D8D',
-          600: '#F9FAFB',
-          700: '#E2E8F0',
-          800: '#F8FAFC',
+          '100': '#D6E0FF',
+          '200': '#EED1AC',
+          '300': '#F8F8FF',
+          '400': '#EDF1F1',
+          '500': '#8D8D8D',
+          '600': '#F9FAFB',
+          '700': '#E2E8F0',
+          '800': '#F8FAFC',
         },
       },
-
       fontFamily: {
         sans: ['var(--font-dm-sans)'],
       },
@@ -127,6 +125,28 @@ const config = {
             lineHeight: '2rem',
           },
         ],
+      },
+      keyframes: {
+        'accordion-down': {
+          from: {
+            height: '0',
+          },
+          to: {
+            height: 'var(--radix-accordion-content-height)',
+          },
+        },
+        'accordion-up': {
+          from: {
+            height: 'var(--radix-accordion-content-height)',
+          },
+          to: {
+            height: '0',
+          },
+        },
+      },
+      animation: {
+        'accordion-down': 'accordion-down 0.2s ease-out',
+        'accordion-up': 'accordion-up 0.2s ease-out',
       },
     },
   },

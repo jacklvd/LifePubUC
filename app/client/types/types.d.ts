@@ -1,3 +1,56 @@
+interface AgendaItem {
+  id: string | null
+  title: string
+  description?: string
+  host?: string
+  startTime: string
+  endTime: string
+  isNew?: boolean // explicitly optional
+}
+
+interface Agenda {
+  id: string
+  title: string
+  active: boolean
+  items: AgendaItem[]
+}
+
+interface EventData {
+  email: string
+  title: string
+  summary: string
+  description: string
+  media?: string
+  mediaType: 'image' | 'video'
+  location: string
+  date: string
+  startTime: string
+  endTime: string
+  agenda: Agenda[]
+  highlights?: {
+    ageRestriction?: string
+    doorTime?: string
+    parkingInfo?: string
+  }
+  faqs?: Array<{
+    question: string
+    answer: string
+  }>
+}
+
+interface LocationSuggestion {
+  place_id: string
+  description: string
+}
+
+interface CloudinaryResult {
+  event: file
+  info: {
+    secure_url: string
+    resource_type: string
+  }
+}
+
 interface AuthCredentials {
   fullName: string
   email: string

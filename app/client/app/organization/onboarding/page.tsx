@@ -1,7 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 
 import React, { useState } from 'react'
-import Image from 'next/image'
 import {
   ArrowRight,
   CheckCircle,
@@ -229,14 +229,15 @@ export default function OrganizationOnboarding() {
                   <div>
                     <p className="font-medium">Account created successfully!</p>
                     <p className="text-sm">
-                      Now let's set up your payment information with Stripe.
+                      Now let&apos;s set up your payment information with
+                      Stripe.
                     </p>
                   </div>
                 </div>
 
                 <div className="mb-8 bg-gray-50 border border-gray-200 rounded-lg p-5">
                   <h3 className="font-medium mb-2">
-                    What you'll need to provide:
+                    What you&apos;ll need to provide:
                   </h3>
                   <ul className="space-y-2 text-sm text-gray-700">
                     <li className="flex items-start">
