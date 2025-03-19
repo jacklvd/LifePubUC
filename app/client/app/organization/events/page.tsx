@@ -12,7 +12,7 @@ import {
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { Icon } from '@/components/icons'
-import EventCalendar from '@/components/event-calendar'
+import EventCalendar from '@/components/event-ui/event-calendar'
 
 const EventsPage = () => {
   // const [activeTab, setActiveTab] = useState('events');

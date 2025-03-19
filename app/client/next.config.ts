@@ -5,18 +5,43 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
-    domains: [
-      'images.unsplash.com',
-      'images.pexels.com',
-      'example.com',
-      'i5.walmartimages.com',
-      'm.media-amazon.com',
-      'as2.ftcdn.net',
-      'cdnp.sanmar.com',
-      'www.flinnsci.com',
-      'i.pinimg.com',
-    ],
     remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.pexels.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'example.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i5.walmartimages.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'm.media-amazon.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'as2.ftcdn.net',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdnp.sanmar.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.flinnsci.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.pinimg.com',
+      },
       {
         protocol: 'https',
         hostname: 'img.freepik.com',
@@ -32,10 +57,6 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'plus.unsplash.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'i5.walmartimages.com',
       },
       {
         protocol: 'https',
@@ -55,31 +76,11 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'images.unsplash.com',
-      },
-      {
-        protocol: 'https',
         hostname: 'avatars.githubusercontent.com',
       },
       {
         protocol: 'https',
-        hostname: 'cdnp.sanmar.com',
-      },
-      {
-        protocol: 'https',
         hostname: 'res.cloudinary.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'images.pexels.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'as2.ftcdn.net',
-      },
-      {
-        protocol: 'https',
-        hostname: 'i.pinimg.com',
       },
       {
         protocol: 'https',
@@ -95,15 +96,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'example.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'm.media-amazon.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'www.flinnsci.com',
+        hostname: 'upcdn.io',
       },
     ],
   },

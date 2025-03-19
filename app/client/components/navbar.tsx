@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 
 import Link from 'next/link'
 import React, { useState, useEffect } from 'react'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { Input } from '@/components/ui/input'
-import { signOutUser } from '@/lib/actions/auth'
+import { signOutUser } from '@/lib/actions/auth-actions'
 
 import {
   DropdownMenu,
@@ -23,66 +24,72 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { Icon } from './icons'
 import { navbarIcons } from '@/constants'
 import { slide as Menu } from 'react-burger-menu'
 import { Twirl as Hamburger } from 'hamburger-react'
 
-import { IconNames } from './icons'
-
-// Custom styles for the burger menu - fixed TypeScript error by using strings for all values
+// Custom styles for the burger menu - adjusted for sidebar
 const burgerStyles = {
+  // bmBurgerButton: {
+  //   display: "none", // Hide the default burger button
+  // },
+  bmOverlay: {
+    background: 'rgba(0, 0, 0, 0.1)', // Dark background
+    zIndex: '100', // Ensure menu is above content
+  },
+  bmMenu: {
+    background: '#edf6f9',
+    padding: '2.5rem 1.5rem 1.5rem',
+    fontSize: '1rem',
+    // width: "calc(100vw - 130px)", // Adjust for sidebar width
+    maxWidth: '280px',
+    // boxShadow: "2px 0px 10px rgba(0, 0, 0, 0.1)",
+    zIndex: '101', // Ensure it's above overlay
+  },
   bmMenuWrap: {
     position: 'fixed',
     height: '100%',
-    top: '0', // Changed from number to string
+    top: '74px',
+    transition: '0.3s',
   },
-  bmOverlay: {
-    background: 'rgba(0, 0, 0, 0.3)',
-  },
-  bmCrossButton: {
-    height: '24px',
-    width: '24px',
-    right: '16px',
-    top: '16px',
-  },
-  bmCross: {
-    background: '#000',
-  },
-  bmMenu: {
-    background: 'white',
-    padding: '2.5em 1.5em 0',
-    fontSize: '1.15em',
-  },
-  bmMorphShape: {
-    fill: '#373a47',
-  },
-  bmItemList: {
-    color: '#b8b7ad',
-    padding: '0.8em',
-  },
+  // bmItemList: {
+  //   padding: "0px",
+  // },
   bmItem: {
     display: 'block',
+    padding: '0.8rem 0',
+    outline: 'none',
   },
+  // // bmCrossButton: {
+  // //   display: "none",
+  // // },
 }
 
 const Navbar = () => {
   const router = useRouter()
   const totalQuantity = useCartStore((state) => state.totalQuantity)
+  const pathname = usePathname()
   const [menuOpen, setMenuOpen] = useState(false)
 
-  // Close the menu when changing routes
+  // Close menu when route changes
   useEffect(() => {
-    const handleRouteChange = () => {
-      setMenuOpen(false)
+    setMenuOpen(false)
+  }, [pathname])
+
+  // Handle body scroll lock
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
     }
 
-    // Clean up event listener when component unmounts
     return () => {
-      handleRouteChange()
+      document.body.style.overflow = ''
     }
-  }, [])
+  }, [menuOpen])
 
   const handleSignOut = async () => {
     try {
@@ -98,16 +105,19 @@ const Navbar = () => {
     }
   }
 
-  // Fixes the issue with the logo clicks by ensuring menu doesn't interfere
   const handleLogoClick = () => {
     if (menuOpen) {
       setMenuOpen(false)
     }
   }
 
+  const handleMenuStateChange = (state: any) => {
+    setMenuOpen(state.isOpen)
+  }
+
   return (
     <nav className="w-full text-primary border-b border-[0.2px]">
-      <div className="max-w-7xl mx-auto flex justify-between items-center px-4 py-3">
+      <div className="flex justify-between items-center px-4 py-3">
         {/* LOGO with click handler */}
         <Link
           href="/"
@@ -131,8 +141,14 @@ const Navbar = () => {
         </div>
 
         {/* MOBILE MENU TOGGLE (Hamburger Menu) */}
-        <div className="md:hidden flex items-center justify-end text-black ml-auto z-20">
-          <Hamburger toggled={menuOpen} toggle={setMenuOpen} size={24} />
+        <div className="md:hidden flex items-center justify-end text-black ml-auto z-[102]">
+          <Hamburger
+            toggled={menuOpen}
+            toggle={setMenuOpen}
+            size={24}
+            distance="md"
+            rounded
+          />
         </div>
 
         {/* MOBILE MENU (Burger Menu) - Only visible on mobile */}
@@ -140,59 +156,89 @@ const Navbar = () => {
           <Menu
             right
             isOpen={menuOpen}
-            onStateChange={({ isOpen }) => setMenuOpen(isOpen)}
+            onStateChange={handleMenuStateChange}
             styles={burgerStyles}
             width={'250px'}
-            disableOverlayClick={false}
+            customBurgerIcon={false}
+            // customCrossIcon={false}
+            pageWrapId={'page-wrap'}
+            outerContainerId={'outer-container'}
+            // Add noOverlay to handle our own overlay
+            noOverlay
           >
-            <div className="menu-items mt-8">
+            <div className="menu-items mt-4">
+              <div className="relative w-full mb-6">
+                <Input
+                  type="text"
+                  placeholder="Search..."
+                  className="w-full bg-white text-black text-md border rounded-lg"
+                />
+                <Icon
+                  name="Search"
+                  className="absolute right-3 top-2.5 h-5 w-5"
+                />
+              </div>
+
               {navbarIcons.map((icon, index) => (
                 <Link
                   key={index}
                   href={icon.route}
-                  className="menu-item block py-3 text-primary"
+                  className="flex items-center py-3 text-primary hover:bg-primary-50 rounded-lg px-2 transition-colors"
+                  onClick={() => setMenuOpen(false)}
                 >
                   {icon.title === 'Events' ? ( // Use a string, not the Event object
                     <div>
-                      <p>Become an Organizer</p>
+                      {/* <p>Become an Organizer</p> */}
                       <Icon
                         name={icon.name}
                         className="h-6 w-6 inline-block mr-2"
                       />
                     </div>
                   ) : (
-                    <Icon
-                      name={icon.name}
-                      className="h-6 w-6 inline-block mr-2"
-                    />
+                    <Icon name={icon.name} className="h-6 w-6 mr-3" />
                   )}
 
-                  {icon.title}
+                  <span>{icon.title}</span>
                 </Link>
               ))}
+
               <Link
                 href="/cart"
-                className="menu-item block py-3 relative text-primary"
+                className="flex items-center py-3 text-primary hover:bg-primary-50 rounded-lg px-2 transition-colors"
+                onClick={() => setMenuOpen(false)}
               >
-                <Icon
-                  name="ShoppingCart"
-                  className="h-6 w-6 inline-block mr-2"
-                />
-                Cart
-                <span className="absolute top-3 ml-1 bg-primary-500 text-white-100 text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                  {totalQuantity || '0'}
-                </span>
+                <div className="relative">
+                  <Icon name="ShoppingCart" className="h-6 w-6 mr-3" />
+                  {totalQuantity > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-primary-500 text-white-100 text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                      {totalQuantity}
+                    </span>
+                  )}
+                </div>
+                <span>Cart</span>
               </Link>
+
               <button
-                onClick={handleSignOut}
-                className="menu-item block py-3 text-primary"
+                onClick={() => {
+                  setMenuOpen(false)
+                  handleSignOut()
+                }}
+                className="flex items-center w-full py-3 text-primary hover:bg-primary-50 rounded-lg px-2 transition-colors"
               >
-                <Icon name="LogOut" className="h-6 w-6 inline-block mr-2" />
-                Sign out
+                <Icon name="LogOut" className="h-6 w-6 mr-3" />
+                <span>Sign out</span>
               </button>
             </div>
           </Menu>
         </div>
+
+        {/* Create our own overlay since we're using noOverlay */}
+        {menuOpen && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-60 z-[99]"
+            onClick={() => setMenuOpen(false)}
+          />
+        )}
 
         {/* ACTION ICONS (Hidden on Mobile) */}
         <div className="hidden md:flex items-center gap-6">
@@ -249,9 +295,11 @@ const Navbar = () => {
                 <Link href="/checkout" className="relative">
                   <div className="p-2 hover:bg-primary-50 hover:rounded-full transition-all">
                     <Icon name="ShoppingCart" className="h-6 w-6" />
-                    <span className="absolute -top-2 -right-2 bg-primary-500 text-white-100 text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                      {totalQuantity || '0'}
-                    </span>
+                    {totalQuantity > 0 && (
+                      <span className="absolute -top-2 -right-2 bg-primary-500 text-white-100 text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                        {totalQuantity}
+                      </span>
+                    )}
                   </div>
                 </Link>
               </TooltipTrigger>
