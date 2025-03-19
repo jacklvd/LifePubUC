@@ -328,7 +328,7 @@ const EventAdditional: React.FC<AdditionalProps> = ({
         open={showHighlightsDialog}
         onOpenChange={setShowHighlightsDialog}
       >
-        <DialogContent className="sm:max-w-md bg-white-100">
+        <DialogContent className="sm:max-w-md bg-white-100" aria-describedby="highlights-description">
           <DialogHeader>
             <DialogTitle>
               {highlightType === 'age' && 'Add age restriction'}
@@ -337,6 +337,11 @@ const EventAdditional: React.FC<AdditionalProps> = ({
               {highlightType === 'parking' && 'Is there parking at your venue?'}
             </DialogTitle>
           </DialogHeader>
+
+          {/* Add a description for accessibility */}
+          <p id="highlights-description" className="text-gray-600 text-sm">
+            Provide an appropriate highlight option to inform attendees.
+          </p>
 
           <div className="py-4">
             {highlightType === 'age' && (
@@ -425,12 +430,16 @@ const EventAdditional: React.FC<AdditionalProps> = ({
 
       {/* FAQ Dialog */}
       <Dialog open={showFaqDialog} onOpenChange={setShowFaqDialog}>
-        <DialogContent className="sm:max-w-md bg-white-100">
+        <DialogContent className="sm:max-w-md bg-white-100" aria-describedby="faq-description">
           <DialogHeader>
             <DialogTitle>
               {editingFaqIndex !== null ? 'Edit question' : 'Add question'}
             </DialogTitle>
           </DialogHeader>
+          {/* Add description for screen readers */}
+          <p id="faq-description" className="text-gray-600 text-sm">
+            Provide a common question and answer to assist attendees.
+          </p>
 
           <div className="py-4 space-y-4">
             <div className="space-y-2">
