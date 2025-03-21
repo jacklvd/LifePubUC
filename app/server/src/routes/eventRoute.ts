@@ -1,13 +1,13 @@
 import express from 'express'
-import { 
-  createEvent, 
-  updateEvent, 
+import {
+  createEvent,
+  updateEvent,
   getEventById,
   publishEvent,
   createEventTicket,
   updateEventTicket,
   deleteEventTicket,
-  getEventTickets
+  getEventTickets,
 } from '../controllers/eventController'
 
 const router = express.Router()

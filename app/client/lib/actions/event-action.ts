@@ -74,37 +74,39 @@ export const getEventById = async (eventId: any) => {
   }
 }
 
-export async function publishEvent(eventId: string): Promise<PublishEventResponse> {
+export async function publishEvent(
+  eventId: string,
+): Promise<PublishEventResponse> {
   try {
-    console.log(`[CLIENT] Publishing event: ${eventId}`);
-    
-    const url = `${API_BASE_URL}/api/events/${eventId}/publish`;
-    console.log(`[CLIENT] Making request to: ${url}`);
-    
+    console.log(`[CLIENT] Publishing event: ${eventId}`)
+
+    const url = `${API_BASE_URL}/api/events/${eventId}/publish`
+    console.log(`[CLIENT] Making request to: ${url}`)
+
     const response = await axios.post<PublishEventResponse>(
-      url, 
+      url,
       {}, // Empty body
       {
         headers: {
           'Content-Type': 'application/json',
         },
-      }
-    );
-    
-    console.log(`[CLIENT] Publish response status: ${response.status}`);
-    return response.data;
+      },
+    )
+
+    console.log(`[CLIENT] Publish response status: ${response.status}`)
+    return response.data
   } catch (error: any) {
-    console.error('[CLIENT] Error publishing event:');
-    
+    console.error('[CLIENT] Error publishing event:')
+
     if (error.response) {
-      console.error(`[CLIENT] Status: ${error.response.status}`);
-      console.error('[CLIENT] Data:', error.response.data);
+      console.error(`[CLIENT] Status: ${error.response.status}`)
+      console.error('[CLIENT] Data:', error.response.data)
     } else if (error.request) {
-      console.error('[CLIENT] No response received');
+      console.error('[CLIENT] No response received')
     } else {
-      console.error(`[CLIENT] Error message: ${error.message}`);
+      console.error(`[CLIENT] Error message: ${error.message}`)
     }
-    
-    throw error.response?.data || error;
+
+    throw error.response?.data || error
   }
 }

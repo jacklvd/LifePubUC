@@ -59,87 +59,94 @@ export interface IEvent extends Document {
   timestamps?: boolean
 }
 
-const eventSchema = new Schema<IEvent>({
-  _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
-  eventId: { type: String, required: true },
-  email: { type: String, required: true },
-  title: { type: String, required: true },
-  summary: { type: String, required: true },
-  description: { type: String },
-  media: { type: String },
-  mediaType: { type: String, enum: ['image', 'video'], required: true },
-  location: { type: String, required: true },
-  date: { type: Date, required: true },
-  startTime: { type: String, required: true },
-  endTime: { type: String, required: true },
-  highlights: {
-    ageRestriction: { type: String },
-    doorTime: { type: String },
-    parkingInfo: { type: String },
-    _id: false,
-  },
-  faqs: [
-    {
-      question: { type: String, required: true },
-      answer: { type: String, required: true },
+const eventSchema = new Schema<IEvent>(
+  {
+    _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
+    eventId: { type: String, required: true },
+    email: { type: String, required: true },
+    title: { type: String, required: true },
+    summary: { type: String, required: true },
+    description: { type: String },
+    media: { type: String },
+    mediaType: { type: String, enum: ['image', 'video'], required: true },
+    location: { type: String, required: true },
+    date: { type: Date, required: true },
+    startTime: { type: String, required: true },
+    endTime: { type: String, required: true },
+    highlights: {
+      ageRestriction: { type: String },
+      doorTime: { type: String },
+      parkingInfo: { type: String },
       _id: false,
     },
-  ],
-  agenda: [
-    {
-      id: { type: String, required: true },
-      title: { type: String, required: true },
-      items: [
-        {
-          id: { type: String, required: true },
-          title: { type: String, required: true },
-          description: { type: String, default: '' },
-          host: { type: String, default: '' },
-          startTime: { type: String },
-          endTime: { type: String },
-          _id: false,
+    faqs: [
+      {
+        question: { type: String, required: true },
+        answer: { type: String, required: true },
+        _id: false,
+      },
+    ],
+    agenda: [
+      {
+        id: { type: String, required: true },
+        title: { type: String, required: true },
+        items: [
+          {
+            id: { type: String, required: true },
+            title: { type: String, required: true },
+            description: { type: String, default: '' },
+            host: { type: String, default: '' },
+            startTime: { type: String },
+            endTime: { type: String },
+            _id: false,
+          },
+        ],
+        _id: false,
+      },
+    ],
+    tickets: [
+      {
+        id: { type: String, required: true },
+        name: { type: String, required: true },
+        sold: { type: Number, default: 0 },
+        capacity: { type: Number, required: true },
+        type: {
+          type: String,
+          enum: ['Free', 'Paid', 'Donation'],
+          required: true,
         },
-      ],
-      _id: false,
+        price: { type: Number },
+        saleStart: { type: Date, required: true },
+        saleEnd: { type: Date, required: true },
+        startTime: { type: String, required: true },
+        endTime: { type: String, required: true },
+        minPerOrder: { type: Number, default: 1 },
+        maxPerOrder: { type: Number, default: 10 },
+        _id: false,
+      },
+    ],
+    totalCapacity: { type: Number },
+    status: {
+      type: String,
+      enum: ['draft', 'on sale', 'cancelled'],
+      default: 'draft',
     },
-  ],
-  tickets: [
-    {
-      id: { type: String, required: true },
-      name: { type: String, required: true },
-      sold: { type: Number, default: 0 },
-      capacity: { type: Number, required: true },
-      type: { type: String, enum: ['Free', 'Paid', 'Donation'], required: true },
-      price: { type: Number },
-      saleStart: { type: Date, required: true },
-      saleEnd: { type: Date, required: true },
-      startTime: { type: String, required: true },
-      endTime: { type: String, required: true },
-      minPerOrder: { type: Number, default: 1 },
-      maxPerOrder: { type: Number, default: 10 },
-      _id: false,
+    publishedAt: {
+      type: Date,
+      default: null,
     },
-  ],
-  totalCapacity: { type: Number },
-  status: {
-    type: String,
-    enum: ['draft', 'on sale', 'cancelled'],
-    default: 'draft'
+
+    // Optional: Add more metadata about publication if needed
+    publishedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      default: null,
+    },
   },
-  publishedAt: {
-    type: Date,
-    default: null
+  {
+    timestamps: true,
   },
-  
-  // Optional: Add more metadata about publication if needed
-  publishedBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    default: null
-  }
-}, {
-  timestamps: true,
-});
+)
 
 const Event = mongoose.model<IEvent>('Event', eventSchema)
 export default Event

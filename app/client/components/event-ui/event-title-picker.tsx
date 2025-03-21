@@ -19,7 +19,7 @@ const EventTitleInput = ({
   onSummaryChange,
 }: Props) => {
   return (
-    <div className='mb-6'>
+    <div className="mb-6">
       <div className="relative rounded-md border bg-white-100 p-6">
         <h2 className="text-2xl font-bold mb-4">Event Overview</h2>
         <p className="text-gray-600 text-sm mb-4">
@@ -49,7 +49,6 @@ const EventTitleInput = ({
         </Button>
       </div>
     </div>
-
   )
 }
 
