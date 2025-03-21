@@ -1,6 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // hooks/use-ticket.ts
-import { useState, useEffect, useCallback, useRef, useMemo, useReducer } from 'react'
+import {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  useMemo,
+  useReducer,
+} from 'react'
 import { toast } from 'sonner'
 import { getEventById } from '@/lib/actions/event-action'
 import {
@@ -32,10 +39,16 @@ interface TicketState {
 
 // Action types for reducer
 type TicketAction =
-  | { type: 'RESET_FORM', payload: { eventDate?: Date, eventEndTime?: string } }
-  | { type: 'SET_FOR_ADD', payload: { eventDate?: Date, eventEndTime?: string } }
-  | { type: 'SET_FOR_EDIT', payload: { ticket: Ticket, eventDate?: Date, eventEndTime?: string } }
-  | { type: 'UPDATE_FIELD', payload: { field: keyof TicketState, value: any } }
+  | { type: 'RESET_FORM'; payload: { eventDate?: Date; eventEndTime?: string } }
+  | {
+      type: 'SET_FOR_ADD'
+      payload: { eventDate?: Date; eventEndTime?: string }
+    }
+  | {
+      type: 'SET_FOR_EDIT'
+      payload: { ticket: Ticket; eventDate?: Date; eventEndTime?: string }
+    }
+  | { type: 'UPDATE_FIELD'; payload: { field: keyof TicketState; value: any } }
 
 // Initial state for ticket form
 const initialTicketState: TicketState = {
@@ -48,7 +61,7 @@ const initialTicketState: TicketState = {
   startTime: '08:00 AM',
   endTime: '05:00 PM', // Will be adjusted based on event time
   minPerOrder: 1,
-  maxPerOrder: 10
+  maxPerOrder: 10,
 }
 
 // Helper function to extract time components
@@ -57,11 +70,11 @@ const getTimeComponents = (timeStr: string) => {
   const [hourStr, minuteStr] = timePart.split(':')
   let hour = parseInt(hourStr, 10)
   const minute = parseInt(minuteStr, 10)
-  
+
   // Convert to 24-hour format
   if (period === 'PM' && hour < 12) hour += 12
   if (period === 'AM' && hour === 12) hour = 0
-  
+
   return { hour, minute }
 }
 
@@ -75,22 +88,27 @@ const formatTime = (hour: number, minute: number) => {
 }
 
 // Reducer to manage ticket form state
-const ticketReducer = (state: TicketState, action: TicketAction): TicketState => {
+const ticketReducer = (
+  state: TicketState,
+  action: TicketAction,
+): TicketState => {
   switch (action.type) {
     case 'RESET_FORM': {
       const today = new Date()
       let endDate = new Date()
       let endTime = '05:00 PM' // Default end time
-      
+
       // Handle event date and time if available
       if (action.payload.eventDate) {
         // Set end date to SAME DAY as event (not day before)
         endDate = new Date(action.payload.eventDate)
-        
+
         // If event has an end time, use it (minus 1 hour)
         if (action.payload.eventEndTime) {
-          const { hour, minute } = getTimeComponents(action.payload.eventEndTime)
-          
+          const { hour, minute } = getTimeComponents(
+            action.payload.eventEndTime,
+          )
+
           // Set end time to 1 hour before event end time
           const adjustedHour = hour > 0 ? hour - 1 : 23
           endTime = formatTime(adjustedHour, minute)
@@ -98,28 +116,28 @@ const ticketReducer = (state: TicketState, action: TicketAction): TicketState =>
       } else {
         endDate.setDate(endDate.getDate() + 30) // Default to 30 days later if no event date
       }
-      
+
       return {
         ...initialTicketState,
         saleStartDate: today,
         saleEndDate: endDate,
-        endTime
+        endTime,
       }
     }
-    
-    case 'SET_FOR_ADD': 
-      return ticketReducer(state, { 
-        type: 'RESET_FORM', 
-        payload: { 
+
+    case 'SET_FOR_ADD':
+      return ticketReducer(state, {
+        type: 'RESET_FORM',
+        payload: {
           eventDate: action.payload.eventDate,
-          eventEndTime: action.payload.eventEndTime
-        } 
+          eventEndTime: action.payload.eventEndTime,
+        },
       })
-    
+
     case 'SET_FOR_EDIT': {
       const ticket = action.payload.ticket
       const { eventDate, eventEndTime } = action.payload
-      
+
       // Start with the ticket's current values
       const formState = {
         ticketType: ticket.type,
@@ -131,42 +149,44 @@ const ticketReducer = (state: TicketState, action: TicketAction): TicketState =>
         startTime: ticket.startTime,
         endTime: ticket.endTime,
         minPerOrder: ticket.minPerOrder || 1,
-        maxPerOrder: ticket.maxPerOrder || 10
+        maxPerOrder: ticket.maxPerOrder || 10,
       }
-      
+
       // If we have event data, ensure the sale end date/time is valid
       if (eventDate) {
         const eventDateObj = new Date(eventDate)
-        
+
         // Ensure sale end date is not after event date
         if (formState.saleEndDate > eventDateObj) {
           formState.saleEndDate = eventDateObj
         }
-        
+
         // Adjust end time if needed
         if (eventEndTime) {
           const { hour, minute } = getTimeComponents(eventEndTime)
           const ticketEndTime = getTimeComponents(ticket.endTime)
-          
+
           // If ticket end time is after event end time, adjust it
-          if ((ticketEndTime.hour > hour) || 
-              (ticketEndTime.hour === hour && ticketEndTime.minute >= minute)) {
+          if (
+            ticketEndTime.hour > hour ||
+            (ticketEndTime.hour === hour && ticketEndTime.minute >= minute)
+          ) {
             // Set to 1 hour before event end
             const adjustedHour = hour > 0 ? hour - 1 : 23
             formState.endTime = formatTime(adjustedHour, minute)
           }
         }
       }
-      
+
       return formState
     }
-    
+
     case 'UPDATE_FIELD':
       return {
         ...state,
-        [action.payload.field]: action.payload.value
+        [action.payload.field]: action.payload.value,
       }
-    
+
     default:
       return state
   }
@@ -182,16 +202,16 @@ export const useTicketManagement = (
   const [totalCapacity, setTotalCapacity] = useState(0)
   const [event, setEvent] = useState<any>(null)
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<any>(null);
+  const [error, setError] = useState<any>(null)
   const [currentTicket, setCurrentTicket] = useState<Ticket | null>(null)
-  
+
   // Use a single state for all dialogs to prevent multiple dialogs being open
   const [activeDialog, setActiveDialog] = useState<DialogType>(null)
   const [activeCalendar, setActiveCalendar] = useState<CalendarType>(null)
-  
+
   // Use reducer for form state management
   const [formState, dispatch] = useReducer(ticketReducer, initialTicketState)
-  
+
   // Memoize the parsed event date
   const parsedEventDate = useMemo(() => {
     if (event?.date) {
@@ -199,7 +219,7 @@ export const useTicketManagement = (
     }
     return undefined
   }, [event?.date])
-  
+
   // Refs for tracking initialization
   const dataFetchedRef = useRef(false)
 
@@ -209,23 +229,24 @@ export const useTicketManagement = (
     if (event?.time) return event.time // Fallback to main event time
     return '11:59 PM' // Default if no time found
   }, [event])
-  
+
   // Memoize time options with limit to event end time
   const generateTimeOptions = useMemo(() => {
     const options = []
-    const { hour: eventEndHour, minute: eventEndMinute } = getTimeComponents(eventEndTime)
-    
+    const { hour: eventEndHour, minute: eventEndMinute } =
+      getTimeComponents(eventEndTime)
+
     // Calculate maximum time (1 hour before event end)
     const maxHour = eventEndHour > 0 ? eventEndHour - 1 : 23
     const maxMinute = eventEndMinute
-    
+
     for (let hour = 0; hour < 24; hour++) {
       for (let minute = 0; minute < 60; minute += 30) {
         // Skip times that are after or equal to max time
         if (hour > maxHour || (hour === maxHour && minute > maxMinute)) {
           continue
         }
-        
+
         const h = hour % 12 || 12
         const period = hour < 12 ? 'AM' : 'PM'
         const formattedHour = h.toString().padStart(2, '0')
@@ -234,7 +255,7 @@ export const useTicketManagement = (
         options.push(time)
       }
     }
-    
+
     // Ensure we always have at least one option
     if (options.length === 0) {
       const h = maxHour % 12 || 12
@@ -243,7 +264,7 @@ export const useTicketManagement = (
       const formattedMinute = maxMinute.toString().padStart(2, '0')
       options.push(`${formattedHour}:${formattedMinute} ${period}`)
     }
-    
+
     return options
   }, [eventEndTime])
 
@@ -257,9 +278,9 @@ export const useTicketManagement = (
       // Fetch event details
       const eventData = await getEventById(eventId)
       if (!eventData || eventData.error) {
-        setError(eventData?.error || 'Event not found');
-        setLoading(false);
-        return;
+        setError(eventData?.error || 'Event not found')
+        setLoading(false)
+        return
       }
       setEvent(eventData)
 
@@ -275,55 +296,64 @@ export const useTicketManagement = (
 
       dataFetchedRef.current = true
     } catch (error: any) {
-      console.error('Error fetching data:', error);
-      setError(error?.message || 'Failed to load event data');
+      console.error('Error fetching data:', error)
+      setError(error?.message || 'Failed to load event data')
     } finally {
       setLoading(false)
     }
   }, [eventId, markStepCompleted])
 
   // Field update handlers (simplified to dispatch)
-  const updateField = useCallback(<T extends keyof TicketState>(field: T, value: TicketState[T]) => {
-    dispatch({ type: 'UPDATE_FIELD', payload: { field, value } })
-  }, [])
+  const updateField = useCallback(
+    <T extends keyof TicketState>(field: T, value: TicketState[T]) => {
+      dispatch({ type: 'UPDATE_FIELD', payload: { field, value } })
+    },
+    [],
+  )
 
   // Date validation
-  const isEndDateDisabled = useCallback((date: Date) => {
-    if (!parsedEventDate) return false
-    return date > parsedEventDate
-  }, [parsedEventDate])
+  const isEndDateDisabled = useCallback(
+    (date: Date) => {
+      if (!parsedEventDate) return false
+      return date > parsedEventDate
+    },
+    [parsedEventDate],
+  )
 
   // Dialog control functions
   const openAddDialog = useCallback(() => {
     // Then set up the form
-    setCurrentTicket(null);
-    dispatch({ 
-      type: 'SET_FOR_ADD', 
-      payload: { 
+    setCurrentTicket(null)
+    dispatch({
+      type: 'SET_FOR_ADD',
+      payload: {
         eventDate: parsedEventDate,
-        eventEndTime: eventEndTime
-      } 
-    });
-    
-    // Close any open calendars first
-    setActiveCalendar(null);
-    
-    // Then open the dialog
-    setActiveDialog('add');
-  }, [parsedEventDate, eventEndTime]);
-
-  const openEditDialog = useCallback((ticket: Ticket) => {
-    setCurrentTicket(ticket)
-    dispatch({ 
-      type: 'SET_FOR_EDIT', 
-      payload: { 
-        ticket,
-        eventDate: parsedEventDate,
-        eventEndTime: eventEndTime
-      } 
+        eventEndTime: eventEndTime,
+      },
     })
-    setActiveDialog('edit')
+
+    // Close any open calendars first
+    setActiveCalendar(null)
+
+    // Then open the dialog
+    setActiveDialog('add')
   }, [parsedEventDate, eventEndTime])
+
+  const openEditDialog = useCallback(
+    (ticket: Ticket) => {
+      setCurrentTicket(ticket)
+      dispatch({
+        type: 'SET_FOR_EDIT',
+        payload: {
+          ticket,
+          eventDate: parsedEventDate,
+          eventEndTime: eventEndTime,
+        },
+      })
+      setActiveDialog('edit')
+    },
+    [parsedEventDate, eventEndTime],
+  )
 
   const openDeleteDialog = useCallback((ticket: Ticket) => {
     setCurrentTicket(ticket)
@@ -338,11 +368,19 @@ export const useTicketManagement = (
   // Handle form submission for adding a ticket
   const handleAddTicket = useCallback(async () => {
     try {
-      const { 
-        ticketName, ticketCapacity, ticketType, ticketPrice,
-        saleStartDate, saleEndDate, startTime, endTime, minPerOrder, maxPerOrder
+      const {
+        ticketName,
+        ticketCapacity,
+        ticketType,
+        ticketPrice,
+        saleStartDate,
+        saleEndDate,
+        startTime,
+        endTime,
+        minPerOrder,
+        maxPerOrder,
       } = formState
-      
+
       // Validate form
       if (!ticketName) {
         toast.error('Ticket name is required')
@@ -353,27 +391,33 @@ export const useTicketManagement = (
         toast.error('Sale start and end dates are required')
         return
       }
-      
+
       // Automatically ensure sale end date and time are valid
       let adjustedSaleEndDate = new Date(saleEndDate)
       let adjustedEndTime = endTime
-      
+
       // If we have event date, ensure sale ends on or before event date
       if (parsedEventDate) {
         if (adjustedSaleEndDate > parsedEventDate) {
           adjustedSaleEndDate = new Date(parsedEventDate)
         }
-        
+
         // If on the same day as the event, ensure end time is before event
-        if (adjustedSaleEndDate.toDateString() === parsedEventDate.toDateString()) {
+        if (
+          adjustedSaleEndDate.toDateString() === parsedEventDate.toDateString()
+        ) {
           const endTimeComponents = getTimeComponents(endTime)
           const eventEndComponents = getTimeComponents(eventEndTime)
-          
+
           // If ticket sale ends after event starts, adjust it
           if (endTimeComponents.hour >= eventEndComponents.hour - 1) {
             // Set to 1 hour before event end time
-            const adjustedHour = eventEndComponents.hour > 0 ? eventEndComponents.hour - 1 : 23
-            adjustedEndTime = formatTime(adjustedHour, eventEndComponents.minute)
+            const adjustedHour =
+              eventEndComponents.hour > 0 ? eventEndComponents.hour - 1 : 23
+            adjustedEndTime = formatTime(
+              adjustedHour,
+              eventEndComponents.minute,
+            )
           }
         }
       }
@@ -386,7 +430,7 @@ export const useTicketManagement = (
         saleStart: saleStartDate,
         saleEnd: adjustedSaleEndDate, // Use adjusted date
         startTime,
-        endTime: adjustedEndTime,     // Use adjusted time
+        endTime: adjustedEndTime, // Use adjusted time
         minPerOrder,
         maxPerOrder,
         updateTotalCapacity: true,
@@ -395,10 +439,10 @@ export const useTicketManagement = (
       const newTicket = await createTicket(eventId, ticketData)
 
       // Update tickets list
-      setTickets(prev => [...prev, newTicket])
+      setTickets((prev) => [...prev, newTicket])
 
       // Update total capacity
-      setTotalCapacity(prev => prev + ticketCapacity)
+      setTotalCapacity((prev) => prev + ticketCapacity)
 
       // Mark tickets step as completed
       markStepCompleted('tickets')
@@ -409,16 +453,31 @@ export const useTicketManagement = (
       console.error('Error adding ticket:', error)
       toast.error('Failed to add ticket')
     }
-  }, [closeAllDialogs, eventEndTime, eventId, formState, markStepCompleted, parsedEventDate])
+  }, [
+    closeAllDialogs,
+    eventEndTime,
+    eventId,
+    formState,
+    markStepCompleted,
+    parsedEventDate,
+  ])
 
   // Handle updating ticket
   const handleUpdateTicket = useCallback(async () => {
     try {
       if (!currentTicket) return
-      
-      const { 
-        ticketName, ticketCapacity, ticketType, ticketPrice,
-        saleStartDate, saleEndDate, startTime, endTime, minPerOrder, maxPerOrder
+
+      const {
+        ticketName,
+        ticketCapacity,
+        ticketType,
+        ticketPrice,
+        saleStartDate,
+        saleEndDate,
+        startTime,
+        endTime,
+        minPerOrder,
+        maxPerOrder,
       } = formState
 
       // Validate form
@@ -435,24 +494,30 @@ export const useTicketManagement = (
       // Automatically adjust sale end date and time to be valid
       let adjustedSaleEndDate = new Date(saleEndDate)
       let adjustedEndTime = endTime
-      
+
       // If we have event date, ensure sale ends on or before event date
       if (parsedEventDate) {
         if (adjustedSaleEndDate > parsedEventDate) {
           toast.info('Adjusting sale end date to match event date')
           adjustedSaleEndDate = new Date(parsedEventDate)
         }
-        
+
         // If on the same day as the event, ensure end time is before event
-        if (adjustedSaleEndDate.toDateString() === parsedEventDate.toDateString()) {
+        if (
+          adjustedSaleEndDate.toDateString() === parsedEventDate.toDateString()
+        ) {
           const endTimeComponents = getTimeComponents(endTime)
           const eventEndComponents = getTimeComponents(eventEndTime)
-          
+
           // If ticket sale ends after or too close to event start, adjust it
           if (endTimeComponents.hour >= eventEndComponents.hour - 1) {
             // Set to 1 hour before event end time
-            const adjustedHour = eventEndComponents.hour > 0 ? eventEndComponents.hour - 1 : 23
-            adjustedEndTime = formatTime(adjustedHour, eventEndComponents.minute)
+            const adjustedHour =
+              eventEndComponents.hour > 0 ? eventEndComponents.hour - 1 : 23
+            adjustedEndTime = formatTime(
+              adjustedHour,
+              eventEndComponents.minute,
+            )
             toast.info('Adjusting sale end time to 1 hour before event')
           }
         }
@@ -467,7 +532,7 @@ export const useTicketManagement = (
         saleStart: saleStartDate,
         saleEnd: adjustedSaleEndDate, // Use adjusted date
         startTime,
-        endTime: adjustedEndTime,     // Use adjusted time
+        endTime: adjustedEndTime, // Use adjusted time
         minPerOrder,
         maxPerOrder,
         updateTotalCapacity: true,
@@ -480,13 +545,15 @@ export const useTicketManagement = (
       )
 
       // Update tickets list
-      setTickets(prev => prev.map(ticket => 
-        ticket.id === currentTicket.id ? updatedTicket : ticket
-      ))
+      setTickets((prev) =>
+        prev.map((ticket) =>
+          ticket.id === currentTicket.id ? updatedTicket : ticket,
+        ),
+      )
 
       // Calculate capacity difference for total capacity update
       const capacityDiff = ticketCapacity - currentTicket.capacity
-      setTotalCapacity(prev => prev + capacityDiff)
+      setTotalCapacity((prev) => prev + capacityDiff)
 
       closeAllDialogs()
       toast.success('Ticket updated successfully')
@@ -494,7 +561,14 @@ export const useTicketManagement = (
       console.error('Error updating ticket:', error)
       toast.error('Failed to update ticket')
     }
-  }, [closeAllDialogs, currentTicket, eventEndTime, eventId, formState, parsedEventDate])
+  }, [
+    closeAllDialogs,
+    currentTicket,
+    eventEndTime,
+    eventId,
+    formState,
+    parsedEventDate,
+  ])
 
   // Handle delete ticket
   const handleDeleteTicket = useCallback(async () => {
@@ -504,10 +578,12 @@ export const useTicketManagement = (
       await deleteTicket(eventId, currentTicket.id)
 
       // Update tickets list
-      setTickets(prev => prev.filter(ticket => ticket.id !== currentTicket.id))
+      setTickets((prev) =>
+        prev.filter((ticket) => ticket.id !== currentTicket.id),
+      )
 
       // Update total capacity
-      setTotalCapacity(prev => prev - currentTicket.capacity)
+      setTotalCapacity((prev) => prev - currentTicket.capacity)
 
       closeAllDialogs()
       toast.success('Ticket deleted successfully')
@@ -534,10 +610,13 @@ export const useTicketManagement = (
     return format(new Date(date), 'MMM dd, yyyy')
   }, [])
 
-  const formatEventDate = useCallback((date: string | Date | undefined): string => {
-    if (!date) return ''
-    return new Date(date).toLocaleDateString()
-  }, [])
+  const formatEventDate = useCallback(
+    (date: string | Date | undefined): string => {
+      if (!date) return ''
+      return new Date(date).toLocaleDateString()
+    },
+    [],
+  )
 
   // Effects
   useEffect(() => {
@@ -555,7 +634,7 @@ export const useTicketManagement = (
   const maxSaleEndDate = useMemo(() => {
     return parsedEventDate || undefined
   }, [parsedEventDate])
-  
+
   return {
     // Main state
     activeTab,
@@ -564,59 +643,68 @@ export const useTicketManagement = (
     event,
     loading,
     error,
-    
+
     // Dialog states
     isEditDialogOpen: activeDialog === 'edit',
     isCapacityDialogOpen: activeDialog === 'capacity',
     isAddDialogOpen: activeDialog === 'add',
     isDeleteDialogOpen: activeDialog === 'delete',
     currentTicket,
-    
+
     // Form state
     ...formState,
-    
+
     // Calendar states
     startDateCalendarOpen: activeCalendar === 'start',
     endDateCalendarOpen: activeCalendar === 'end',
-    
+
     // Additional helper properties
     maxSaleEndDate,
     eventEndTime,
-    
+
     // Setters
     setActiveTab,
-    setIsEditDialogOpen: (open: boolean) => setActiveDialog(open ? 'edit' : null),
-    setIsCapacityDialogOpen: (open: boolean) => setActiveDialog(open ? 'capacity' : null),
+    setIsEditDialogOpen: (open: boolean) =>
+      setActiveDialog(open ? 'edit' : null),
+    setIsCapacityDialogOpen: (open: boolean) =>
+      setActiveDialog(open ? 'capacity' : null),
     setIsAddDialogOpen: (open: boolean) => setActiveDialog(open ? 'add' : null),
-    setIsDeleteDialogOpen: (open: boolean) => setActiveDialog(open ? 'delete' : null),
+    setIsDeleteDialogOpen: (open: boolean) =>
+      setActiveDialog(open ? 'delete' : null),
     setCurrentTicket,
     setTicketType: (value: TicketType) => updateField('ticketType', value),
     setTicketName: (value: string) => updateField('ticketName', value),
     setTicketCapacity: (value: number) => updateField('ticketCapacity', value),
-    setTicketPrice: (value: number | undefined) => updateField('ticketPrice', value),
-    setSaleStartDate: (value: Date | undefined) => updateField('saleStartDate', value),
-    setSaleEndDate: (value: Date | undefined) => updateField('saleEndDate', value),
+    setTicketPrice: (value: number | undefined) =>
+      updateField('ticketPrice', value),
+    setSaleStartDate: (value: Date | undefined) =>
+      updateField('saleStartDate', value),
+    setSaleEndDate: (value: Date | undefined) =>
+      updateField('saleEndDate', value),
     setStartTime: (value: string) => updateField('startTime', value),
     setEndTime: (value: string) => updateField('endTime', value),
     setMinPerOrder: (value: number) => updateField('minPerOrder', value),
     setMaxPerOrder: (value: number) => updateField('maxPerOrder', value),
     setTotalCapacity,
-    setStartDateCalendarOpen: (open: boolean) => setActiveCalendar(open ? 'start' : null),
-    setEndDateCalendarOpen: (open: boolean) => setActiveCalendar(open ? 'end' : null),
-    
+    setStartDateCalendarOpen: (open: boolean) =>
+      setActiveCalendar(open ? 'start' : null),
+    setEndDateCalendarOpen: (open: boolean) =>
+      setActiveCalendar(open ? 'end' : null),
+
     // Handlers
     handleAddTicket,
     handleUpdateTicket,
     handleDeleteTicket,
     handleUpdateCapacity,
-    resetForm: () => dispatch({ type: 'RESET_FORM', payload: { eventDate: parsedEventDate } }),
+    resetForm: () =>
+      dispatch({ type: 'RESET_FORM', payload: { eventDate: parsedEventDate } }),
     formatTicketDate,
     formatEventDate,
-    
+
     // Utility functions
     generateTimeOptions,
     isEndDateDisabled,
-    
+
     // Dialog helpers
     openAddDialog,
     openEditDialog,

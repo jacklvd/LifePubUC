@@ -52,15 +52,15 @@ const initialProgressData: EventProgressData = {
 const EventProgressContext = createContext<EventProgressContextType>({
   ...initialProgressData,
   isEditing: false,
-  setEventId: () => { },
-  setEventTitle: () => { },
-  setEventDate: () => { },
-  setEventLocation: () => { },
-  setEventStatus: () => { },
-  setActiveStep: () => { },
-  markStepCompleted: () => { },
-  markStepIncomplete: () => { },
-  resetProgress: () => { },
+  setEventId: () => {},
+  setEventTitle: () => {},
+  setEventDate: () => {},
+  setEventLocation: () => {},
+  setEventStatus: () => {},
+  setActiveStep: () => {},
+  markStepCompleted: () => {},
+  markStepIncomplete: () => {},
+  resetProgress: () => {},
 })
 
 const key = sk as string
@@ -136,50 +136,68 @@ export const EventProgressProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // Create updater functions with useCallback
   const updateState = useCallback((updates: Partial<EventProgressData>) => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
-      ...updates
+      ...updates,
     }))
   }, [])
 
-  const setEventId = useCallback((id: string) => {
-    updateState({ eventId: id })
-  }, [updateState])
+  const setEventId = useCallback(
+    (id: string) => {
+      updateState({ eventId: id })
+    },
+    [updateState],
+  )
 
-  const setEventTitle = useCallback((title: string) => {
-    updateState({ eventTitle: title })
-  }, [updateState])
+  const setEventTitle = useCallback(
+    (title: string) => {
+      updateState({ eventTitle: title })
+    },
+    [updateState],
+  )
 
-  const setEventDate = useCallback((date: string) => {
-    updateState({ eventDate: date })
-  }, [updateState])
+  const setEventDate = useCallback(
+    (date: string) => {
+      updateState({ eventDate: date })
+    },
+    [updateState],
+  )
 
-  const setEventLocation = useCallback((location: string) => {
-    updateState({ eventLocation: location })
-  }, [updateState])
+  const setEventLocation = useCallback(
+    (location: string) => {
+      updateState({ eventLocation: location })
+    },
+    [updateState],
+  )
 
-  const setEventStatus = useCallback((status: 'draft' | 'on sale') => {
-    updateState({ eventStatus: status })
-  }, [updateState])
+  const setEventStatus = useCallback(
+    (status: 'draft' | 'on sale') => {
+      updateState({ eventStatus: status })
+    },
+    [updateState],
+  )
 
-  const setActiveStep = useCallback((step: EventStep) => {
-    updateState({ activeStep: step })
-  }, [updateState])
+  const setActiveStep = useCallback(
+    (step: EventStep) => {
+      updateState({ activeStep: step })
+    },
+    [updateState],
+  )
 
   const markStepCompleted = useCallback((step: EventStep) => {
-    setState(prev => {
+    setState((prev) => {
       if (prev.completedSteps.includes(step)) return prev
       return {
         ...prev,
-        completedSteps: [...prev.completedSteps, step]
+        completedSteps: [...prev.completedSteps, step],
       }
     })
   }, [])
 
   const markStepIncomplete = useCallback((step: EventStep) => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
-      completedSteps: prev.completedSteps.filter(s => s !== step)
+      completedSteps: prev.completedSteps.filter((s) => s !== step),
     }))
   }, [])
 

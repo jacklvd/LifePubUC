@@ -41,8 +41,8 @@ const TicketCard: React.FC<TicketCardProps> = ({
               </div>
               <div className="flex items-center">
                 <div className="mr-2 text-sm">
-                  <span className="font-semibold">Sale:</span> {ticket.sold || '0'}/
-                  {ticket.capacity}
+                  <span className="font-semibold">Sale:</span>{' '}
+                  {ticket.sold || '0'}/{ticket.capacity}
                 </div>
                 <div className="mr-4 text-sm">
                   <span className="text-sm text-gray-500">

@@ -128,7 +128,6 @@ export default function PublishPage({ params }: PublishPageProps) {
     }
   }, [isEditing, completedSteps, eventId, router, loading])
 
-
   // Determine if publish is ready
   const isReadyToPublish = detailsChecked && ticketsChecked && termsChecked
 
@@ -209,7 +208,7 @@ export default function PublishPage({ params }: PublishPageProps) {
   ])
 
   if (error || (!loading && !event)) {
-    return <EventFallBack error={error || "Event not found"} />
+    return <EventFallBack error={error || 'Event not found'} />
   }
 
   const handleOpenPreview = () => {
