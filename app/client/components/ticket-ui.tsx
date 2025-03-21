@@ -10,6 +10,7 @@ import CapacityCard from '@/components/ticket-ui/capactity-card'
 import TicketDialogs from '@/components/ticket-ui/ticket-dialogs'
 import SidebarContent from '@/components/ticket-ui/sidebar-content'
 import EmptyTicketState from '@/components/ticket-ui/empty-ticket-state'
+import { toast } from 'sonner'
 
 interface TicketUIProps {
   eventId: string
@@ -31,23 +32,33 @@ const TicketUI: React.FC<TicketUIProps> = ({ eventId }) => {
   // Use our custom ticket hook
   const ticketHook = useTicketManagement(eventId, markStepCompleted)
 
+
   // Effect to update event context after fetching
   useEffect(() => {
-    if (ticketHook.event) {
-      setEventId(eventId)
-      setEventTitle(ticketHook.event?.title || '')
-      // Always provide a string, use empty string instead of null
-      setEventDate(
-        ticketHook.event?.date
-          ? new Date(ticketHook.event.date).toLocaleDateString()
-          : '',
-      )
-      setActiveStep('tickets')
+    try {
+      if (ticketHook.event) {
+        setEventId(eventId)
+        setEventTitle(ticketHook.event?.title || '')
+        // Always provide a string, use empty string instead of null
+        setEventDate(
+          ticketHook.event?.date
+            ? new Date(ticketHook.event.date).toLocaleDateString()
+            : '',
+        )
+        setActiveStep('tickets')
 
-      // If we're on the tickets page, mark build as completed
-      if (!completedSteps.includes('build')) {
-        markStepCompleted('build')
+        // If we're on the tickets page, mark build as completed
+        if (!completedSteps.includes('build')) {
+          markStepCompleted('build')
+        }
+      } else {
+        toast.error('Event data is not available yet.')
+        console.warn('Event data is not available yet.')
+        return
       }
+    } catch (error) {
+      console.error('Error updating event context:', error)
+      setEventId('') // Reset eventId in case of error
     }
   }, [
     ticketHook.event,
@@ -62,7 +73,7 @@ const TicketUI: React.FC<TicketUIProps> = ({ eventId }) => {
 
   // Effect to check if build step is completed before allowing access
   useEffect(() => {
-    if (!completedSteps.includes('build')) {
+    if (!completedSteps.includes('build') && !ticketHook.error) {
       console.warn('You need to complete the build step first')
 
       const redirectPath = eventId
@@ -71,7 +82,7 @@ const TicketUI: React.FC<TicketUIProps> = ({ eventId }) => {
 
       router.push(redirectPath)
     }
-  }, [completedSteps, eventId, router])
+  }, [completedSteps, eventId, router, ticketHook.error])
 
   const handleContinueToPublish = () => {
     // Mark tickets step as completed if not already
@@ -91,6 +102,9 @@ const TicketUI: React.FC<TicketUIProps> = ({ eventId }) => {
     )
   }
 
+  // Get the time options array directly from the hook
+  const timeOptions = ticketHook.generateTimeOptions || []
+
   return (
     <div className="container mx-auto p-4">
       <div className="flex flex-col lg:flex-row gap-4">
@@ -100,7 +114,7 @@ const TicketUI: React.FC<TicketUIProps> = ({ eventId }) => {
             <div className="flex gap-2">
               <Button
                 className="bg-orange-600 hover:bg-orange-700"
-                onClick={() => ticketHook.setIsAddDialogOpen(true)}
+                onClick={ticketHook.openAddDialog} // Use openAddDialog directly
               >
                 Add more tickets
               </Button>
@@ -132,7 +146,7 @@ const TicketUI: React.FC<TicketUIProps> = ({ eventId }) => {
             <TabsContent value="admission" className="space-y-4">
               {ticketHook.tickets.length === 0 ? (
                 <EmptyTicketState
-                  onAddClick={() => ticketHook.setIsAddDialogOpen(true)}
+                  onAddClick={ticketHook.openAddDialog} // Use openAddDialog directly
                 />
               ) : (
                 <>
@@ -141,14 +155,8 @@ const TicketUI: React.FC<TicketUIProps> = ({ eventId }) => {
                       key={ticket.id}
                       ticket={ticket}
                       formatTicketDate={ticketHook.formatTicketDate}
-                      onEdit={(ticket) => {
-                        ticketHook.setCurrentTicket(ticket)
-                        ticketHook.setIsEditDialogOpen(true)
-                      }}
-                      onDelete={(ticket) => {
-                        ticketHook.setCurrentTicket(ticket)
-                        ticketHook.setIsDeleteDialogOpen(true)
-                      }}
+                      onEdit={ticketHook.openEditDialog} // Use openEditDialog directly
+                      onDelete={ticketHook.openDeleteDialog} // Use openDeleteDialog directly
                     />
                   ))}
 
@@ -208,6 +216,8 @@ const TicketUI: React.FC<TicketUIProps> = ({ eventId }) => {
         eventDate={
           ticketHook.event?.date ? new Date(ticketHook.event.date) : undefined
         }
+        eventEndTime={ticketHook.eventEndTime}
+        maxSaleEndDate={ticketHook.maxSaleEndDate}
         setTicketType={ticketHook.setTicketType}
         setTicketName={ticketHook.setTicketName}
         setTicketCapacity={ticketHook.setTicketCapacity}
@@ -222,7 +232,7 @@ const TicketUI: React.FC<TicketUIProps> = ({ eventId }) => {
         handleUpdateTicket={ticketHook.handleUpdateTicket}
         handleDeleteTicket={ticketHook.handleDeleteTicket}
         handleUpdateCapacity={ticketHook.handleUpdateCapacity}
-        generateTimeOptions={() => ticketHook.generateTimeOptions}
+        generateTimeOptions={timeOptions}
         startDateCalendarOpen={ticketHook.startDateCalendarOpen}
         setStartDateCalendarOpen={ticketHook.setStartDateCalendarOpen}
         endDateCalendarOpen={ticketHook.endDateCalendarOpen}

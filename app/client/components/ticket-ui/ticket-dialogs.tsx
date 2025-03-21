@@ -12,7 +12,6 @@ import {
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import TicketForm from './ticket-form'
-import { useTicketManagement } from '@/hooks/use-ticket'
 
 interface TicketDialogsProps {
   // Add dialog
@@ -46,6 +45,8 @@ interface TicketDialogsProps {
   minPerOrder: number
   maxPerOrder: number
   eventDate?: Date
+  eventEndTime?: string
+  maxSaleEndDate?: Date
 
   // Form setters
   setTicketType: (type: 'Free' | 'Paid' | 'Donation') => void
@@ -65,8 +66,8 @@ interface TicketDialogsProps {
   handleDeleteTicket: () => Promise<void>
   handleUpdateCapacity: () => Promise<void>
 
-  // Optional prop for generating time options
-  generateTimeOptions: () => string[]
+  // Time options
+  generateTimeOptions: string[] // Updated: Now expecting array directly
   startDateCalendarOpen: boolean
   setStartDateCalendarOpen: (open: boolean) => void
   endDateCalendarOpen: boolean
@@ -97,6 +98,7 @@ const TicketDialogs: React.FC<TicketDialogsProps> = ({
   minPerOrder,
   maxPerOrder,
   eventDate,
+  maxSaleEndDate,
   setTicketType,
   setTicketName,
   setTicketCapacity,
@@ -142,6 +144,7 @@ const TicketDialogs: React.FC<TicketDialogsProps> = ({
             minPerOrder={minPerOrder}
             maxPerOrder={maxPerOrder}
             eventDate={eventDate}
+            maxSaleEndDate={maxSaleEndDate}
             setTicketType={setTicketType}
             setTicketName={setTicketName}
             setTicketCapacity={setTicketCapacity}
@@ -184,6 +187,7 @@ const TicketDialogs: React.FC<TicketDialogsProps> = ({
             minPerOrder={minPerOrder}
             maxPerOrder={maxPerOrder}
             eventDate={eventDate}
+            maxSaleEndDate={maxSaleEndDate}
             setTicketType={setTicketType}
             setTicketName={setTicketName}
             setTicketCapacity={setTicketCapacity}

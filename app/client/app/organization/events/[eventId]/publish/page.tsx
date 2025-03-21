@@ -18,6 +18,7 @@ import { getEventById, publishEvent } from '@/lib/actions/event-action'
 import { useEventProgress } from '@/context/event-context'
 import EventFlowLayout from '@/components/event-ui/event-flow-layout'
 import { formatDate } from '@/lib/date-formatter'
+import EventFallBack from '@/components/event-fallback'
 
 interface PublishPageProps {
   params: Promise<{
@@ -49,6 +50,7 @@ export default function PublishPage({ params }: PublishPageProps) {
   const [detailsChecked, setDetailsChecked] = useState(false)
   const [ticketsChecked, setTicketsChecked] = useState(false)
   const [termsChecked, setTermsChecked] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   // Fetch event data
   // Add useCallback for functions that are used in useEffect dependencies
@@ -58,6 +60,10 @@ export default function PublishPage({ params }: PublishPageProps) {
 
       // Fetch event details
       const eventData = await getEventById(eventId)
+      if (!eventData) {
+        toast.error('Event not found')
+        return
+      }
       setEvent(eventData)
 
       // Update progress context
@@ -80,6 +86,8 @@ export default function PublishPage({ params }: PublishPageProps) {
     } catch (error) {
       console.error('Error fetching event:', error)
       toast.error('Failed to load event data')
+      setError('Failed to load event data')
+      setEvent(null)
     } finally {
       setLoading(false)
     }
@@ -120,7 +128,6 @@ export default function PublishPage({ params }: PublishPageProps) {
     }
   }, [isEditing, completedSteps, eventId, router, loading])
 
-  console.log('Event data:', event)
 
   // Determine if publish is ready
   const isReadyToPublish = detailsChecked && ticketsChecked && termsChecked
@@ -200,6 +207,10 @@ export default function PublishPage({ params }: PublishPageProps) {
     setEventStatus,
     router,
   ])
+
+  if (error || (!loading && !event)) {
+    return <EventFallBack error={error || "Event not found"} />
+  }
 
   const handleOpenPreview = () => {
     // Open preview in new tab

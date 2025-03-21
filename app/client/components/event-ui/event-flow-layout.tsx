@@ -44,7 +44,7 @@ export default function EventFlowLayout({
 
     // Only reset if we're in create mode, have an eventId, and haven't reset already
     if (isCreateMode && eventId !== null && !hasResetProgress.current) {
-      console.log('Resetting progress for new event creation')
+      // console.log('Resetting progress for new event creation')
       resetProgress()
       // Mark that we've reset progress
       hasResetProgress.current = true
