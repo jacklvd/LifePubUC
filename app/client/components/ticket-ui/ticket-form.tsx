@@ -3,9 +3,6 @@
 import React from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-// import { Calendar } from "@/components/ui/calendar"
-// import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-// import { format } from 'date-fns'
 import {
   Accordion,
   AccordionContent,
@@ -13,7 +10,6 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion'
 import { DialogFooter } from '@/components/ui/dialog'
-// import { Icon } from '../icons'
 import TicketDatePicker from './ticket-day-picker'
 
 interface TicketFormProps {
@@ -28,6 +24,8 @@ interface TicketFormProps {
   minPerOrder: number
   maxPerOrder: number
   eventDate?: Date
+  eventEndTime?: string
+  maxSaleEndDate?: Date
   setTicketType: (type: 'Free' | 'Paid' | 'Donation') => void
   setTicketName: (name: string) => void
   setTicketCapacity: (capacity: number) => void
@@ -41,7 +39,7 @@ interface TicketFormProps {
   onCancel: () => void
   onSubmit: () => void
   submitButtonText: string
-  generateTimeOptions: () => string[] // Optional prop to generate time options
+  generateTimeOptions: string[] // Updated: Now expecting array directly
   startDateCalendarOpen: boolean
   setStartDateCalendarOpen: (open: boolean) => void
   endDateCalendarOpen: boolean
@@ -60,7 +58,8 @@ const TicketForm: React.FC<TicketFormProps> = ({
   endTime,
   minPerOrder,
   maxPerOrder,
-  // eventDate,
+  eventDate,
+  maxSaleEndDate,
   setTicketType,
   setTicketName,
   setTicketCapacity,
@@ -161,12 +160,12 @@ const TicketForm: React.FC<TicketFormProps> = ({
           <div>
             <label className="text-sm">Start time</label>
             <select
-              className="w-full rounded-md border border-input bg-background px-3 py-2"
+              className="w-full rounded-md border px-3 py-2 cursor-pointer"
               value={startTime}
               onChange={(e) => setStartTime(e.target.value)}
             >
               <option value="">Select time</option>
-              {generateTimeOptions().map((time) => (
+              {generateTimeOptions.map((time) => (
                 <option key={time} value={time}>
                   {time}
                 </option>
@@ -185,17 +184,22 @@ const TicketForm: React.FC<TicketFormProps> = ({
               setIsOpen={setEndDateCalendarOpen}
               disabledDates={isEndDateDisabled}
             />
+            {eventDate && maxSaleEndDate && (
+              <p className="text-xs text-gray-500 mt-1">
+                Sales must end by the event date ({maxSaleEndDate.toLocaleDateString()})
+              </p>
+            )}
           </div>
 
           <div>
             <label className="text-sm">End time</label>
             <select
-              className="w-full rounded-md border border-input bg-background px-3 py-2"
+              className="w-full rounded-md border px-3 py-2 cursor-pointer"
               value={endTime}
               onChange={(e) => setEndTime(e.target.value)}
             >
               <option value="">Select time</option>
-              {generateTimeOptions().map((time: any) => (
+              {generateTimeOptions.map((time) => (
                 <option key={time} value={time}>
                   {time}
                 </option>

@@ -11,8 +11,10 @@ import React, {
 } from 'react'
 import { useParams } from 'next/navigation'
 import { EventStep } from '@/components/event-ui/event-leftside-bar'
+import { STORAGE_KEY as sk } from '@/constants'
 
-interface EventProgressContextType {
+// Define types for context and progress data
+interface EventProgressData {
   eventId: string | null
   eventTitle: string
   eventDate: string | null
@@ -20,6 +22,9 @@ interface EventProgressContextType {
   eventStatus: 'draft' | 'on sale'
   activeStep: EventStep
   completedSteps: EventStep[]
+}
+
+interface EventProgressContextType extends EventProgressData {
   isEditing: boolean
   setEventId: (id: string) => void
   setEventTitle: (title: string) => void
@@ -32,8 +37,8 @@ interface EventProgressContextType {
   resetProgress: () => void
 }
 
-// Create context with default values
-const EventProgressContext = createContext<EventProgressContextType>({
+// Initial default values
+const initialProgressData: EventProgressData = {
   eventId: null,
   eventTitle: 'New Event',
   eventDate: null,
@@ -41,39 +46,43 @@ const EventProgressContext = createContext<EventProgressContextType>({
   eventStatus: 'draft',
   activeStep: 'build',
   completedSteps: [],
+}
+
+// Create context with default values
+const EventProgressContext = createContext<EventProgressContextType>({
+  ...initialProgressData,
   isEditing: false,
-  setEventId: () => {},
-  setEventTitle: () => {},
-  setEventDate: () => {},
-  setEventLocation: () => {},
-  setEventStatus: () => {},
-  setActiveStep: () => {},
-  markStepCompleted: () => {},
-  markStepIncomplete: () => {},
-  resetProgress: () => {},
+  setEventId: () => { },
+  setEventTitle: () => { },
+  setEventDate: () => { },
+  setEventLocation: () => { },
+  setEventStatus: () => { },
+  setActiveStep: () => { },
+  markStepCompleted: () => { },
+  markStepIncomplete: () => { },
+  resetProgress: () => { },
 })
 
-// Get stored progress from local storage
-const getStoredProgress = () => {
+const key = sk as string
+
+// Storage utility functions
+const getStoredProgress = (): EventProgressData | null => {
   if (typeof window === 'undefined') return null
 
-  const stored = localStorage.getItem('eventProgress')
-  if (!stored) return null
-
   try {
-    return JSON.parse(stored)
+    const stored = localStorage.getItem(key)
+    return stored ? JSON.parse(stored) : null
   } catch (error) {
     console.error('Failed to parse stored event progress', error)
     return null
   }
 }
 
-// Save progress to local storage
-const saveProgressToStorage = (progress: any) => {
+const saveProgressToStorage = (progress: EventProgressData) => {
   if (typeof window === 'undefined') return
 
   try {
-    localStorage.setItem('eventProgress', JSON.stringify(progress))
+    localStorage.setItem(key, JSON.stringify(progress))
   } catch (error) {
     console.error('Failed to store event progress', error)
   }
@@ -88,122 +97,120 @@ export const EventProgressProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // Add a ref to track initialization
   const initializationCompleted = useRef(false)
+  const storedProgress = useRef(getStoredProgress())
 
-  // Initialize state from localStorage or defaults
-  const storedProgress = getStoredProgress()
+  // Determine if we're editing based on eventId presence
+  const [isEditing, setIsEditing] = useState(() => !!routeEventId)
 
-  // Determine initial completedSteps based on status and existing data
-  const getInitialCompletedSteps = () => {
-    const storedSteps = storedProgress?.completedSteps || []
+  // Get initial state based on stored data and route
+  const getInitialState = (): EventProgressData => {
+    const stored = storedProgress.current || initialProgressData
 
-    if (!!routeEventId) {
-      // If editing an event
-      const status = storedProgress?.eventStatus || 'draft'
+    // If we have a route ID, use it over any stored ID
+    const id = routeEventId || stored.eventId
 
-      if (status === 'on sale') {
-        return ['build', 'tickets', 'publish']
-      } else if (!storedSteps.includes('build')) {
-        return [...storedSteps, 'build']
+    // Determine initial completed steps
+    let completedSteps = [...stored.completedSteps]
+
+    // If editing an existing event
+    if (id) {
+      // If the event is published, mark all steps as completed
+      if (stored.eventStatus === 'on sale') {
+        completedSteps = ['build', 'tickets', 'publish']
+      }
+      // Always ensure 'build' is marked as complete for existing events
+      else if (!completedSteps.includes('build')) {
+        completedSteps = [...completedSteps, 'build']
       }
     }
 
-    return storedSteps
+    return {
+      ...stored,
+      eventId: id,
+      completedSteps,
+    }
   }
 
-  const [eventId, setEventIdState] = useState<string | null>(
-    routeEventId || storedProgress?.eventId || null,
-  )
-  const [eventTitle, setEventTitle] = useState<string>(
-    storedProgress?.eventTitle || 'New Event',
-  )
-  const [eventDate, setEventDate] = useState<string | null>(
-    storedProgress?.eventDate || null,
-  )
-  const [eventLocation, setEventLocation] = useState<string | null>(
-    storedProgress?.eventLocation || null,
-  )
-  const [eventStatus, setEventStatus] = useState<'draft' | 'on sale'>(
-    storedProgress?.eventStatus || 'draft',
-  )
-  const [activeStep, setActiveStep] = useState<EventStep>(
-    storedProgress?.activeStep || 'build',
-  )
-  const [completedSteps, setCompletedSteps] = useState<EventStep[]>(
-    getInitialCompletedSteps(),
-  )
+  // Initialize all state at once to minimize renders
+  const [state, setState] = useState<EventProgressData>(getInitialState)
 
-  // Determine if we're editing based on eventId presence
-  const [isEditing, setIsEditing] = useState<boolean>(!!routeEventId)
-
-  // Use useCallback for all function references that might be used in dependencies
-  const setEventId = useCallback((id: string) => {
-    setEventIdState(id)
+  // Create updater functions with useCallback
+  const updateState = useCallback((updates: Partial<EventProgressData>) => {
+    setState(prev => ({
+      ...prev,
+      ...updates
+    }))
   }, [])
 
+  const setEventId = useCallback((id: string) => {
+    updateState({ eventId: id })
+  }, [updateState])
+
+  const setEventTitle = useCallback((title: string) => {
+    updateState({ eventTitle: title })
+  }, [updateState])
+
+  const setEventDate = useCallback((date: string) => {
+    updateState({ eventDate: date })
+  }, [updateState])
+
+  const setEventLocation = useCallback((location: string) => {
+    updateState({ eventLocation: location })
+  }, [updateState])
+
+  const setEventStatus = useCallback((status: 'draft' | 'on sale') => {
+    updateState({ eventStatus: status })
+  }, [updateState])
+
+  const setActiveStep = useCallback((step: EventStep) => {
+    updateState({ activeStep: step })
+  }, [updateState])
+
   const markStepCompleted = useCallback((step: EventStep) => {
-    setCompletedSteps((prev) => {
-      if (prev.includes(step)) return prev
-      return [...prev, step]
+    setState(prev => {
+      if (prev.completedSteps.includes(step)) return prev
+      return {
+        ...prev,
+        completedSteps: [...prev.completedSteps, step]
+      }
     })
   }, [])
 
   const markStepIncomplete = useCallback((step: EventStep) => {
-    setCompletedSteps((prev) => prev.filter((s) => s !== step))
-  }, [])
-
-  const setActiveStepCallback = useCallback((step: EventStep) => {
-    setActiveStep(step)
-  }, [])
-
-  const setEventTitleCallback = useCallback((title: string) => {
-    setEventTitle(title)
-  }, [])
-
-  const setEventDateCallback = useCallback((date: string) => {
-    setEventDate(date)
-  }, [])
-
-  const setEventLocationCallback = useCallback((location: string) => {
-    setEventLocation(location)
-  }, [])
-
-  const setEventStatusCallback = useCallback((status: 'draft' | 'on sale') => {
-    setEventStatus(status)
+    setState(prev => ({
+      ...prev,
+      completedSteps: prev.completedSteps.filter(s => s !== step)
+    }))
   }, [])
 
   const resetProgress = useCallback(() => {
-    setEventIdState(null)
-    setEventTitle('New Event')
-    setEventDate(null)
-    setEventLocation(null)
-    setEventStatus('draft')
-    setActiveStep('build')
-    setCompletedSteps([])
-
-    // Clear from localStorage
-    localStorage.removeItem('eventProgress')
+    setState(initialProgressData)
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(key)
+    }
   }, [])
 
   // Update isEditing when routeEventId changes
   useEffect(() => {
-    setIsEditing(!!routeEventId)
+    const isEditingNow = !!routeEventId
+    setIsEditing(isEditingNow)
 
     // If route has eventId, update context eventId
-    if (routeEventId) {
-      setEventIdState(routeEventId)
+    if (routeEventId && routeEventId !== state.eventId) {
+      updateState({ eventId: routeEventId })
     }
-  }, [routeEventId])
+  }, [routeEventId, state.eventId, updateState])
 
-  // Then modify your problematic effect to use the initialization ref
+  // One-time initialization effect for editing existing events
   useEffect(() => {
     if (isEditing && routeEventId && !initializationCompleted.current) {
-      // Mark initialization as completed
       initializationCompleted.current = true
 
-      // Any one-time setup can go here
+      // Any one-time setup for existing events
       const fetchEventData = async () => {
         try {
           // Custom fetch logic if needed
+          // This could be expanded as needed
         } catch (error) {
           console.error('Error fetching event data:', error)
         }
@@ -213,51 +220,32 @@ export const EventProgressProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [isEditing, routeEventId])
 
-  // Save to localStorage when state changes
+  // Save to localStorage when state changes - debounced
   useEffect(() => {
-    const progress = {
-      eventId,
-      eventTitle,
-      eventDate,
-      eventLocation,
-      eventStatus,
-      activeStep,
-      completedSteps,
-    }
+    const timeoutId = setTimeout(() => {
+      saveProgressToStorage(state)
+    }, 300) // Debounce 300ms
 
-    saveProgressToStorage(progress)
-  }, [
-    eventId,
-    eventTitle,
-    eventDate,
-    eventLocation,
-    eventStatus,
-    activeStep,
-    completedSteps,
-  ])
+    return () => clearTimeout(timeoutId)
+  }, [state])
+
+  // Create a memoized context value to prevent unnecessary rerenders
+  const contextValue = {
+    ...state,
+    isEditing,
+    setEventId,
+    setEventTitle,
+    setEventDate,
+    setEventLocation,
+    setEventStatus,
+    setActiveStep,
+    markStepCompleted,
+    markStepIncomplete,
+    resetProgress,
+  }
 
   return (
-    <EventProgressContext.Provider
-      value={{
-        eventId,
-        eventTitle,
-        eventDate,
-        eventLocation,
-        eventStatus,
-        activeStep,
-        completedSteps,
-        isEditing,
-        setEventId,
-        setEventTitle: setEventTitleCallback,
-        setEventDate: setEventDateCallback,
-        setEventLocation: setEventLocationCallback,
-        setEventStatus: setEventStatusCallback,
-        setActiveStep: setActiveStepCallback,
-        markStepCompleted,
-        markStepIncomplete,
-        resetProgress,
-      }}
-    >
+    <EventProgressContext.Provider value={contextValue}>
       {children}
     </EventProgressContext.Provider>
   )

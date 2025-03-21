@@ -68,9 +68,12 @@ export const getEventById = async (eventId: any) => {
     return response.data.event
   } catch (error: any) {
     console.error('Error fetching event:', error)
-    throw new Error(
-      error.response?.data?.message || 'An error occurred fetching event.',
-    )
+    // throw new Error(
+    //   error.response?.data?.message || 'An error occurred fetching event.',
+    // )
+    // toast.error(
+    //   error.response?.data?.message || 'An error occurred fetching event.',
+    // )
   }
 }
 

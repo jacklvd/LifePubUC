@@ -5,11 +5,11 @@
 import React, { useEffect, useState, use } from 'react'
 import EventForm from '@/components/event-form'
 import { getEventById, updateEvent } from '@/lib/actions/event-action'
-import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { Progress } from '@/components/ui/progress' // Assuming you have a loading component
 import { useEventProgress } from '@/context/event-context'
 import EventFlowLayout from '@/components/event-ui/event-flow-layout'
+import EventFallBack from '@/components/event-fallback'
 
 interface EditEventPageProps {
   params: Promise<{
@@ -19,7 +19,6 @@ interface EditEventPageProps {
 
 export default function EditEventPage({ params }: EditEventPageProps) {
   const { eventId } = use(params)
-  const router = useRouter()
   const [eventData, setEventData] = useState<EventData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -29,6 +28,10 @@ export default function EditEventPage({ params }: EditEventPageProps) {
     const fetchEvent = async () => {
       try {
         const event = await getEventById(eventId)
+        if (!event) {
+          toast.error('Event not found')
+          return
+        }
         setEventData(event)
 
         // Always mark build as completed in edit mode
@@ -84,18 +87,7 @@ export default function EditEventPage({ params }: EditEventPageProps) {
 
   if (error || !eventData) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="text-center">
-          <h1 className="text-xl font-bold">Error</h1>
-          <p>{error || 'Failed to load event data'}</p>
-          <button
-            className="mt-4 bg-blue-50 hover:bg-blue-500 text-black px-4 py-2 rounded"
-            onClick={() => router.back()}
-          >
-            Go Back
-          </button>
-        </div>
-      </div>
+      <EventFallBack error={error} />
     )
   }
 
