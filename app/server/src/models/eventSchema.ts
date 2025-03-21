@@ -20,8 +20,24 @@ export interface IEventHighlights {
   parkingInfo?: string // 'free', 'paid', or 'none'
 }
 
+export interface ITicket {
+  id: string
+  name: string
+  sold: number
+  capacity: number
+  type: 'Free' | 'Paid' | 'Donation'
+  price?: number
+  saleStart: Date
+  saleEnd: Date
+  startTime: string
+  endTime: string
+  minPerOrder?: number
+  maxPerOrder?: number
+}
+
 export interface IEvent extends Document {
   _id: mongoose.Types.ObjectId
+  eventId: string
   email: string
   title: string
   summary: string
@@ -35,12 +51,17 @@ export interface IEvent extends Document {
   agenda?: IAgendaItem[]
   highlights?: IEventHighlights
   faqs?: IEventFAQ[]
-  createdAt?: Date
-  updatedAt?: Date
+  tickets?: ITicket[]
+  totalCapacity?: number
+  status?: 'draft' | 'on sale' | 'cancelled'
+  publishedAt?: Date
+  publishedBy?: mongoose.Types.ObjectId
+  timestamps?: boolean
 }
 
 const eventSchema = new Schema<IEvent>({
   _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
+  eventId: { type: String, required: true },
   email: { type: String, required: true },
   title: { type: String, required: true },
   summary: { type: String, required: true },
@@ -55,6 +76,7 @@ const eventSchema = new Schema<IEvent>({
     ageRestriction: { type: String },
     doorTime: { type: String },
     parkingInfo: { type: String },
+    _id: false,
   },
   faqs: [
     {
@@ -81,9 +103,43 @@ const eventSchema = new Schema<IEvent>({
       _id: false,
     },
   ],
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
-})
+  tickets: [
+    {
+      id: { type: String, required: true },
+      name: { type: String, required: true },
+      sold: { type: Number, default: 0 },
+      capacity: { type: Number, required: true },
+      type: { type: String, enum: ['Free', 'Paid', 'Donation'], required: true },
+      price: { type: Number },
+      saleStart: { type: Date, required: true },
+      saleEnd: { type: Date, required: true },
+      startTime: { type: String, required: true },
+      endTime: { type: String, required: true },
+      minPerOrder: { type: Number, default: 1 },
+      maxPerOrder: { type: Number, default: 10 },
+      _id: false,
+    },
+  ],
+  totalCapacity: { type: Number },
+  status: {
+    type: String,
+    enum: ['draft', 'on sale', 'cancelled'],
+    default: 'draft'
+  },
+  publishedAt: {
+    type: Date,
+    default: null
+  },
+  
+  // Optional: Add more metadata about publication if needed
+  publishedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    default: null
+  }
+}, {
+  timestamps: true,
+});
 
 const Event = mongoose.model<IEvent>('Event', eventSchema)
 export default Event
