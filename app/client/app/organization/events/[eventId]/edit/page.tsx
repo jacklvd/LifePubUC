@@ -86,9 +86,7 @@ export default function EditEventPage({ params }: EditEventPageProps) {
   }
 
   if (error || !eventData) {
-    return (
-      <EventFallBack error={error} />
-    )
+    return <EventFallBack error={error} />
   }
 
   return (

@@ -149,11 +149,9 @@ export const createEventTicket = async (req: any, res: any) => {
     const saleEndDate = new Date(ticketData.saleEnd)
 
     if (saleEndDate > eventDate) {
-      return res
-        .status(400)
-        .json({
-          message: 'Ticket sale end date cannot be after the event date',
-        })
+      return res.status(400).json({
+        message: 'Ticket sale end date cannot be after the event date',
+      })
     }
 
     // Add the ticket to the event
@@ -230,11 +228,9 @@ export const updateEventTicket = async (req: any, res: any) => {
       const saleEndDate = new Date(updateData.saleEnd)
 
       if (saleEndDate > eventDate) {
-        return res
-          .status(400)
-          .json({
-            message: 'Ticket sale end date cannot be after the event date',
-          })
+        return res.status(400).json({
+          message: 'Ticket sale end date cannot be after the event date',
+        })
       }
     }
 

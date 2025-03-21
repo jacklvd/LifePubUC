@@ -186,7 +186,8 @@ const TicketForm: React.FC<TicketFormProps> = ({
             />
             {eventDate && maxSaleEndDate && (
               <p className="text-xs text-gray-500 mt-1">
-                Sales must end by the event date ({maxSaleEndDate.toLocaleDateString()})
+                Sales must end by the event date (
+                {maxSaleEndDate.toLocaleDateString()})
               </p>
             )}
           </div>

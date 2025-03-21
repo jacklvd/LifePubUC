@@ -32,7 +32,6 @@ const TicketUI: React.FC<TicketUIProps> = ({ eventId }) => {
   // Use our custom ticket hook
   const ticketHook = useTicketManagement(eventId, markStepCompleted)
 
-
   // Effect to update event context after fetching
   useEffect(() => {
     try {

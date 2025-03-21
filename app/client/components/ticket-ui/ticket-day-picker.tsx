@@ -51,9 +51,9 @@ const TicketDatePicker = ({
             selected={date}
             onSelect={(newDate) => {
               if (newDate) {
-                setDate(newDate);
+                setDate(newDate)
                 // Automatically close the calendar after selection
-                setTimeout(() => setIsOpen(false), 100);
+                setTimeout(() => setIsOpen(false), 100)
               }
             }}
             disabled={disabledDates}

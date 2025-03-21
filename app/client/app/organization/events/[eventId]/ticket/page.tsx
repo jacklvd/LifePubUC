@@ -37,7 +37,11 @@ export default function TicketManagementPage({ params }: TicketPageProps) {
   }, [eventId])
 
   if (loading) {
-    return <div className="flex-1 justify-center items-center h-screen">Loading...</div>
+    return (
+      <div className="flex-1 justify-center items-center h-screen">
+        Loading...
+      </div>
+    )
   }
 
   if (error) {
