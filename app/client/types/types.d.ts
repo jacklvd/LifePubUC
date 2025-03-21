@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 interface PublishEventResponse {
-  message: string;
-  errors?: string[];
-  event?: any; // Replace with your actual event type
+  message: string
+  errors?: string[]
+  event?: any // Replace with your actual event type
 }
 
 interface AgendaItem {
@@ -46,32 +46,32 @@ interface EventData {
 }
 
 interface Ticket {
-  id: string;
-  name: string;
-  sold: number;
-  capacity: number;
-  type: "Free" | "Paid" | "Donation";
-  price?: number;
-  saleStart: Date;
-  saleEnd: Date;
-  startTime: string;
-  endTime: string;
-  minPerOrder?: number;
-  maxPerOrder?: number;
+  id: string
+  name: string
+  sold: number
+  capacity: number
+  type: 'Free' | 'Paid' | 'Donation'
+  price?: number
+  saleStart: Date
+  saleEnd: Date
+  startTime: string
+  endTime: string
+  minPerOrder?: number
+  maxPerOrder?: number
 }
 
 interface TicketFormData {
-  name: string;
-  capacity: number;
-  type: "Free" | "Paid" | "Donation";
-  price?: number;
-  saleStart: Date;
-  saleEnd: Date;
-  startTime: string;
-  endTime: string;
-  minPerOrder?: number;
-  maxPerOrder?: number;
-  updateTotalCapacity?: boolean;
+  name: string
+  capacity: number
+  type: 'Free' | 'Paid' | 'Donation'
+  price?: number
+  saleStart: Date
+  saleEnd: Date
+  startTime: string
+  endTime: string
+  minPerOrder?: number
+  maxPerOrder?: number
+  updateTotalCapacity?: boolean
 }
 
 interface LocationSuggestion {

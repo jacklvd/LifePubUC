@@ -24,19 +24,24 @@ interface LeftSideBarProps {
 }
 
 // Add this component within your LeftSideBar component
-const StepIndicator = ({ step, currentStep, isCompleted }: {
-  step: EventStep;
-  currentStep: EventStep;
-  isCompleted: boolean;
+const StepIndicator = ({
+  step,
+  currentStep,
+  isCompleted,
+}: {
+  step: EventStep
+  currentStep: EventStep
+  isCompleted: boolean
 }) => {
   return (
     <div
-      className={`w-5 h-5 rounded-full flex items-center justify-center mr-3 ${isCompleted
-        ? 'bg-blue-500 text-white-100'
-        : currentStep === step
-          ? 'border-2 border-blue-500 bg-white-100'
-          : 'border border-gray-300 bg-white-100'
-        }`}
+      className={`w-5 h-5 rounded-full flex items-center justify-center mr-3 ${
+        isCompleted
+          ? 'bg-blue-500 text-white-100'
+          : currentStep === step
+            ? 'border-2 border-blue-500 bg-white-100'
+            : 'border border-gray-300 bg-white-100'
+      }`}
     >
       {isCompleted ? (
         <Icon name="Check" className="h-3 w-3 text-white-100" />
@@ -44,13 +49,13 @@ const StepIndicator = ({ step, currentStep, isCompleted }: {
         <div className="w-2 h-2 rounded-full"></div>
       ) : null}
     </div>
-  );
-};
+  )
+}
 
 const formatEventDate = (dateString?: string) => {
   // This handles server-side rendering consistently
-  return formatDate(dateString, 'simple');
-};
+  return formatDate(dateString, 'simple')
+}
 
 const formatEventLocation = (location?: string) => {
   if (!location) return 'Location TBD'
@@ -73,22 +78,23 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
 
   // Determine if we're in a specific section based on the URL
   useEffect(() => {
-    if (!pathname) return;
+    if (!pathname) return
 
     if (pathname.includes('/ticket')) {
-      setCurrentStep('tickets');
+      setCurrentStep('tickets')
     } else if (pathname.includes('/publish')) {
-      setCurrentStep('publish');
+      setCurrentStep('publish')
     } else if (pathname.includes('/create') || pathname.includes('/edit')) {
-      setCurrentStep('build');
+      setCurrentStep('build')
     }
-  }, [pathname]);
+  }, [pathname])
 
   // State to track the current step
   const [currentStep, setCurrentStep] = useState<EventStep>(activeStep)
 
   // Determine which steps are completed
-  const [completedStepsList, setCompletedStepsList] = useState<EventStep[]>(completedSteps)
+  const [completedStepsList, setCompletedStepsList] =
+    useState<EventStep[]>(completedSteps)
 
   // Update completed steps when props change
   useEffect(() => {
@@ -96,41 +102,42 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
   }, [completedSteps])
 
   // Add this to your LeftSideBar component
-  const [formattedDate, setFormattedDate] = useState('Date TBD');
+  const [formattedDate, setFormattedDate] = useState('Date TBD')
 
   // Format the date on the client side only
   useEffect(() => {
     if (eventDate) {
-      setFormattedDate(formatDate(eventDate, 'display'));
+      setFormattedDate(formatDate(eventDate, 'display'))
     } else {
-      setFormattedDate('Date TBD');
+      setFormattedDate('Date TBD')
     }
-  }, [eventDate]);
+  }, [eventDate])
 
   // Function to check if a step is completed
   const isStepCompleted = (step: EventStep) => {
     // In edit mode, all steps should appear completed
-    if (isEditing && eventStatus === 'on sale') return true;
+    if (isEditing && eventStatus === 'on sale') return true
 
     // Otherwise check if the step is in the completedSteps array
-    return completedStepsList.includes(step);
+    return completedStepsList.includes(step)
   }
 
   // Function to check if a step is accessible
   const isStepAccessible = (step: EventStep) => {
     // If editing an existing event, all steps are accessible
-    if (isEditing) return true;
+    if (isEditing) return true
 
     // Build is always accessible
-    if (step === 'build') return true;
+    if (step === 'build') return true
 
     // For tickets, build must be completed
-    if (step === 'tickets') return isStepCompleted('build');
+    if (step === 'tickets') return isStepCompleted('build')
 
     // For publish, both build AND tickets must be completed
-    if (step === 'publish') return isStepCompleted('build') && isStepCompleted('tickets');
+    if (step === 'publish')
+      return isStepCompleted('build') && isStepCompleted('tickets')
 
-    return false;
+    return false
   }
 
   // Function to navigate to a step
@@ -157,8 +164,6 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
       }
     }
   }
-
-
 
   return (
     <div className="w-64 border-r bg-white-100">
@@ -192,8 +197,11 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
               <div className="mt-4">
                 <Badge
                   variant="outline"
-                  className={`rounded-full px-3 border-gray-300 ${eventStatus === 'on sale' ? 'bg-green-50 text-green-700' : ''
-                    }`}
+                  className={`rounded-full px-3 border-gray-300 ${
+                    eventStatus === 'on sale'
+                      ? 'bg-green-50 text-green-700'
+                      : ''
+                  }`}
                 >
                   {eventStatus === 'on sale' ? 'On Sale' : 'Draft'}
                 </Badge>
@@ -207,8 +215,9 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
           <div className="space-y-4">
             {/* Build step */}
             <div
-              className={`flex items-start p-3 rounded-md cursor-pointer ${currentStep === 'build' ? 'bg-blue-50' : ''
-                } ${!isStepAccessible('build') ? 'opacity-50 cursor-not-allowed' : ''}`}
+              className={`flex items-start p-3 rounded-md cursor-pointer ${
+                currentStep === 'build' ? 'bg-blue-50' : ''
+              } ${!isStepAccessible('build') ? 'opacity-50 cursor-not-allowed' : ''}`}
               onClick={() => navigateToStep('build')}
             >
               <StepIndicator
@@ -219,15 +228,17 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
               <div>
                 <p className="font-medium">Build event page</p>
                 <p className="text-sm text-gray-500">
-                  Add all of your event details and let attendees know what to expect
+                  Add all of your event details and let attendees know what to
+                  expect
                 </p>
               </div>
             </div>
 
             {/* Tickets step */}
             <div
-              className={`flex items-start p-3 rounded-md cursor-pointer ${currentStep === 'tickets' ? 'bg-blue-50' : ''
-                } ${!isStepAccessible('tickets') ? 'opacity-50 cursor-not-allowed' : ''}`}
+              className={`flex items-start p-3 rounded-md cursor-pointer ${
+                currentStep === 'tickets' ? 'bg-blue-50' : ''
+              } ${!isStepAccessible('tickets') ? 'opacity-50 cursor-not-allowed' : ''}`}
               onClick={() => navigateToStep('tickets')}
             >
               <StepIndicator
@@ -245,8 +256,9 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
 
             {/* Publish step */}
             <div
-              className={`flex items-start p-3 rounded-md cursor-pointer ${currentStep === 'publish' ? 'bg-blue-50' : ''
-                } ${!isStepAccessible('publish') ? 'opacity-50 cursor-not-allowed' : ''}`}
+              className={`flex items-start p-3 rounded-md cursor-pointer ${
+                currentStep === 'publish' ? 'bg-blue-50' : ''
+              } ${!isStepAccessible('publish') ? 'opacity-50 cursor-not-allowed' : ''}`}
               onClick={() => navigateToStep('publish')}
             >
               <StepIndicator

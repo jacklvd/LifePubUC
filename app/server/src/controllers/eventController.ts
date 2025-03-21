@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid'
 import Event from '../models/eventSchema'
 
 export const createEvent = async (req: any, res: any) => {
@@ -15,29 +15,30 @@ export const createEvent = async (req: any, res: any) => {
     const eventData = req.body
 
     // Generate a unique eventId
-    const eventId = uuidv4().replace(/\-/g, '');
+    const eventId = uuidv4().replace(/\-/g, '')
 
     const newEvent = new Event({
       _id: new mongoose.Types.ObjectId(),
       eventId: eventId,
       ...eventData,
-      agenda: eventData.agenda?.map((agenda: { items: any[] }) => ({
-        ...agenda,
-        items: agenda.items.map(
-          (item: {
-            description: any
-            host: any
-            startTime: any
-            endTime: any
-          }) => ({
-            ...item,
-            description: item.description || '',
-            host: item.host || '',
-            startTime: item.startTime || '',
-            endTime: item.endTime || '',
-          }),
-        ),
-      })) || [],
+      agenda:
+        eventData.agenda?.map((agenda: { items: any[] }) => ({
+          ...agenda,
+          items: agenda.items.map(
+            (item: {
+              description: any
+              host: any
+              startTime: any
+              endTime: any
+            }) => ({
+              ...item,
+              description: item.description || '',
+              host: item.host || '',
+              startTime: item.startTime || '',
+              endTime: item.endTime || '',
+            }),
+          ),
+        })) || [],
       tickets: eventData.tickets || [],
       createdAt: new Date(),
     })
@@ -129,16 +130,16 @@ export const createEventTicket = async (req: any, res: any) => {
 
     // Generate a unique ID for the ticket
     const ticketId = new mongoose.Types.ObjectId().toString()
-    
+
     // Add the ID to the ticket data
     const ticketWithId = {
       ...ticketData,
-      id: ticketId
+      id: ticketId,
     }
 
     // Find event by eventId
     const event = await Event.findOne({ eventId: eventId })
-    
+
     if (!event) {
       return res.status(404).json({ message: 'Event not found' })
     }
@@ -150,20 +151,25 @@ export const createEventTicket = async (req: any, res: any) => {
     if (saleEndDate > eventDate) {
       return res
         .status(400)
-        .json({ message: 'Ticket sale end date cannot be after the event date' })
+        .json({
+          message: 'Ticket sale end date cannot be after the event date',
+        })
     }
 
     // Add the ticket to the event
     if (!event.tickets) {
       event.tickets = []
     }
-    
+
     event.tickets.push(ticketWithId)
-    
+
     // Update the total capacity if specified
     if (ticketData.updateTotalCapacity && event.totalCapacity !== undefined) {
       event.totalCapacity += ticketData.capacity
-    } else if (ticketData.updateTotalCapacity && event.totalCapacity === undefined) {
+    } else if (
+      ticketData.updateTotalCapacity &&
+      event.totalCapacity === undefined
+    ) {
       event.totalCapacity = ticketData.capacity
     }
 
@@ -172,18 +178,18 @@ export const createEventTicket = async (req: any, res: any) => {
 
     return res.status(201).json({
       message: '✅ Ticket created successfully',
-      ticket: ticketWithId
+      ticket: ticketWithId,
     })
   } catch (error: any) {
     console.error('❌ Error creating ticket:', error)
-    
+
     if (error instanceof mongoose.Error.ValidationError) {
       return res.status(400).json({
         message: 'Validation error',
         errors: Object.values(error.errors).map((e) => e.message),
       })
     }
-    
+
     return res.status(500).json({
       message: 'Error creating ticket',
       error: error.message,
@@ -198,17 +204,21 @@ export const updateEventTicket = async (req: any, res: any) => {
   try {
     // Find event by eventId
     const event = await Event.findOne({ eventId: eventId })
-    
+
     if (!event) {
       return res.status(404).json({ message: 'Event not found' })
     }
 
     // Find the ticket in the event
     if (!event.tickets || event.tickets.length === 0) {
-      return res.status(404).json({ message: 'No tickets found for this event' })
+      return res
+        .status(404)
+        .json({ message: 'No tickets found for this event' })
     }
 
-    const ticketIndex = event.tickets.findIndex(ticket => ticket.id === ticketId)
+    const ticketIndex = event.tickets.findIndex(
+      (ticket) => ticket.id === ticketId,
+    )
     // console.log('🔍 Ticket index found:', ticketIndex)
     if (ticketIndex === -1) {
       return res.status(404).json({ message: 'Ticket not found' })
@@ -222,36 +232,55 @@ export const updateEventTicket = async (req: any, res: any) => {
       if (saleEndDate > eventDate) {
         return res
           .status(400)
-          .json({ message: 'Ticket sale end date cannot be after the event date' })
+          .json({
+            message: 'Ticket sale end date cannot be after the event date',
+          })
       }
     }
 
     // Get the current ticket
-    const currentTicket = event.tickets[ticketIndex];
-    
+    const currentTicket = event.tickets[ticketIndex]
+
     // Ensure all required fields are preserved
     const updatedTicket = {
       id: currentTicket.id,
-      name: updateData.name !== undefined ? updateData.name : currentTicket.name,
+      name:
+        updateData.name !== undefined ? updateData.name : currentTicket.name,
       sold: currentTicket.sold || 0,
-      capacity: updateData.capacity !== undefined ? updateData.capacity : currentTicket.capacity,
+      capacity:
+        updateData.capacity !== undefined
+          ? updateData.capacity
+          : currentTicket.capacity,
       type: updateData.type || currentTicket.type,
-      price: updateData.type === 'Free' ? undefined : (updateData.price !== undefined ? updateData.price : currentTicket.price),
+      price:
+        updateData.type === 'Free'
+          ? undefined
+          : updateData.price !== undefined
+            ? updateData.price
+            : currentTicket.price,
       saleStart: updateData.saleStart || currentTicket.saleStart,
       saleEnd: updateData.saleEnd || currentTicket.saleEnd,
       startTime: updateData.startTime || currentTicket.startTime,
       endTime: updateData.endTime || currentTicket.endTime,
-      minPerOrder: updateData.minPerOrder !== undefined ? updateData.minPerOrder : currentTicket.minPerOrder,
-      maxPerOrder: updateData.maxPerOrder !== undefined ? updateData.maxPerOrder : currentTicket.maxPerOrder
-    };
+      minPerOrder:
+        updateData.minPerOrder !== undefined
+          ? updateData.minPerOrder
+          : currentTicket.minPerOrder,
+      maxPerOrder:
+        updateData.maxPerOrder !== undefined
+          ? updateData.maxPerOrder
+          : currentTicket.maxPerOrder,
+    }
 
     // Update the ticket
-    event.tickets[ticketIndex] = updatedTicket;
+    event.tickets[ticketIndex] = updatedTicket
 
     // Update the total capacity if needed
-    if (updateData.capacity !== undefined && 
-        event.totalCapacity !== undefined && 
-        updateData.updateTotalCapacity) {
+    if (
+      updateData.capacity !== undefined &&
+      event.totalCapacity !== undefined &&
+      updateData.updateTotalCapacity
+    ) {
       const oldCapacity = currentTicket.capacity
       const capacityDiff = updateData.capacity - oldCapacity
       event.totalCapacity += capacityDiff
@@ -262,7 +291,7 @@ export const updateEventTicket = async (req: any, res: any) => {
 
     return res.status(200).json({
       message: '✅ Ticket updated successfully',
-      ticket: event.tickets[ticketIndex]
+      ticket: event.tickets[ticketIndex],
     })
   } catch (error: any) {
     console.error('❌ Error updating ticket:', error)
@@ -279,18 +308,22 @@ export const deleteEventTicket = async (req: any, res: any) => {
   try {
     // Find event by eventId
     const event = await Event.findOne({ eventId: eventId })
-    
+
     if (!event) {
       return res.status(404).json({ message: 'Event not found' })
     }
 
     // Find the ticket in the event
     if (!event.tickets || event.tickets.length === 0) {
-      return res.status(404).json({ message: 'No tickets found for this event' })
+      return res
+        .status(404)
+        .json({ message: 'No tickets found for this event' })
     }
 
-    const ticketIndex = event.tickets.findIndex(ticket => ticket.id === ticketId)
-    
+    const ticketIndex = event.tickets.findIndex(
+      (ticket) => ticket.id === ticketId,
+    )
+
     if (ticketIndex === -1) {
       return res.status(404).json({ message: 'Ticket not found' })
     }
@@ -310,7 +343,7 @@ export const deleteEventTicket = async (req: any, res: any) => {
     await event.save()
 
     return res.status(200).json({
-      message: '✅ Ticket deleted successfully'
+      message: '✅ Ticket deleted successfully',
     })
   } catch (error: any) {
     console.error('❌ Error deleting ticket:', error)
@@ -329,14 +362,14 @@ export const getEventTickets = async (req: any, res: any) => {
   try {
     // Find event by eventId
     const event = await Event.findOne({ eventId: eventId })
-    
+
     if (!event) {
       return res.status(404).json({ message: 'Event not found' })
     }
 
     return res.status(200).json({
       tickets: event.tickets || [],
-      totalCapacity: event.totalCapacity
+      totalCapacity: event.totalCapacity,
     })
   } catch (error: any) {
     console.error('❌ Error fetching tickets:', error)
@@ -348,36 +381,36 @@ export const getEventTickets = async (req: any, res: any) => {
 }
 
 export const publishEvent = async (req: any, res: any) => {
-  const { eventId } = req.params;
+  const { eventId } = req.params
 
   try {
     // Find the event by eventId
-    const event = await Event.findOne({ eventId: eventId });
+    const event = await Event.findOne({ eventId: eventId })
 
     if (!event) {
-      return res.status(404).json({ message: 'Event not found' });
+      return res.status(404).json({ message: 'Event not found' })
     }
 
     // Update event status to published
-    event.status = 'on sale';
-    event.publishedAt = new Date();
+    event.status = 'on sale'
+    event.publishedAt = new Date()
 
     // Save the updated event
-    await event.save();
+    await event.save()
 
     return res.status(200).json({
       message: '✅ Event published successfully',
-      event: event
-    });
+      event: event,
+    })
   } catch (error: any) {
-    console.error('[SERVER] Error publishing event:', error);
-    console.error('[SERVER] Error stack:', error.stack);
-    
+    console.error('[SERVER] Error publishing event:', error)
+    console.error('[SERVER] Error stack:', error.stack)
+
     return res.status(500).json({
       message: 'Error publishing event',
       error: error.message,
       // Only include stack trace in development
-      stack: process.env.NODE_ENV !== 'production' ? error.stack : undefined
-    });
+      stack: process.env.NODE_ENV !== 'production' ? error.stack : undefined,
+    })
   }
-};
+}

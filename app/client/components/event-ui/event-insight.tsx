@@ -11,7 +11,7 @@ interface Props {
 
 const EventInsight = ({ description, handleChange, error }: Props) => {
   return (
-    <div className='mb-6'>
+    <div className="mb-6">
       <div className="relative rounded-md overflow-hidden border bg-white-100 p-6">
         <h3 className="text-lg font-bold mb-4">Insight</h3>
         <Textarea
@@ -30,7 +30,6 @@ const EventInsight = ({ description, handleChange, error }: Props) => {
         </Button>
       </div>
     </div>
-
   )
 }
 export default EventInsight
