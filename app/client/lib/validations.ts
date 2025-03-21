@@ -74,7 +74,7 @@ const highlightsSchema = z.object({
 
 export const eventSchema = z
   .object({
-    email: z.string().email('Invalid email format.'),
+    email: z.string(),
     title: z
       .string()
       .min(3, 'Title must be at least 3 characters long.')
@@ -92,8 +92,7 @@ export const eventSchema = z
     location: z.string().min(3, 'Location is required.'),
     date: z
       .string()
-      .min(1, 'Date is required')
-      .regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format (YYYY-MM-DD)'),
+      .min(1, 'Date is required'),
     startTime: z
       .string()
       .regex(

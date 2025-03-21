@@ -2,13 +2,10 @@
 'use server'
 import axios from 'axios'
 import { API_BASE_URL } from '@/constants'
+// import { toast } from 'sonner'
 
-export const createEvent = async (eventData: any) => {
+export const createEvent = async (eventData: EventData) => {
   try {
-    // Log request data for debugging
-    console.log('Sending event data:', eventData)
-
-    // Add headers for content type
     const response = await axios.post(
       `${API_BASE_URL}/api/events/create-event`,
       eventData,
@@ -19,36 +16,95 @@ export const createEvent = async (eventData: any) => {
       },
     )
 
-    // Log response for debugging
-    console.log('API response:', response.status, response.data)
-
     if (response.status !== 201) {
       throw new Error(`Failed to create event. Status: ${response.status}`)
     }
+    // console.log('CreateEvent response:', JSON.stringify(response.data.event._id, null, 2))
 
-    return response.data
+    return response.data.event
   } catch (error: any) {
     console.error('Error creating event:', error)
+    throw new Error(
+      error.response?.data?.message || 'An error occurred creating event.',
+    )
+  }
+}
 
-    if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      console.error('Response data:', error.response.data)
-      console.error('Response status:', error.response.status)
-      throw new Error(
-        error.response.data?.message ||
-          `Server error: ${error.response.status}`,
-      )
-    } else if (error.request) {
-      // The request was made but no response was received
-      console.error('No response received:', error.request)
-      throw new Error(
-        'No response received from server. Check your network connection.',
-      )
-    } else {
-      // Something happened in setting up the request that triggered an Error
-      console.error('Request error:', error.message)
-      throw new Error(`Request error: ${error.message}`)
+export const updateEvent = async (eventId: string, eventData: any) => {
+  try {
+    const response = await axios.put(
+      `${API_BASE_URL}/api/events/update-event/${eventId}`,
+      eventData,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    )
+
+    if (response.status !== 200) {
+      throw new Error(`Failed to update event. Status: ${response.status}`)
     }
+
+    return response.data.event
+  } catch (error: any) {
+    console.error('Error updating event:', error)
+    throw new Error(
+      error.response?.data?.message || 'An error occurred updating event.',
+    )
+  }
+}
+
+export const getEventById = async (eventId: any) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/api/events/get-event/${eventId}`,
+    )
+
+    if (response.status !== 200) {
+      throw new Error(`Failed to fetch event. Status: ${response.status}`)
+    }
+
+    return response.data.event
+  } catch (error: any) {
+    console.error('Error fetching event:', error)
+    throw new Error(
+      error.response?.data?.message || 'An error occurred fetching event.',
+    )
+  }
+}
+
+export async function publishEvent(eventId: string): Promise<PublishEventResponse> {
+  try {
+    console.log(`[CLIENT] Publishing event: ${eventId}`);
+    
+    const url = `${API_BASE_URL}/api/events/${eventId}/publish`;
+    console.log(`[CLIENT] Making request to: ${url}`);
+    
+    const response = await axios.post<PublishEventResponse>(
+      url, 
+      {}, // Empty body
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    
+    console.log(`[CLIENT] Publish response status: ${response.status}`);
+    return response.data;
+  } catch (error: any) {
+    console.error('[CLIENT] Error publishing event:');
+    
+    if (error.response) {
+      console.error(`[CLIENT] Status: ${error.response.status}`);
+      console.error('[CLIENT] Data:', error.response.data);
+    } else if (error.request) {
+      console.error('[CLIENT] No response received');
+    } else {
+      console.error(`[CLIENT] Error message: ${error.message}`);
+    }
+    
+    throw error.response?.data || error;
   }
 }
