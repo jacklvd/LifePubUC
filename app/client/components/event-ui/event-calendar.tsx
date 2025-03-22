@@ -1,16 +1,50 @@
+/* eslint-disable prefer-const */
 'use client'
-import React, { useState } from 'react'
-import { Button } from '../ui/button'
-import { Icon } from '../icons'
+import React, { useState, useEffect, useRef } from 'react'
+import { Button } from '@/components/ui/button'
+import { Icon } from '@/components/icons'
+// import { formatDate } from '@/lib/date-formatter'
+import { formatTime, calculateEventPosition } from '@/lib/time-formatter'
+import CalendarEventPopup from '@/components/event-ui/event-calendar-popup'
+
+// Define type for the view mode
+type ViewType = 'month' | 'week'
+
+// Interface for date state
+interface DateState {
+  year: number
+  month: number
+  date: number
+}
+
+// Interface for popup position
+interface PopupPosition {
+  top: number
+  left: number
+}
+
+// Interface for week day object
+interface WeekDay {
+  date: number
+  month: number
+  year: number
+  day: string
+  fullDate: Date
+}
+
+// Props interface for the component
+interface EventCalendarProps {
+  events: Event[]
+}
 
 // Helper function to get days of the month
-const getDaysInMonth = (year: number, month: number) => {
+const getDaysInMonth = (year: number, month: number): number[] => {
   const lastDay = new Date(year, month + 1, 0).getDate()
   return Array.from({ length: lastDay }, (_, i) => i + 1)
 }
 
 // Helper function to get previous month days that appear in current view
-const getPrevMonthDays = (year: number, month: number) => {
+const getPrevMonthDays = (year: number, month: number): number[] => {
   const firstDayOfMonth = new Date(year, month, 1).getDay()
   const prevMonthLastDay = new Date(year, month, 0).getDate()
 
@@ -21,7 +55,7 @@ const getPrevMonthDays = (year: number, month: number) => {
 }
 
 // Helper function to get next month days that appear in current view
-const getNextMonthDays = (year: number, month: number) => {
+const getNextMonthDays = (year: number, month: number): number[] => {
   const lastDayOfMonth = new Date(year, month + 1, 0)
   const daysFromNextMonth = 6 - lastDayOfMonth.getDay()
 
@@ -29,7 +63,7 @@ const getNextMonthDays = (year: number, month: number) => {
 }
 
 // Helper function to get hours for the day
-const getHoursOfDay = () => {
+const getHoursOfDay = (): string[] => {
   return Array.from({ length: 24 }, (_, i) => {
     const hour = i % 12 === 0 ? 12 : i % 12
     const period = i < 12 ? 'AM' : 'PM'
@@ -38,14 +72,14 @@ const getHoursOfDay = () => {
 }
 
 // Helper function to check if a date is in the past
-const isPastDate = (date: Date) => {
+const isPastDate = (date: Date): boolean => {
   const today = new Date()
   today.setHours(0, 0, 0, 0)
   return date < today
 }
 
 // Helper function to check if two dates are the same day
-const isSameDay = (date1: Date, date2: Date) => {
+const isSameDay = (date1: Date, date2: Date): boolean => {
   return (
     date1.getFullYear() === date2.getFullYear() &&
     date1.getMonth() === date2.getMonth() &&
@@ -53,18 +87,36 @@ const isSameDay = (date1: Date, date2: Date) => {
   )
 }
 
-type ViewType = 'month' | 'week'
+// Get color based on event status
+const getEventColor = (status?: string): string => {
+  switch (status?.toLowerCase()) {
+    case 'on sale':
+      return 'bg-green-500'
+    case 'cancelled':
+      return 'bg-red-500'
+    case 'draft':
+      return 'bg-gray-500'
+    default:
+      return 'bg-blue-500'
+  }
+}
 
-const EventCalendar = () => {
+const EventCalendar: React.FC<EventCalendarProps> = ({ events = [] }) => {
   const currentDate = new Date()
-  const [date, setDate] = useState({
+  const [date, setDate] = useState<DateState>({
     year: currentDate.getFullYear(),
     month: currentDate.getMonth(),
+    date: currentDate.getDate()
   })
   const [view, setView] = useState<ViewType>('month')
-  const [showMonthSelector, setShowMonthSelector] = useState(false)
+  const [showMonthSelector, setShowMonthSelector] = useState<boolean>(false)
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
+  const [popupPosition, setPopupPosition] = useState<PopupPosition>({ top: 0, left: 0 })
+  const [weekStartDate, setWeekStartDate] = useState<Date>(new Date())
+  const weekContainerRef = useRef<HTMLDivElement>(null)
 
-  const months = [
+  // Month names
+  const months: string[] = [
     'Jan',
     'Feb',
     'Mar',
@@ -79,7 +131,7 @@ const EventCalendar = () => {
     'Dec',
   ]
 
-  const fullMonths = [
+  const fullMonths: string[] = [
     'January',
     'February',
     'March',
@@ -94,7 +146,7 @@ const EventCalendar = () => {
     'December',
   ]
 
-  const weekdays = [
+  const weekdays: string[] = [
     'Sunday',
     'Monday',
     'Tuesday',
@@ -104,45 +156,165 @@ const EventCalendar = () => {
     'Saturday',
   ]
 
-  const prevMonth = () => {
-    setDate((prev) => {
-      if (prev.month === 0) {
-        return { year: prev.year - 1, month: 11 }
-      }
-      return { ...prev, month: prev.month - 1 }
-    })
-  }
-
-  const nextMonth = () => {
-    setDate((prev) => {
-      if (prev.month === 11) {
-        return { year: prev.year + 1, month: 0 }
-      }
-      return { ...prev, month: prev.month + 1 }
-    })
-  }
-
-  const currentMonth = fullMonths[date.month]
-  const currentMonthDays = getDaysInMonth(date.year, date.month)
-  const prevMonthDays = getPrevMonthDays(date.year, date.month)
-  const nextMonthDays = getNextMonthDays(date.year, date.month)
-  const hours = getHoursOfDay()
-
-  // Get the current week for week view
-  const getCurrentWeekDays = () => {
-    const today = new Date(date.year, date.month, currentDate.getDate())
+  // Initialize week start date
+  useEffect(() => {
+    const today = new Date(date.year, date.month, date.date)
     const dayOfWeek = today.getDay()
     const startOfWeek = new Date(today)
     startOfWeek.setDate(today.getDate() - dayOfWeek)
+    setWeekStartDate(startOfWeek)
+  }, [date.year, date.month, date.date])
+
+  // Navigation functions
+  const prevPeriod = (): void => {
+    if (view === 'month') {
+      setDate((prev) => {
+        if (prev.month === 0) {
+          return { ...prev, year: prev.year - 1, month: 11 }
+        }
+        return { ...prev, month: prev.month - 1 }
+      })
+    } else {
+      // Week view - go back 7 days
+      const newWeekStart = new Date(weekStartDate)
+      newWeekStart.setDate(newWeekStart.getDate() - 7)
+      setWeekStartDate(newWeekStart)
+      setDate({
+        year: newWeekStart.getFullYear(),
+        month: newWeekStart.getMonth(),
+        date: newWeekStart.getDate()
+      })
+    }
+  }
+
+  const nextPeriod = (): void => {
+    if (view === 'month') {
+      setDate((prev) => {
+        if (prev.month === 11) {
+          return { ...prev, year: prev.year + 1, month: 0 }
+        }
+        return { ...prev, month: prev.month + 1 }
+      })
+    } else {
+      // Week view - go forward 7 days
+      const newWeekStart = new Date(weekStartDate)
+      newWeekStart.setDate(newWeekStart.getDate() + 7)
+      setWeekStartDate(newWeekStart)
+      setDate({
+        year: newWeekStart.getFullYear(),
+        month: newWeekStart.getMonth(),
+        date: newWeekStart.getDate()
+      })
+    }
+  }
+
+  const goToToday = (): void => {
+    const today = new Date()
+    if (view === 'month') {
+      setDate({
+        year: today.getFullYear(),
+        month: today.getMonth(),
+        date: today.getDate()
+      })
+    } else {
+      // For week view, set to the start of current week
+      const dayOfWeek = today.getDay()
+      const startOfWeek = new Date(today)
+      startOfWeek.setDate(today.getDate() - dayOfWeek)
+      setWeekStartDate(startOfWeek)
+      setDate({
+        year: today.getFullYear(),
+        month: today.getMonth(),
+        date: today.getDate()
+      })
+    }
+  }
+
+  // Handle event click
+  const handleEventClick = (event: Event, e: React.MouseEvent): void => {
+    e.stopPropagation() // Prevent closing popup immediately
+
+    const rect = e.currentTarget.getBoundingClientRect()
+
+    // Calculate popup position
+    let newLeft = rect.left + rect.width / 2
+    let newTop = rect.top + window.scrollY
+
+    // Adjust if near window edges
+    if (newLeft + 250 > window.innerWidth) {
+      newLeft = window.innerWidth - 260
+    }
+
+    setPopupPosition({ top: newTop, left: newLeft })
+    setSelectedEvent(event)
+  }
+
+  // Close popup when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent): void => {
+      // Check if the click was outside the popup and if there's a selected event
+      if (selectedEvent && !(e.target as Element).closest('.event-popup-content')) {
+        setSelectedEvent(null)
+      }
+    }
+
+    document.addEventListener('click', handleClickOutside)
+    return () => {
+      document.removeEventListener('click', handleClickOutside)
+    }
+  }, [selectedEvent])
+
+  // Update column width when window is resized (for week view)
+  useEffect(() => {
+    if (view === 'week' && weekContainerRef.current) {
+      // Force a re-render when window is resized
+      const handleResize = (): void => {
+        setDate(prevDate => ({ ...prevDate }))
+      }
+
+      window.addEventListener('resize', handleResize)
+      return () => {
+        window.removeEventListener('resize', handleResize)
+      }
+    }
+  }, [view])
+
+  // Function to get events for a specific date
+  const getEventsForDate = (year: number, month: number, day: number): Event[] => {
+    // Format date to YYYY-MM-DD format for comparison
+    const dateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+
+    // Filter events for this date
+    return events.filter(event => {
+      if (!event.date) return false
+
+      // Convert event date to ISO format (YYYY-MM-DD) for comparison
+      // Handle both string and Date objects
+      let eventDate: string
+      if (typeof event.date === 'string') {
+        // If it's already a string, ensure it's in the right format
+        eventDate = event.date.split('T')[0] // Remove time part if present
+      } else {
+        // If it's a Date object, convert to ISO string and remove time part
+        eventDate = (event.date as Date).toISOString().split('T')[0]
+      }
+
+      return eventDate === dateString
+    })
+  }
+
+  // Get the current week days for week view
+  const getCurrentWeekDays = (): WeekDay[] => {
+    const startOfWeek = new Date(weekStartDate)
 
     return Array.from({ length: 7 }, (_, i) => {
       const day = new Date(startOfWeek)
       day.setDate(startOfWeek.getDate() + i)
       return {
         date: day.getDate(),
-        month: day.getMonth() + 1,
+        month: day.getMonth(),
         year: day.getFullYear(),
-        day: weekdays[i],
+        day: weekdays[day.getDay()],
         fullDate: day,
       }
     })
@@ -150,15 +322,42 @@ const EventCalendar = () => {
 
   const weekDays = getCurrentWeekDays()
 
-  const MonthCalendarView = () => {
+  // Get the title for week view
+  const getWeekViewTitle = (): string => {
+    const startDay = weekStartDate
+    const endDay = new Date(weekStartDate)
+    endDay.setDate(weekStartDate.getDate() + 6)
+
+    const startMonth = months[startDay.getMonth()]
+    const endMonth = months[endDay.getMonth()]
+
+    // If start and end are in the same month
+    if (startMonth === endMonth && startDay.getFullYear() === endDay.getFullYear()) {
+      return `${startMonth} ${startDay.getDate()} - ${endDay.getDate()}, ${startDay.getFullYear()}`
+    }
+
+    // If start and end are in different months but same year
+    if (startDay.getFullYear() === endDay.getFullYear()) {
+      return `${startMonth} ${startDay.getDate()} - ${endMonth} ${endDay.getDate()}, ${startDay.getFullYear()}`
+    }
+
+    // If start and end are in different years
+    return `${startMonth} ${startDay.getDate()}, ${startDay.getFullYear()} - ${endMonth} ${endDay.getDate()}, ${endDay.getFullYear()}`
+  }
+
+  // Month View Component
+  const MonthCalendarView: React.FC = () => {
     const today = new Date()
+    const currentMonthDays = getDaysInMonth(date.year, date.month)
+    const prevMonthDays = getPrevMonthDays(date.year, date.month)
+    const nextMonthDays = getNextMonthDays(date.year, date.month)
 
     return (
       <div className="bg-white rounded-lg">
         <div className="grid grid-cols-7 text-center border-b">
           {weekdays.map((day, index) => (
             <div key={index} className="py-3 font-medium text-sm text-gray-800">
-              {day}
+              {day.substring(0, 3)}
             </div>
           ))}
         </div>
@@ -167,15 +366,34 @@ const EventCalendar = () => {
           {prevMonthDays.map((day, index) => {
             const dayDate = new Date(date.year, date.month - 1, day)
             const isPast = isPastDate(dayDate)
+            const dayEvents = getEventsForDate(date.year, date.month - 1, day)
 
             return (
               <div
                 key={`prev-${index}`}
-                className={`min-h-24 p-2 border-b border-r ${isPast ? 'bg-gray-50' : 'bg-white'} text-gray-400`}
+                className={`min-h-24 p-2 border-b border-r relative ${isPast ? 'bg-gray-50' : 'bg-white'} text-gray-400`}
               >
-                <span className="inline-block w-6 h-6 text-center rounded-full">
+                <span className="inline-block w-6 h-6 text-center rounded-full mb-1">
                   {day}
                 </span>
+
+                {/* Events for this day */}
+                <div className="space-y-1 mt-1">
+                  {dayEvents.slice(0, 3).map((event, eventIndex) => (
+                    <div
+                      key={eventIndex}
+                      className={`${getEventColor(event.status)} text-white text-xs p-1 rounded truncate cursor-pointer`}
+                      onClick={(e) => handleEventClick(event, e)}
+                    >
+                      {formatTime(event.startTime)} {event.title}
+                    </div>
+                  ))}
+                  {dayEvents.length > 3 && (
+                    <div className="text-xs text-gray-500 pl-1">
+                      +{dayEvents.length - 3} more
+                    </div>
+                  )}
+                </div>
               </div>
             )
           })}
@@ -189,19 +407,38 @@ const EventCalendar = () => {
 
             const dayDate = new Date(date.year, date.month, day)
             const isPast = isPastDate(dayDate)
+            const dayEvents = getEventsForDate(date.year, date.month, day)
 
             return (
               <div
                 key={`current-${index}`}
-                className={`min-h-24 p-2 border-b border-r ${isPast ? 'bg-gray-50' : 'bg-white'}`}
+                className={`min-h-24 p-2 border-b border-r relative ${isPast ? 'bg-gray-50' : 'bg-white'}`}
               >
                 <span
-                  className={`inline-block w-6 h-6 text-center rounded-full
+                  className={`inline-block w-6 h-6 text-center rounded-full mb-1
                       ${isToday ? 'bg-blue-500 text-white' : ''}
                     `}
                 >
                   {day}
                 </span>
+
+                {/* Events for this day */}
+                <div className="space-y-1 mt-1">
+                  {dayEvents.slice(0, 3).map((event, eventIndex) => (
+                    <div
+                      key={eventIndex}
+                      className={`${getEventColor(event.status)} text-white text-xs p-1 rounded truncate cursor-pointer`}
+                      onClick={(e) => handleEventClick(event, e)}
+                    >
+                      {formatTime(event.startTime)} {event.title}
+                    </div>
+                  ))}
+                  {dayEvents.length > 3 && (
+                    <div className="text-xs text-gray-500 pl-1">
+                      +{dayEvents.length - 3} more
+                    </div>
+                  )}
+                </div>
               </div>
             )
           })}
@@ -210,15 +447,34 @@ const EventCalendar = () => {
           {nextMonthDays.map((day, index) => {
             const dayDate = new Date(date.year, date.month + 1, day)
             const isPast = isPastDate(dayDate)
+            const dayEvents = getEventsForDate(date.year, date.month + 1, day)
 
             return (
               <div
                 key={`next-${index}`}
-                className={`min-h-24 p-2 border-b border-r ${isPast ? 'bg-gray-50' : 'bg-white'} text-gray-400`}
+                className={`min-h-24 p-2 border-b border-r relative ${isPast ? 'bg-gray-50' : 'bg-white'} text-gray-400`}
               >
-                <span className="inline-block w-6 h-6 text-center rounded-full">
+                <span className="inline-block w-6 h-6 text-center rounded-full mb-1">
                   {day}
                 </span>
+
+                {/* Events for this day */}
+                <div className="space-y-1 mt-1">
+                  {dayEvents.slice(0, 3).map((event, eventIndex) => (
+                    <div
+                      key={eventIndex}
+                      className={`${getEventColor(event.status)} text-white text-xs p-1 rounded truncate cursor-pointer opacity-70`}
+                      onClick={(e) => handleEventClick(event, e)}
+                    >
+                      {formatTime(event.startTime)} {event.title}
+                    </div>
+                  ))}
+                  {dayEvents.length > 3 && (
+                    <div className="text-xs text-gray-500 pl-1">
+                      +{dayEvents.length - 3} more
+                    </div>
+                  )}
+                </div>
               </div>
             )
           })}
@@ -227,12 +483,21 @@ const EventCalendar = () => {
     )
   }
 
-  const WeekCalendarView = () => {
+  // Week View Component
+  const WeekCalendarView: React.FC = () => {
     const today = new Date()
     today.setHours(0, 0, 0, 0)
+    const hours = getHoursOfDay()
+
+    // Get column width for events
+    let columnWidth = 0
+    if (weekContainerRef.current) {
+      const containerWidth = weekContainerRef.current.getBoundingClientRect().width
+      columnWidth = (containerWidth - 50) / 7 // 50px for time column
+    }
 
     return (
-      <div className="bg-white rounded-lg">
+      <div className="bg-white rounded-lg" ref={weekContainerRef}>
         <div className="grid grid-cols-8 text-center border-b">
           <div className="py-3"></div>
           {weekDays.map((day, index) => {
@@ -247,7 +512,7 @@ const EventCalendar = () => {
                     ${isToday ? 'bg-blue-50' : ''}
                   `}
               >
-                <div className="text-sm">{day.day}</div>
+                <div className="text-sm">{day.day.substring(0, 3)}</div>
                 <div
                   className={`inline-flex items-center justify-center w-8 h-8 mt-1 
                       ${isToday ? 'bg-blue-500 text-white rounded-full' : ''}
@@ -259,7 +524,7 @@ const EventCalendar = () => {
             )
           })}
         </div>
-        <div className="grid grid-cols-8">
+        <div className="grid grid-cols-8 relative">
           {hours.map((hour, hourIndex) => {
             // Split the hour string to get hour value and AM/PM
             const [hourStr, period] = hour.split(' ')
@@ -291,7 +556,7 @@ const EventCalendar = () => {
                   return (
                     <div
                       key={`day-${dayIndex}`}
-                      className={`h-14 border-b border-r 
+                      className={`h-14 border-b border-r relative
                           ${isPast ? 'bg-gray-50' : ''}
                           ${isNow ? 'bg-blue-50' : ''}
                         `}
@@ -305,28 +570,57 @@ const EventCalendar = () => {
               </React.Fragment>
             )
           })}
+
+          {/* Events overlay */}
+          {weekDays.map((day, dayIndex) => {
+            const dayEvents = getEventsForDate(day.year, day.month, day.date)
+
+            return dayEvents.map((event, eventIndex) => {
+              // Only calculate position if column width is available
+              if (columnWidth <= 0) return null;
+
+              const position = calculateEventPosition(event, columnWidth)
+              if (!position) return null;
+
+              return (
+                <div
+                  key={`event-${dayIndex}-${eventIndex}`}
+                  className={`absolute ${getEventColor(event.status)} text-white text-xs p-1 rounded overflow-hidden cursor-pointer`}
+                  style={{
+                    top: position.top,
+                    height: position.height,
+                    width: position.width,
+                    left: `calc(${50}px + ${dayIndex * columnWidth}px + 2px)`,
+                    zIndex: 10
+                  }}
+                  onClick={(e) => handleEventClick(event, e)}
+                >
+                  <div className="font-semibold truncate">{event.title}</div>
+                  <div className="text-xs opacity-90 truncate">
+                    {formatTime(event.startTime)} - {formatTime(event.endTime)}
+                  </div>
+                </div>
+              )
+            })
+          })}
         </div>
       </div>
     )
   }
+
   return (
     <>
       <div className="flex justify-between items-center mb-6">
         <Button
           variant="link"
           className="text-blue-500"
-          onClick={() => {
-            setDate({
-              year: currentDate.getFullYear(),
-              month: currentDate.getMonth(),
-            })
-          }}
+          onClick={goToToday}
         >
           Today
         </Button>
 
         <div className="flex items-center gap-2 relative">
-          <Button variant="ghost" size="icon" onClick={prevMonth}>
+          <Button variant="ghost" size="icon" onClick={prevPeriod}>
             <Icon name="ChevronLeft" className="h-4 w-4" />
           </Button>
 
@@ -335,10 +629,12 @@ const EventCalendar = () => {
             className="text-base font-medium"
             onClick={() => setShowMonthSelector(!showMonthSelector)}
           >
-            {currentMonth} {date.year}
+            {view === 'month'
+              ? `${fullMonths[date.month]} ${date.year}`
+              : getWeekViewTitle()}
           </Button>
 
-          <Button variant="ghost" size="icon" onClick={nextMonth}>
+          <Button variant="ghost" size="icon" onClick={nextPeriod}>
             <Icon name="ChevronRight" className="h-4 w-4" />
           </Button>
 
@@ -375,11 +671,10 @@ const EventCalendar = () => {
                   key={month}
                   variant="ghost"
                   size="lg"
-                  className={`text-lg py-3 rounded-md transition-all duration-200 ${
-                    idx === date.month
+                  className={`text-lg py-3 rounded-md transition-all duration-200 ${idx === date.month
                       ? 'bg-blue-500 text-white font-semibold'
                       : 'hover:bg-gray-200'
-                  }`}
+                    }`}
                   onClick={() => {
                     setDate((prev) => ({ ...prev, month: idx }))
                     setShowMonthSelector(false)
@@ -411,7 +706,17 @@ const EventCalendar = () => {
           </Button>
         </div>
       </div>
+
       {view === 'month' ? <MonthCalendarView /> : <WeekCalendarView />}
+
+      {/* Event Popup */}
+      {selectedEvent && (
+        <CalendarEventPopup
+          event={selectedEvent}
+          onClose={() => setSelectedEvent(null)}
+          position={popupPosition}
+        />
+      )}
     </>
   )
 }

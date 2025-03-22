@@ -39,71 +39,6 @@ const EventAgenda = ({
   const [openDropdownId, setOpenDropdownId] = useState<string | null>(null)
   const editingRef = useRef<HTMLDivElement>(null)
 
-  // const generateTimeSlots = (startTime?: string, endTime?: string) => {
-  //   if (
-  //     !startTime ||
-  //     !endTime ||
-  //     startTime.trim() === 'H' ||
-  //     endTime.trim() === 'H'
-  //   ) {
-  //     console.warn(
-  //       '🚨 Incomplete start or end time. Skipping time slot generation.',
-  //     )
-  //     return []
-  //   }
-
-  //   const parseTime = (time: string) => {
-  //     const parts = time.match(/^(\d{1,2}):(\d{2})\s?(AM|PM)$/)
-  //     if (!parts) {
-  //       console.error('🚨 Invalid time format detected:', time)
-  //       return null
-  //     }
-  //     return {
-  //       hour: parseInt(parts[1], 10),
-  //       minute: parseInt(parts[2], 10),
-  //       period: parts[3] as 'AM' | 'PM',
-  //     }
-  //   }
-
-  //   const start = parseTime(startTime)
-  //   const end = parseTime(endTime)
-  //   if (!start || !end) return []
-
-  //   let {
-  //     hour: currentHour,
-  //     minute: currentMinute,
-  //     period: currentPeriod,
-  //   } = start
-  //   const { hour: endHour, minute: endMinute, period: endPeriod } = end
-  //   const timeSlots = []
-
-  //   while (
-  //     (currentPeriod === endPeriod &&
-  //       (currentHour < endHour ||
-  //         (currentHour === endHour && currentMinute <= endMinute))) ||
-  //     (currentPeriod === 'AM' && endPeriod === 'PM')
-  //   ) {
-  //     timeSlots.push(
-  //       `${currentHour}:${currentMinute.toString().padStart(2, '0')} ${currentPeriod}`,
-  //     )
-
-  //     // Increment time by 30 minutes
-  //     currentMinute += 30
-  //     if (currentMinute === 60) {
-  //       currentMinute = 0
-  //       currentHour++
-  //     }
-
-  //     if (currentHour === 12 && currentMinute === 0) {
-  //       currentPeriod = currentPeriod === 'AM' ? 'PM' : 'AM'
-  //     }
-  //   }
-
-  //   return timeSlots
-  // }
-
-  // const timeSlots = generateTimeSlots(eventStartTime, eventEndTime)
-
   const parseTime = useCallback((time: string) => {
     const [timePart, period] = time.split(' ')
     // eslint-disable-next-line prefer-const
@@ -162,47 +97,6 @@ const EventAgenda = ({
     },
     [parseTime],
   )
-
-  // useEffect(() => {
-  //   const handleClickOutside = (e: MouseEvent) => {
-  //     if (
-  //       editingRef.current &&
-  //       !editingRef.current.contains(e.target as Node)
-  //     ) {
-  //       const currentAgenda = agendas.find(
-  //         (agenda) => agenda.id === activeAgenda,
-  //       )
-  //       const currentItem = currentAgenda?.items.find(
-  //         (item) => item.id === editingItem,
-  //       )
-
-  //       if (currentItem) {
-  //         const error = validateItem(currentItem)
-  //         if (error.title) {
-  //           setFormErrors({ title: error.title })
-  //           return // Prevent exiting edit mode
-  //         }
-  //         if (error.time) {
-  //           setFormErrors({ time: error.time })
-  //           return // Prevent exiting edit mode
-  //         }
-  //       }
-
-  //       if (Object.keys(errors).length > 0) {
-  //         setFormErrors(errors)
-  //         return // Prevent exiting edit mode
-  //       }
-
-  //       setEditingItem(null)
-  //       setSelectedTimeField(null)
-  //       setOpenDropdownId(null)
-  //       setFormErrors({})
-  //     }
-  //   }
-
-  //   document.addEventListener('mousedown', handleClickOutside)
-  //   return () => document.removeEventListener('mousedown', handleClickOutside)
-  // }, [editingRef, agendas, activeAgenda, editingItem, errors, validateItem])
 
   const handleClickOutside = useCallback(
     (e: MouseEvent) => {
@@ -592,7 +486,7 @@ const EventAgenda = ({
                 !item.title.trim()
                   ? 'Please enter a title before deleting'
                   : agendas.find((a) => a.id === activeAgenda)?.items.length ===
-                      1
+                    1
                     ? 'You must have at least one agenda item or delete the entire agenda'
                     : ''
               }

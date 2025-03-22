@@ -42,7 +42,7 @@ const TicketDatePicker = ({
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          className="w-auto p-0 z-50"
+          className="w-auto p-0 z-50 pointer-events-auto"
           align="start"
           sideOffset={5}
         >
@@ -58,7 +58,7 @@ const TicketDatePicker = ({
             }}
             disabled={disabledDates}
             initialFocus
-            className="bg-white-100"
+            className="bg-white-100 pointer-events-auto"
           />
         </PopoverContent>
       </Popover>
