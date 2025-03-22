@@ -1,3 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+interface PublishEventResponse {
+  message: string
+  errors?: string[]
+  event?: any // Replace with your actual event type
+}
+
 interface AgendaItem {
   id: string | null
   title: string
@@ -38,9 +45,63 @@ interface EventData {
   }>
 }
 
+interface Ticket {
+  id: string
+  name: string
+  sold: number
+  capacity: number
+  type: 'Free' | 'Paid' | 'Donation'
+  price?: number
+  saleStart: Date
+  saleEnd: Date
+  startTime: string
+  endTime: string
+  minPerOrder?: number
+  maxPerOrder?: number
+}
+
+interface TicketFormData {
+  name: string
+  capacity: number
+  type: 'Free' | 'Paid' | 'Donation'
+  price?: number
+  saleStart: Date
+  saleEnd: Date
+  startTime: string
+  endTime: string
+  minPerOrder?: number
+  maxPerOrder?: number
+  updateTotalCapacity?: boolean
+}
+
 interface LocationSuggestion {
   place_id: string
   description: string
+}
+
+interface Event {
+  _id: string
+  eventId: string
+  email: string
+  title: string
+  summary: string
+  description?: string
+  media?: string // URL for image or video
+  mediaType: 'image' | 'video'
+  location: string
+  date: Date | string
+  startTime: string
+  endTime: string
+  agenda?: AgendaItem[]
+  highlights?: EventHighlights
+  faqs?: EventFAQ[]
+  tickets?: Ticket[]
+  totalCapacity?: number
+  status: 'draft' | 'on sale'
+  publishedAt?: Date | string
+  publishedBy?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 interface CloudinaryResult {

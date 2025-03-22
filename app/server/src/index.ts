@@ -51,7 +51,6 @@ if (process.env.MONGO_URI) {
 }
 
 /* ROUTES */
-/* ROUTES */
 const apiRouter = express.Router()
 
 // Mount routes to apiRouter

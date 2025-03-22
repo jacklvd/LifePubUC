@@ -250,7 +250,7 @@ const Navbar = () => {
                     <Link href={icon.route} className="relative">
                       {icon.title === 'Events' ? (
                         <div className="p-2 text-md hover:font-normal flex flex-row gap-3 rounded-full transition-all bg-primary-50">
-                          <p className="text-md">Create Events</p>
+                          <p className="text-md">Create</p>
                           <Icon name={icon.name} className={icon.className} />
                         </div>
                       ) : (
