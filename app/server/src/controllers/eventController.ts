@@ -119,61 +119,60 @@ export const getEventById = async (req: any, res: any) => {
 
 export const getUserEvents = async (req: any, res: any) => {
   try {
-    const { email } = req.query;
-    
+    const { email } = req.query
+
     if (!email) {
-      return res.status(400).json({ message: 'Email parameter is required' });
+      return res.status(400).json({ message: 'Email parameter is required' })
     }
 
     // Fetch events where the email matches
-    const events = await Event.find({ email: email })
-      .sort({ createdAt: -1 }); // Sort by creation date, newest first
-    
+    const events = await Event.find({ email: email }).sort({ createdAt: -1 }) // Sort by creation date, newest first
+
     // Optional: add filter for event status if provided in query params
-    const { status } = req.query;
-    let filteredEvents = events;
-    
+    const { status } = req.query
+    let filteredEvents = events
+
     if (status) {
-      filteredEvents = events.filter(event => event.status === status);
+      filteredEvents = events.filter((event) => event.status === status)
     }
 
     return res.status(200).json({
       events: filteredEvents,
-      count: filteredEvents.length
-    });
+      count: filteredEvents.length,
+    })
   } catch (error: any) {
-    console.error('❌ Error fetching user events:', error);
+    console.error('❌ Error fetching user events:', error)
     return res.status(500).json({
       message: 'Error fetching user events',
-      error: error.message
-    });
+      error: error.message,
+    })
   }
 }
 
 export const deleteEvent = async (req: any, res: any) => {
-  const { eventId } = req.params;
-  console.log('🔍 Deleting event with eventId:', eventId);
+  const { eventId } = req.params
+  console.log('🔍 Deleting event with eventId:', eventId)
 
   try {
     // Find and delete the event by eventId
-    const deletedEvent = await Event.findOneAndDelete({ 
-      eventId: eventId
-    });
+    const deletedEvent = await Event.findOneAndDelete({
+      eventId: eventId,
+    })
     // console.log('🔍 Deleted event:', deletedEvent);
 
     if (!deletedEvent) {
-      return res.status(404).json({ message: 'Event not found' });
+      return res.status(404).json({ message: 'Event not found' })
     }
 
     return res.status(200).json({
       message: '✅ Event deleted successfully',
-    });
+    })
   } catch (error: any) {
-    console.error('❌ Error deleting event:', error);
+    console.error('❌ Error deleting event:', error)
     return res.status(500).json({
       message: 'Error deleting event',
       error: error.message,
-    });
+    })
   }
 }
 

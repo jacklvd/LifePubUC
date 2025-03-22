@@ -9,7 +9,7 @@ import {
   deleteEventTicket,
   getEventTickets,
   getUserEvents,
-  deleteEvent // Add the delete function import
+  deleteEvent, // Add the delete function import
 } from '../controllers/eventController'
 
 const router = express.Router()

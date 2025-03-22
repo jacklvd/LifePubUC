@@ -115,25 +115,29 @@ export async function publishEvent(
 }
 
 // Add the new function to get user events
-export const getUserEvents = async (email: string, status?: string): Promise<Event[]> => {
+export const getUserEvents = async (
+  email: string,
+  status?: string,
+): Promise<Event[]> => {
   try {
     // Build query string with email and optional status
     let url = `${API_BASE_URL}/api/events/user-events?email=${encodeURIComponent(email)}`
     if (status) {
       url += `&status=${encodeURIComponent(status)}`
     }
-    
+
     const response = await axios.get(url)
-    
+
     if (response.status !== 200) {
       throw new Error(`Failed to fetch user events. Status: ${response.status}`)
     }
-    
+
     return response.data.events
   } catch (error: any) {
     console.error('Error fetching user events:', error)
     throw new Error(
-      error.response?.data?.message || 'An error occurred fetching user events.',
+      error.response?.data?.message ||
+        'An error occurred fetching user events.',
     )
   }
 }
@@ -147,9 +151,9 @@ export const deleteEvent = async (eventId: string): Promise<void> => {
         headers: {
           'Content-Type': 'application/json',
         },
-      }
+      },
     )
-    
+
     if (response.status !== 200) {
       throw new Error(`Failed to delete event. Status: ${response.status}`)
     }

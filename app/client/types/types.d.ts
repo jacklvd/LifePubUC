@@ -80,28 +80,28 @@ interface LocationSuggestion {
 }
 
 interface Event {
-  _id: string;
-  eventId: string;
-  email: string;
-  title: string;
-  summary: string;
-  description?: string;
-  media?: string; // URL for image or video
-  mediaType: 'image' | 'video';
-  location: string;
-  date: Date | string;
-  startTime: string;
-  endTime: string;
-  agenda?: AgendaItem[];
-  highlights?: EventHighlights;
-  faqs?: EventFAQ[];
-  tickets?: Ticket[];
-  totalCapacity?: number;
-  status: 'draft' | 'on sale';
-  publishedAt?: Date | string;
-  publishedBy?: string;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
+  _id: string
+  eventId: string
+  email: string
+  title: string
+  summary: string
+  description?: string
+  media?: string // URL for image or video
+  mediaType: 'image' | 'video'
+  location: string
+  date: Date | string
+  startTime: string
+  endTime: string
+  agenda?: AgendaItem[]
+  highlights?: EventHighlights
+  faqs?: EventFAQ[]
+  tickets?: Ticket[]
+  totalCapacity?: number
+  status: 'draft' | 'on sale'
+  publishedAt?: Date | string
+  publishedBy?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 interface CloudinaryResult {

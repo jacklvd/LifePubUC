@@ -106,12 +106,15 @@ const EventCalendar: React.FC<EventCalendarProps> = ({ events = [] }) => {
   const [date, setDate] = useState<DateState>({
     year: currentDate.getFullYear(),
     month: currentDate.getMonth(),
-    date: currentDate.getDate()
+    date: currentDate.getDate(),
   })
   const [view, setView] = useState<ViewType>('month')
   const [showMonthSelector, setShowMonthSelector] = useState<boolean>(false)
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
-  const [popupPosition, setPopupPosition] = useState<PopupPosition>({ top: 0, left: 0 })
+  const [popupPosition, setPopupPosition] = useState<PopupPosition>({
+    top: 0,
+    left: 0,
+  })
   const [weekStartDate, setWeekStartDate] = useState<Date>(new Date())
   const weekContainerRef = useRef<HTMLDivElement>(null)
 
@@ -182,7 +185,7 @@ const EventCalendar: React.FC<EventCalendarProps> = ({ events = [] }) => {
       setDate({
         year: newWeekStart.getFullYear(),
         month: newWeekStart.getMonth(),
-        date: newWeekStart.getDate()
+        date: newWeekStart.getDate(),
       })
     }
   }
@@ -203,7 +206,7 @@ const EventCalendar: React.FC<EventCalendarProps> = ({ events = [] }) => {
       setDate({
         year: newWeekStart.getFullYear(),
         month: newWeekStart.getMonth(),
-        date: newWeekStart.getDate()
+        date: newWeekStart.getDate(),
       })
     }
   }
@@ -214,7 +217,7 @@ const EventCalendar: React.FC<EventCalendarProps> = ({ events = [] }) => {
       setDate({
         year: today.getFullYear(),
         month: today.getMonth(),
-        date: today.getDate()
+        date: today.getDate(),
       })
     } else {
       // For week view, set to the start of current week
@@ -225,7 +228,7 @@ const EventCalendar: React.FC<EventCalendarProps> = ({ events = [] }) => {
       setDate({
         year: today.getFullYear(),
         month: today.getMonth(),
-        date: today.getDate()
+        date: today.getDate(),
       })
     }
   }
@@ -253,7 +256,10 @@ const EventCalendar: React.FC<EventCalendarProps> = ({ events = [] }) => {
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent): void => {
       // Check if the click was outside the popup and if there's a selected event
-      if (selectedEvent && !(e.target as Element).closest('.event-popup-content')) {
+      if (
+        selectedEvent &&
+        !(e.target as Element).closest('.event-popup-content')
+      ) {
         setSelectedEvent(null)
       }
     }
@@ -269,7 +275,7 @@ const EventCalendar: React.FC<EventCalendarProps> = ({ events = [] }) => {
     if (view === 'week' && weekContainerRef.current) {
       // Force a re-render when window is resized
       const handleResize = (): void => {
-        setDate(prevDate => ({ ...prevDate }))
+        setDate((prevDate) => ({ ...prevDate }))
       }
 
       window.addEventListener('resize', handleResize)
@@ -280,12 +286,16 @@ const EventCalendar: React.FC<EventCalendarProps> = ({ events = [] }) => {
   }, [view])
 
   // Function to get events for a specific date
-  const getEventsForDate = (year: number, month: number, day: number): Event[] => {
+  const getEventsForDate = (
+    year: number,
+    month: number,
+    day: number,
+  ): Event[] => {
     // Format date to YYYY-MM-DD format for comparison
     const dateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
 
     // Filter events for this date
-    return events.filter(event => {
+    return events.filter((event) => {
       if (!event.date) return false
 
       // Convert event date to ISO format (YYYY-MM-DD) for comparison
@@ -332,7 +342,10 @@ const EventCalendar: React.FC<EventCalendarProps> = ({ events = [] }) => {
     const endMonth = months[endDay.getMonth()]
 
     // If start and end are in the same month
-    if (startMonth === endMonth && startDay.getFullYear() === endDay.getFullYear()) {
+    if (
+      startMonth === endMonth &&
+      startDay.getFullYear() === endDay.getFullYear()
+    ) {
       return `${startMonth} ${startDay.getDate()} - ${endDay.getDate()}, ${startDay.getFullYear()}`
     }
 
@@ -492,7 +505,8 @@ const EventCalendar: React.FC<EventCalendarProps> = ({ events = [] }) => {
     // Get column width for events
     let columnWidth = 0
     if (weekContainerRef.current) {
-      const containerWidth = weekContainerRef.current.getBoundingClientRect().width
+      const containerWidth =
+        weekContainerRef.current.getBoundingClientRect().width
       columnWidth = (containerWidth - 50) / 7 // 50px for time column
     }
 
@@ -577,10 +591,10 @@ const EventCalendar: React.FC<EventCalendarProps> = ({ events = [] }) => {
 
             return dayEvents.map((event, eventIndex) => {
               // Only calculate position if column width is available
-              if (columnWidth <= 0) return null;
+              if (columnWidth <= 0) return null
 
               const position = calculateEventPosition(event, columnWidth)
-              if (!position) return null;
+              if (!position) return null
 
               return (
                 <div
@@ -591,7 +605,7 @@ const EventCalendar: React.FC<EventCalendarProps> = ({ events = [] }) => {
                     height: position.height,
                     width: position.width,
                     left: `calc(${50}px + ${dayIndex * columnWidth}px + 2px)`,
-                    zIndex: 10
+                    zIndex: 10,
                   }}
                   onClick={(e) => handleEventClick(event, e)}
                 >
@@ -611,11 +625,7 @@ const EventCalendar: React.FC<EventCalendarProps> = ({ events = [] }) => {
   return (
     <>
       <div className="flex justify-between items-center mb-6">
-        <Button
-          variant="link"
-          className="text-blue-500"
-          onClick={goToToday}
-        >
+        <Button variant="link" className="text-blue-500" onClick={goToToday}>
           Today
         </Button>
 
@@ -671,10 +681,11 @@ const EventCalendar: React.FC<EventCalendarProps> = ({ events = [] }) => {
                   key={month}
                   variant="ghost"
                   size="lg"
-                  className={`text-lg py-3 rounded-md transition-all duration-200 ${idx === date.month
+                  className={`text-lg py-3 rounded-md transition-all duration-200 ${
+                    idx === date.month
                       ? 'bg-blue-500 text-white font-semibold'
                       : 'hover:bg-gray-200'
-                    }`}
+                  }`}
                   onClick={() => {
                     setDate((prev) => ({ ...prev, month: idx }))
                     setShowMonthSelector(false)
