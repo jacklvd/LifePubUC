@@ -1,8 +1,7 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-// import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,46 +9,95 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { useRouter } from 'next/navigation'
-import Image from 'next/image'
 import { Icon } from '@/components/icons'
 import EventCalendar from '@/components/event-ui/event-calendar'
+import EventList from '@/components/event-ui/event-list'
+import { toast } from 'sonner'
+import { useDebounce } from '@/hooks/use-debouce'
+import { getUserEvents, deleteEvent } from '@/lib/actions/event-action'
+import { useSession } from 'next-auth/react'
+
+// You'll need to get the user's email from your auth system
+// This is just a placeholder - replace with your actual auth implementation
 
 const EventsPage = () => {
-  // const [activeTab, setActiveTab] = useState('events');
-  const [viewMode, setViewMode] = useState('list')
-  const [filterValue, setFilterValue] = useState('upcoming')
+  const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list')
+  const [filterValue, setFilterValue] = useState<'upcoming' | 'past' | 'draft' | 'all'>('upcoming')
+  const [searchQuery, setSearchQuery] = useState('')
+  const [events, setEvents] = useState<Event[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const debouncedSearch = useDebounce(searchQuery, 300)
   const router = useRouter()
+  const { data: session } = useSession()
+  const user = session?.user
+
+  // Fetch events
+  useEffect(() => {
+    const fetchEvents = async () => {
+      if (!user?.email) return // Don't fetch if we don't have the user's email
+
+      setIsLoading(true)
+      try {
+        // Get events for the current user
+        let userEvents = await getUserEvents(user.email)
+
+        // Filter events based on filterValue
+        const today = new Date()
+        switch (filterValue) {
+          case 'upcoming':
+            userEvents = userEvents.filter(event => new Date(String(event.date)) >= today)
+            break
+          case 'past':
+            userEvents = userEvents.filter(event => new Date(String(event.date)) < today)
+            break
+          case 'draft':
+            userEvents = userEvents.filter(event => event.status === 'draft')
+            break
+          // 'all' doesn't need filtering
+        }
+
+        // Filter events based on search query
+        if (debouncedSearch.trim()) {
+          const searchLower = debouncedSearch.toLowerCase()
+          userEvents = userEvents.filter(event =>
+            event.title.toLowerCase().includes(searchLower) ||
+            event.summary.toLowerCase().includes(searchLower) ||
+            event.location.toLowerCase().includes(searchLower)
+          )
+        }
+
+        setEvents(userEvents)
+      } catch (error) {
+        console.error('Error fetching events:', error)
+        toast.error('Failed to fetch events')
+        setEvents([])
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchEvents()
+  }, [filterValue, debouncedSearch, user?.email])
+
+  // Delete event handler
+  const handleDeleteEvent = async (eventId: string) => {
+    try {
+      // Call API to delete the event
+      await deleteEvent(eventId)
+
+      // Remove the event from state
+      setEvents(events.filter(event => event._id !== eventId && event.eventId !== eventId))
+      toast.success('Event deleted successfully')
+    } catch (error) {
+      console.error('Error deleting event:', error)
+      toast.error('Failed to delete event')
+    }
+  }
 
   return (
     <div className="container mx-auto max-w-6xl py-8 px-4">
       {/* Header */}
       <h1 className="text-4xl font-bold text-purple-950 mb-6">Events</h1>
-
-      {/* Tabs */}
-      {/* <div className="border-b mb-6">
-        <Tabs defaultValue="events" value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="bg-transparent border-b-0 p-0">
-            <TabsTrigger
-              value="events"
-              className={`px-4 py-2 rounded-none font-normal ${activeTab === 'events'
-                ? 'text-blue-600 border-b-2 border-blue-600'
-                : 'text-gray-600 border-b-2 border-transparent'
-                }`}
-            >
-              Events
-            </TabsTrigger>
-            <TabsTrigger
-              value="collections"
-              className={`px-4 py-2 rounded-none font-normal ${activeTab === 'collections'
-                ? 'text-blue-600 border-b-2 border-blue-600'
-                : 'text-gray-600 border-b-2 border-transparent'
-                }`}
-            >
-              Collections
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
-      </div> */}
 
       {/* Controls Row */}
       <div className="flex flex-col md:flex-row justify-between mb-10 gap-4">
@@ -61,7 +109,9 @@ const EventsPage = () => {
             />
             <Input
               placeholder="Search events"
-              className="pl-10 bg-white border-gray-300"
+              className="pl-10 bg-white-100 border-gray-300"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
         </div>
@@ -71,11 +121,10 @@ const EventsPage = () => {
             <Button
               variant={viewMode === 'list' ? 'default' : 'outline'}
               onClick={() => setViewMode('list')}
-              className={`rounded-l-md rounded-r-none px-4 ${
-                viewMode === 'list'
-                  ? 'bg-blue-600 hover:bg-blue-700'
-                  : 'border-r-0'
-              }`}
+              className={`rounded-l-md rounded-r-none px-4 ${viewMode === 'list'
+                ? 'bg-blue-600 hover:bg-blue-700'
+                : 'border-r-0'
+                }`}
             >
               <Icon name="LayoutList" className="h-5 w-5 mr-2" />
               List
@@ -83,9 +132,8 @@ const EventsPage = () => {
             <Button
               variant={viewMode === 'calendar' ? 'default' : 'outline'}
               onClick={() => setViewMode('calendar')}
-              className={`rounded-r-md rounded-l-none px-4 ${
-                viewMode === 'calendar' ? 'bg-blue-600 hover:bg-blue-700' : ''
-              }`}
+              className={`rounded-r-md rounded-l-none px-4 ${viewMode === 'calendar' ? 'bg-blue-600 hover:bg-blue-700' : ''
+                }`}
             >
               <Icon name="Calendar" className="h-5 w-5 mr-2" />
               Calendar
@@ -103,7 +151,7 @@ const EventsPage = () => {
                 <Icon name="ChevronDown" className="ml-2 h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="bg-white-100 hover:bg-slate-200">
+            <DropdownMenuContent className="bg-white-100">
               <DropdownMenuItem onClick={() => setFilterValue('upcoming')}>
                 Upcoming events
               </DropdownMenuItem>
@@ -128,22 +176,19 @@ const EventsPage = () => {
           </Button>
         </div>
       </div>
-      {/* Calendar or List View */}
-      {viewMode === 'calendar' ? (
-        <EventCalendar />
-      ) : (
-        <div className="flex flex-col items-center justify-center py-16">
-          <div className="mb-6 p-2">
-            <Image
-              src="https://cdn-icons-png.flaticon.com/512/1869/1869397.png"
-              alt="Calendar icon"
-              className="w-20 h-20"
-              width={80}
-              height={80}
-            />
-          </div>
-          <p className="text-gray-500 mb-8">No events to show</p>
+
+      {/* Loading State */}
+      {isLoading ? (
+        <div className="flex justify-center items-center py-16">
+          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
         </div>
+      ) : (
+        /* Calendar or List View */
+        viewMode === 'calendar' ? (
+          <EventCalendar events={events} />
+        ) : (
+          <EventList events={events} onDelete={handleDeleteEvent} />
+        )
       )}
     </div>
   )
