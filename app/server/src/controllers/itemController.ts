@@ -163,7 +163,6 @@ export const createItem = async (
       console.error('Missing Cloudinary credentials')
       // You might want to throw an error or use default values
     }
-    console.log(process.env.CLOUDINARY_API_SECRET)
 
     // Validate required fields
     if (!title || !description || !category || !condition || !price) {
