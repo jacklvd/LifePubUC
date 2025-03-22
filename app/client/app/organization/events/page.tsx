@@ -22,7 +22,9 @@ import { useSession } from 'next-auth/react'
 
 const EventsPage = () => {
   const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list')
-  const [filterValue, setFilterValue] = useState<'upcoming' | 'past' | 'draft' | 'all'>('upcoming')
+  const [filterValue, setFilterValue] = useState<
+    'upcoming' | 'past' | 'draft' | 'all'
+  >('upcoming')
   const [searchQuery, setSearchQuery] = useState('')
   const [events, setEvents] = useState<Event[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -45,13 +47,17 @@ const EventsPage = () => {
         const today = new Date()
         switch (filterValue) {
           case 'upcoming':
-            userEvents = userEvents.filter(event => new Date(String(event.date)) >= today)
+            userEvents = userEvents.filter(
+              (event) => new Date(String(event.date)) >= today,
+            )
             break
           case 'past':
-            userEvents = userEvents.filter(event => new Date(String(event.date)) < today)
+            userEvents = userEvents.filter(
+              (event) => new Date(String(event.date)) < today,
+            )
             break
           case 'draft':
-            userEvents = userEvents.filter(event => event.status === 'draft')
+            userEvents = userEvents.filter((event) => event.status === 'draft')
             break
           // 'all' doesn't need filtering
         }
@@ -59,10 +65,11 @@ const EventsPage = () => {
         // Filter events based on search query
         if (debouncedSearch.trim()) {
           const searchLower = debouncedSearch.toLowerCase()
-          userEvents = userEvents.filter(event =>
-            event.title.toLowerCase().includes(searchLower) ||
-            event.summary.toLowerCase().includes(searchLower) ||
-            event.location.toLowerCase().includes(searchLower)
+          userEvents = userEvents.filter(
+            (event) =>
+              event.title.toLowerCase().includes(searchLower) ||
+              event.summary.toLowerCase().includes(searchLower) ||
+              event.location.toLowerCase().includes(searchLower),
           )
         }
 
@@ -86,7 +93,11 @@ const EventsPage = () => {
       await deleteEvent(eventId)
 
       // Remove the event from state
-      setEvents(events.filter(event => event._id !== eventId && event.eventId !== eventId))
+      setEvents(
+        events.filter(
+          (event) => event._id !== eventId && event.eventId !== eventId,
+        ),
+      )
       toast.success('Event deleted successfully')
     } catch (error) {
       console.error('Error deleting event:', error)
@@ -121,10 +132,11 @@ const EventsPage = () => {
             <Button
               variant={viewMode === 'list' ? 'default' : 'outline'}
               onClick={() => setViewMode('list')}
-              className={`rounded-l-md rounded-r-none px-4 ${viewMode === 'list'
-                ? 'bg-blue-600 hover:bg-blue-700'
-                : 'border-r-0'
-                }`}
+              className={`rounded-l-md rounded-r-none px-4 ${
+                viewMode === 'list'
+                  ? 'bg-blue-600 hover:bg-blue-700'
+                  : 'border-r-0'
+              }`}
             >
               <Icon name="LayoutList" className="h-5 w-5 mr-2" />
               List
@@ -132,8 +144,9 @@ const EventsPage = () => {
             <Button
               variant={viewMode === 'calendar' ? 'default' : 'outline'}
               onClick={() => setViewMode('calendar')}
-              className={`rounded-r-md rounded-l-none px-4 ${viewMode === 'calendar' ? 'bg-blue-600 hover:bg-blue-700' : ''
-                }`}
+              className={`rounded-r-md rounded-l-none px-4 ${
+                viewMode === 'calendar' ? 'bg-blue-600 hover:bg-blue-700' : ''
+              }`}
             >
               <Icon name="Calendar" className="h-5 w-5 mr-2" />
               Calendar
@@ -182,13 +195,11 @@ const EventsPage = () => {
         <div className="flex justify-center items-center py-16">
           <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
         </div>
+      ) : /* Calendar or List View */
+      viewMode === 'calendar' ? (
+        <EventCalendar events={events} />
       ) : (
-        /* Calendar or List View */
-        viewMode === 'calendar' ? (
-          <EventCalendar events={events} />
-        ) : (
-          <EventList events={events} onDelete={handleDeleteEvent} />
-        )
+        <EventList events={events} onDelete={handleDeleteEvent} />
       )}
     </div>
   )

@@ -486,7 +486,7 @@ const EventAgenda = ({
                 !item.title.trim()
                   ? 'Please enter a title before deleting'
                   : agendas.find((a) => a.id === activeAgenda)?.items.length ===
-                    1
+                      1
                     ? 'You must have at least one agenda item or delete the entire agenda'
                     : ''
               }
