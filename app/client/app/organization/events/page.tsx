@@ -13,7 +13,10 @@ import { Icon } from '@/components/icons'
 import EventCalendar from '@/components/event-ui/event-calendar'
 import EventList from '@/components/event-ui/event-list'
 import { toast } from 'sonner'
-import { getUserEvents, deleteEvent as apiDeleteEvent } from '@/lib/actions/event-actions'
+import {
+  getUserEvents,
+  deleteEvent as apiDeleteEvent,
+} from '@/lib/actions/event-actions'
 import { useSession } from 'next-auth/react'
 import useEventStore from '@/store/useEventStore'
 import useEventProcessing from '@/hooks/use-eventprocessing'
@@ -33,11 +36,13 @@ const EventsPage = () => {
     setIsLoading,
     setViewMode,
     setFilterValue,
-    setSearchQuery
+    setSearchQuery,
   } = useEventStore()
 
   // Use the event processing hook for efficient filtering
-  const { filteredEvents, isLoading, deleteEvent } = useEventProcessing(user?.email)
+  const { filteredEvents, isLoading, deleteEvent } = useEventProcessing(
+    user?.email,
+  )
 
   // Fetch events - only when user changes
   useEffect(() => {
@@ -77,7 +82,9 @@ const EventsPage = () => {
   return (
     <div className="container mx-auto max-w-6xl py-6 px-4 sm:py-8">
       {/* Header */}
-      <h1 className="text-3xl sm:text-4xl font-bold text-purple-950 mb-4 sm:mb-6">Events</h1>
+      <h1 className="text-3xl sm:text-4xl font-bold text-purple-950 mb-4 sm:mb-6">
+        Events
+      </h1>
 
       {/* Controls Row - Optimized for mobile */}
       <div className="flex flex-col gap-4 mb-6 sm:mb-10">
@@ -104,8 +111,11 @@ const EventsPage = () => {
             <Button
               variant={viewMode === 'list' ? 'default' : 'outline'}
               onClick={() => setViewMode('list')}
-              className={`rounded-l-md rounded-r-none px-3 sm:px-4 ${viewMode === 'list' ? 'bg-blue-600 hover:bg-blue-700' : 'border-r-0'
-                }`}
+              className={`rounded-l-md rounded-r-none px-3 sm:px-4 ${
+                viewMode === 'list'
+                  ? 'bg-blue-600 hover:bg-blue-700'
+                  : 'border-r-0'
+              }`}
             >
               <Icon name="LayoutList" className="h-4 w-4 sm:mr-2" />
               <span className="hidden sm:inline">List</span>
@@ -113,8 +123,9 @@ const EventsPage = () => {
             <Button
               variant={viewMode === 'calendar' ? 'default' : 'outline'}
               onClick={() => setViewMode('calendar')}
-              className={`rounded-r-md rounded-l-none px-3 sm:px-4 ${viewMode === 'calendar' ? 'bg-blue-600 hover:bg-blue-700' : ''
-                }`}
+              className={`rounded-r-md rounded-l-none px-3 sm:px-4 ${
+                viewMode === 'calendar' ? 'bg-blue-600 hover:bg-blue-700' : ''
+              }`}
             >
               <Icon name="Calendar" className="h-4 w-4 sm:mr-2" />
               <span className="hidden sm:inline">Calendar</span>
@@ -129,7 +140,8 @@ const EventsPage = () => {
                 className="bg-blue-600 text-white-100 hover:bg-blue-700 hover:text-white-100 h-10"
               >
                 <span className="hidden sm:inline">
-                  {filterValue.charAt(0).toUpperCase() + filterValue.slice(1)} events
+                  {filterValue.charAt(0).toUpperCase() + filterValue.slice(1)}{' '}
+                  events
                 </span>
                 <span className="sm:hidden">
                   {filterValue.charAt(0).toUpperCase() + filterValue.slice(1)}
@@ -170,11 +182,11 @@ const EventsPage = () => {
           <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
         </div>
       ) : /* Calendar or List View */
-        viewMode === 'calendar' ? (
-          <EventCalendar events={filteredEvents} />
-        ) : (
-          <EventList events={filteredEvents} onDelete={handleDeleteEvent} />
-        )}
+      viewMode === 'calendar' ? (
+        <EventCalendar events={filteredEvents} />
+      ) : (
+        <EventList events={filteredEvents} onDelete={handleDeleteEvent} />
+      )}
     </div>
   )
 }

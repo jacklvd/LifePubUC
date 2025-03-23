@@ -198,7 +198,17 @@ export default function PublishPage({ params }: PublishPageProps) {
     } finally {
       setPublishing(false)
     }
-  }, [completedSteps, isReadyToPublish, event.tickets, event.date, eventId, email, markStepCompleted, setEventStatus, router])
+  }, [
+    completedSteps,
+    isReadyToPublish,
+    event.tickets,
+    event.date,
+    eventId,
+    email,
+    markStepCompleted,
+    setEventStatus,
+    router,
+  ])
 
   if (error || (!loading && !event)) {
     return <EventFallBack error={error || 'Event not found'} />
