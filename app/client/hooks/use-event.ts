@@ -10,7 +10,7 @@ import { toast } from 'sonner'
 import { eventSchema } from '@/lib/validations'
 import { z } from 'zod'
 import { GOOGLE_MAP_KEY } from '@/constants'
-import { createEvent } from '@/lib/actions/event-action'
+import { createEvent } from '@/lib/actions/event-actions'
 // import { useRouter } from 'next/navigation'
 
 const libraries = ['places'] as any

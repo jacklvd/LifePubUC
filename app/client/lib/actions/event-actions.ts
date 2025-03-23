@@ -2,7 +2,8 @@
 'use server'
 import axios from 'axios'
 import { API_BASE_URL } from '@/constants'
-// import { toast } from 'sonner'
+// Remove the import from server component
+// import useEventStore from '@/store/useEventStore'
 
 export const createEvent = async (eventData: EventData) => {
   try {
@@ -19,7 +20,6 @@ export const createEvent = async (eventData: EventData) => {
     if (response.status !== 201) {
       throw new Error(`Failed to create event. Status: ${response.status}`)
     }
-    // console.log('CreateEvent response:', JSON.stringify(response.data.event._id, null, 2))
 
     return response.data.event
   } catch (error: any) {
@@ -30,10 +30,17 @@ export const createEvent = async (eventData: EventData) => {
   }
 }
 
-export const updateEvent = async (eventId: string, eventData: any) => {
+export const updateEvent = async (eventId: string, eventData: any, email?: string) => {
   try {
+    let url = `${API_BASE_URL}/api/events/update-event/${eventId}`
+    
+    // Add email as query parameter if provided
+    if (email) {
+      url += `?email=${encodeURIComponent(email)}`
+    }
+    
     const response = await axios.put(
-      `${API_BASE_URL}/api/events/update-event/${eventId}`,
+      url,
       eventData,
       {
         headers: {
@@ -55,11 +62,17 @@ export const updateEvent = async (eventId: string, eventData: any) => {
   }
 }
 
-export const getEventById = async (eventId: any) => {
+
+export const getEventById = async (eventId: any, email?: string) => {
   try {
-    const response = await axios.get(
-      `${API_BASE_URL}/api/events/get-event/${eventId}`,
-    )
+    let url = `${API_BASE_URL}/api/events/get-event/${eventId}`
+    
+    // Add email as query parameter if provided
+    if (email) {
+      url += `?email=${encodeURIComponent(email)}`
+    }
+    
+    const response = await axios.get(url)
 
     if (response.status !== 200) {
       throw new Error(`Failed to fetch event. Status: ${response.status}`)
@@ -68,22 +81,26 @@ export const getEventById = async (eventId: any) => {
     return response.data.event
   } catch (error: any) {
     console.error('Error fetching event:', error)
-    // throw new Error(
-    //   error.response?.data?.message || 'An error occurred fetching event.',
-    // )
-    // toast.error(
-    //   error.response?.data?.message || 'An error occurred fetching event.',
-    // )
+    throw new Error(
+      error.response?.data?.message || 'An error occurred fetching event.',
+    )
   }
 }
 
 export async function publishEvent(
   eventId: string,
+  email?: string
 ): Promise<PublishEventResponse> {
   try {
     console.log(`[CLIENT] Publishing event: ${eventId}`)
 
-    const url = `${API_BASE_URL}/api/events/${eventId}/publish`
+    let url = `${API_BASE_URL}/api/events/${eventId}/publish`
+    
+    // Add email as query parameter if provided
+    if (email) {
+      url += `?email=${encodeURIComponent(email)}`
+    }
+    
     console.log(`[CLIENT] Making request to: ${url}`)
 
     const response = await axios.post<PublishEventResponse>(
@@ -100,25 +117,15 @@ export async function publishEvent(
     return response.data
   } catch (error: any) {
     console.error('[CLIENT] Error publishing event:')
-
-    if (error.response) {
-      console.error(`[CLIENT] Status: ${error.response.status}`)
-      console.error('[CLIENT] Data:', error.response.data)
-    } else if (error.request) {
-      console.error('[CLIENT] No response received')
-    } else {
-      console.error(`[CLIENT] Error message: ${error.message}`)
-    }
-
+    // Error handling...
     throw error.response?.data || error
   }
 }
 
 // Add the new function to get user events
-export const getUserEvents = async (
-  email: string,
-  status?: string,
-): Promise<Event[]> => {
+
+// Modified getUserEvents - no longer updates Zustand store directly
+export const getUserEvents = async (email: string, status?: string): Promise<Event[]> => {
   try {
     // Build query string with email and optional status
     let url = `${API_BASE_URL}/api/events/user-events?email=${encodeURIComponent(email)}`
@@ -131,8 +138,9 @@ export const getUserEvents = async (
     if (response.status !== 200) {
       throw new Error(`Failed to fetch user events. Status: ${response.status}`)
     }
-
-    return response.data.events
+    
+    // Just return the events, don't try to update Zustand here
+    return response.data.events || []
   } catch (error: any) {
     console.error('Error fetching user events:', error)
     throw new Error(
@@ -143,10 +151,17 @@ export const getUserEvents = async (
 }
 
 // Add a function to delete an event
-export const deleteEvent = async (eventId: string): Promise<void> => {
+export const deleteEvent = async (eventId: string, email?: string): Promise<void> => {
   try {
+    let url = `${API_BASE_URL}/api/events/${eventId}/delete`
+    
+    // Add email as query parameter if provided
+    if (email) {
+      url += `?email=${encodeURIComponent(email)}`
+    }
+    
     const response = await axios.delete(
-      `${API_BASE_URL}/api/events/${eventId}/delete`,
+      url,
       {
         headers: {
           'Content-Type': 'application/json',

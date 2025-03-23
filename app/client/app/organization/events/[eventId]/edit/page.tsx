@@ -4,7 +4,7 @@
 
 import React, { useEffect, useState, use } from 'react'
 import EventForm from '@/components/event-form'
-import { getEventById, updateEvent } from '@/lib/actions/event-action'
+import { getEventById, updateEvent } from '@/lib/actions/event-actions'
 import { toast } from 'sonner'
 import { Progress } from '@/components/ui/progress' // Assuming you have a loading component
 import { useEventProgress } from '@/context/event-context'
@@ -14,11 +14,12 @@ import EventFallBack from '@/components/event-fallback'
 interface EditEventPageProps {
   params: Promise<{
     eventId: string
+    email: string
   }>
 }
 
 export default function EditEventPage({ params }: EditEventPageProps) {
-  const { eventId } = use(params)
+  const { eventId, email } = use(params)
   const [eventData, setEventData] = useState<EventData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -57,7 +58,7 @@ export default function EditEventPage({ params }: EditEventPageProps) {
 
   const handleSubmit = async (updatedData: EventData) => {
     try {
-      const result = await updateEvent(eventId, updatedData)
+      const result = await updateEvent(eventId, updatedData, email)
 
       if (!result) {
         throw new Error('Failed to update event')

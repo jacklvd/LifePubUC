@@ -6,7 +6,7 @@ import React, { use, useEffect, useState } from 'react'
 import EventFlowLayout from '@/components/event-ui/event-flow-layout'
 import TicketUI from '@/components/ticket-ui'
 import EventFallBack from '@/components/event-fallback'
-import { getEventById } from '@/lib/actions/event-action'
+import { getEventById } from '@/lib/actions/event-actions'
 
 interface TicketPageProps {
   params: Promise<{
