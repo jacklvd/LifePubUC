@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
 import { toast } from 'sonner'
-import { getEventById, publishEvent } from '@/lib/actions/event-action'
+import { getEventById, publishEvent } from '@/lib/actions/event-actions'
 import { useEventProgress } from '@/context/event-context'
 import EventFlowLayout from '@/components/event-ui/event-flow-layout'
 import { formatDate } from '@/lib/date-formatter'
@@ -23,11 +23,12 @@ import EventFallBack from '@/components/event-fallback'
 interface PublishPageProps {
   params: Promise<{
     eventId: string
+    email: string
   }>
 }
 
 export default function PublishPage({ params }: PublishPageProps) {
-  const { eventId } = use(params)
+  const { eventId, email } = use(params)
   const router = useRouter()
 
   // Use the event progress context
@@ -175,7 +176,7 @@ export default function PublishPage({ params }: PublishPageProps) {
       }
 
       // Update event status to published
-      await publishEvent(eventId)
+      await publishEvent(eventId, email)
 
       // Update context
       markStepCompleted('publish')
@@ -197,15 +198,7 @@ export default function PublishPage({ params }: PublishPageProps) {
     } finally {
       setPublishing(false)
     }
-  }, [
-    completedSteps,
-    isReadyToPublish,
-    event,
-    eventId,
-    markStepCompleted,
-    setEventStatus,
-    router,
-  ])
+  }, [completedSteps, isReadyToPublish, event.tickets, event.date, eventId, email, markStepCompleted, setEventStatus, router])
 
   if (error || (!loading && !event)) {
     return <EventFallBack error={error || 'Event not found'} />

@@ -9,7 +9,7 @@ import {
   useReducer,
 } from 'react'
 import { toast } from 'sonner'
-import { getEventById } from '@/lib/actions/event-action'
+import { getEventById } from '@/lib/actions/event-actions'
 import {
   getEventTickets,
   createTicket,

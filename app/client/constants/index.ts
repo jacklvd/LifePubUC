@@ -5,6 +5,8 @@ export const GOOGLE_MAP_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAP_KEY
 export const UPLOAD_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
 export const STORAGE_KEY = process.env.NEXT_PUBLIC_STORAGE_KEY
 
+export type ViewType = 'month' | 'week'
+
 export const FIELD_NAMES = {
   fullName: 'Full name',
   email: 'Email',
