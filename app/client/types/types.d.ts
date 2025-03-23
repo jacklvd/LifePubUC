@@ -8,7 +8,7 @@ interface EventState {
   searchQuery: string
   filterValue: 'upcoming' | 'past' | 'draft' | 'all'
   viewMode: 'list' | 'calendar'
-  
+
   // Calendar specific state
   calendarView: ViewType
   date: DateState
@@ -16,7 +16,7 @@ interface EventState {
   selectedEvent: Event | null
   popupPosition: PopupPosition | null
   showMonthSelector: boolean
-  
+
   // Actions
   setEvents: (events: Event[]) => void
   setFilteredEvents: (events: Event[]) => void
@@ -24,19 +24,19 @@ interface EventState {
   setSearchQuery: (query: string) => void
   setFilterValue: (filter: 'upcoming' | 'past' | 'draft' | 'all') => void
   setViewMode: (mode: 'list' | 'calendar') => void
-  
+
   setCalendarView: (view: ViewType) => void
   setDate: (date: DateState | ((prev: DateState) => DateState)) => void
   setSelectedEvent: (event: Event | null) => void
   setPopupPosition: (position: PopupPosition | null) => void
   setShowMonthSelector: (show: boolean) => void
-  
+
   // Calendar operations
   prevPeriod: () => void
   nextPeriod: () => void
   goToToday: () => void
   getEventsForDate: (year: number, month: number, day: number) => Event[]
-  
+
   // Delete event
   deleteEvent: (eventId: string) => void
 }

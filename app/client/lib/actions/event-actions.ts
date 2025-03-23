@@ -30,24 +30,24 @@ export const createEvent = async (eventData: EventData) => {
   }
 }
 
-export const updateEvent = async (eventId: string, eventData: any, email?: string) => {
+export const updateEvent = async (
+  eventId: string,
+  eventData: any,
+  email?: string,
+) => {
   try {
     let url = `${API_BASE_URL}/api/events/update-event/${eventId}`
-    
+
     // Add email as query parameter if provided
     if (email) {
       url += `?email=${encodeURIComponent(email)}`
     }
-    
-    const response = await axios.put(
-      url,
-      eventData,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
+
+    const response = await axios.put(url, eventData, {
+      headers: {
+        'Content-Type': 'application/json',
       },
-    )
+    })
 
     if (response.status !== 200) {
       throw new Error(`Failed to update event. Status: ${response.status}`)
@@ -62,16 +62,15 @@ export const updateEvent = async (eventId: string, eventData: any, email?: strin
   }
 }
 
-
 export const getEventById = async (eventId: any, email?: string) => {
   try {
     let url = `${API_BASE_URL}/api/events/get-event/${eventId}`
-    
+
     // Add email as query parameter if provided
     if (email) {
       url += `?email=${encodeURIComponent(email)}`
     }
-    
+
     const response = await axios.get(url)
 
     if (response.status !== 200) {
@@ -89,18 +88,18 @@ export const getEventById = async (eventId: any, email?: string) => {
 
 export async function publishEvent(
   eventId: string,
-  email?: string
+  email?: string,
 ): Promise<PublishEventResponse> {
   try {
     console.log(`[CLIENT] Publishing event: ${eventId}`)
 
     let url = `${API_BASE_URL}/api/events/${eventId}/publish`
-    
+
     // Add email as query parameter if provided
     if (email) {
       url += `?email=${encodeURIComponent(email)}`
     }
-    
+
     console.log(`[CLIENT] Making request to: ${url}`)
 
     const response = await axios.post<PublishEventResponse>(
@@ -125,7 +124,10 @@ export async function publishEvent(
 // Add the new function to get user events
 
 // Modified getUserEvents - no longer updates Zustand store directly
-export const getUserEvents = async (email: string, status?: string): Promise<Event[]> => {
+export const getUserEvents = async (
+  email: string,
+  status?: string,
+): Promise<Event[]> => {
   try {
     // Build query string with email and optional status
     let url = `${API_BASE_URL}/api/events/user-events?email=${encodeURIComponent(email)}`
@@ -138,7 +140,7 @@ export const getUserEvents = async (email: string, status?: string): Promise<Eve
     if (response.status !== 200) {
       throw new Error(`Failed to fetch user events. Status: ${response.status}`)
     }
-    
+
     // Just return the events, don't try to update Zustand here
     return response.data.events || []
   } catch (error: any) {
@@ -151,23 +153,23 @@ export const getUserEvents = async (email: string, status?: string): Promise<Eve
 }
 
 // Add a function to delete an event
-export const deleteEvent = async (eventId: string, email?: string): Promise<void> => {
+export const deleteEvent = async (
+  eventId: string,
+  email?: string,
+): Promise<void> => {
   try {
     let url = `${API_BASE_URL}/api/events/${eventId}/delete`
-    
+
     // Add email as query parameter if provided
     if (email) {
       url += `?email=${encodeURIComponent(email)}`
     }
-    
-    const response = await axios.delete(
-      url,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
+
+    const response = await axios.delete(url, {
+      headers: {
+        'Content-Type': 'application/json',
       },
-    )
+    })
 
     if (response.status !== 200) {
       throw new Error(`Failed to delete event. Status: ${response.status}`)

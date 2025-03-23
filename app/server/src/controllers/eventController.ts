@@ -77,7 +77,7 @@ export const updateEvent = async (req: any, res: any) => {
     if (email) {
       query.email = email
     }
-    
+
     const updatedEvent = await Event.findOneAndUpdate(
       query,
       { ...updateData, updatedAt: new Date() },
@@ -111,7 +111,7 @@ export const getEventById = async (req: any, res: any) => {
     if (email) {
       query.email = email
     }
-    
+
     const event = await Event.findOne(query)
     console.log('🔍 Event found:', event ? 'Yes' : 'No')
 
@@ -163,7 +163,7 @@ export const getUserEvents = async (req: any, res: any) => {
 
 export const deleteEvent = async (req: any, res: any) => {
   const { eventId } = req.params
-  const { email } = req.query; // Get email from query params
+  const { email } = req.query // Get email from query params
   console.log('🔍 Deleting event with eventId:', eventId)
 
   try {
@@ -172,8 +172,8 @@ export const deleteEvent = async (req: any, res: any) => {
     if (email) {
       query.email = email
     }
-    
-    const deletedEvent = await Event.findOneAndDelete(query);
+
+    const deletedEvent = await Event.findOneAndDelete(query)
 
     if (!deletedEvent) {
       return res.status(404).json({ message: 'Event not found' })
@@ -460,7 +460,7 @@ export const publishEvent = async (req: any, res: any) => {
     if (email) {
       query.email = email
     }
-    
+
     // Find the event by eventId and email
     const event = await Event.findOne(query)
 
