@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import {  ShoppingBag } from 'lucide-react'
+import { ShoppingBag } from 'lucide-react'
 import { useCartStore } from '@/store/cart'
 
 const fetchMakerItems = async (): Promise<Item[]> => {
@@ -125,8 +125,6 @@ const ShopMakerCommunities = () => {
     addItem({ ...item })
   }
 
-  
-
   return (
     <div className="max-w-10xl mx-auto px-4 py-8">
       <div className="mb-8">
@@ -186,8 +184,6 @@ const ShopMakerCommunities = () => {
                   }`}
                 />
 
-                
-
                 {/* Hover Actions */}
                 <div
                   className={`absolute inset-0 bg-black bg-opacity-20 flex flex-col items-center justify-center transition-opacity duration-300 ${
@@ -205,8 +201,6 @@ const ShopMakerCommunities = () => {
                       <ShoppingBag className="w-4 h-4 text-gray-600" />
                     </button>
                   </div>
-
-             
                 </div>
               </div>
             </Link>
