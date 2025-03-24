@@ -1,22 +1,11 @@
 import { Request, Response } from 'express'
 import Item from '../models/itemSchema'
+import User from "../models/userSchema"
 import { v2 as cloudinary } from 'cloudinary';
 
 import multer from 'multer'
 import { CloudinaryStorage } from 'multer-storage-cloudinary'
-import User from '../models/userSchema'
 import { CLOUDINARY_NAME } from '../../config/env';
-
-interface StorageOptions {
-  cloudinary: typeof cloudinary;
-  params: {
-    resource_type?: string;
-    allowed_formats?: string[];
-    public_id?: (req: Request, file: Express.Multer.File) => string;
-    transformation?: Array<Record<string, any>>;
-    // Add other properties you need
-  };
-}
 
 export function createCloudinaryStorage() {
   cloudinary.config({
@@ -254,30 +243,7 @@ export const updateItem = async (
 }
 
 // Delete item
-export const deleteItem = async (
-  req: Request,
-  res: Response,
-): Promise<void> => {
-  try {
-    const { id } = req.params
 
-    const item = await Item.findById(id)
-
-    if (!item) {
-      res.status(404).json({ message: 'Item not found' })
-      return
-    }
-
-    await item.deleteOne()
-
-    res.status(200).json({
-      message: 'Item deleted successfully',
-    })
-  } catch (error) {
-    console.error('Error deleting item:', error)
-    res.status(500).json({ message: 'Error deleting item', error })
-  }
-}
 
 export const searchItems = async (
   req: Request,
@@ -343,3 +309,30 @@ export const updateItemStatus = async (
     res.status(500).json({ message: 'Error updating item status', error })
   }
 }
+
+export const getCloudinarySignature = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const timestamp = Math.round(new Date().getTime() / 1000);
+    const folder = 'items'; 
+    
+    const signature = cloudinary.utils.api_sign_request({
+      timestamp: timestamp,
+      folder: folder,
+      transformation: 'w_1000,c_limit'
+    }, process.env.CLOUDINARY_API_SECRET || '');
+    
+    res.status(200).json({
+      signature,
+      timestamp,
+      cloudName: CLOUDINARY_NAME,
+      apiKey: process.env.CLOUDINARY_API_KEY,
+      folder,
+    });
+  } catch (error) {
+    console.error('Error generating upload signature:', error);
+    res.status(500).json({ message: 'Error generating upload signature', error });
+  }
+};

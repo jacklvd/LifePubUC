@@ -4,7 +4,6 @@ import {
   getItemById,
   createItem,
   updateItem,
-  deleteItem,
   searchItems,
   updateItemStatus,
   createCloudinaryStorage
@@ -25,6 +24,6 @@ router.post('/', upload.array('images', 10), createItem)
 router.put('/:id', updateItem)
 router.put('/:id/status', updateItemStatus)
 // DELETE routes
-router.delete('/:id', deleteItem)
+
 
 export default router
