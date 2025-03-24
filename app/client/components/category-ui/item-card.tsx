@@ -9,6 +9,7 @@ import {
 import { Badge } from '@/components/ui/badge'
 import Image from 'next/image'
 
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/icons'
 import { toast } from 'sonner'
@@ -21,6 +22,7 @@ interface ItemCardProps {
 const ItemCard = ({ item, addItem }: ItemCardProps) => {
   const [isInCart, setIsInCart] = useState(false)
   const [isFavorite, setIsFavorite] = useState(false)
+  const router = useRouter()
 
   const formatPrice = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -66,8 +68,15 @@ const ItemCard = ({ item, addItem }: ItemCardProps) => {
     setIsFavorite(!isFavorite)
   }
 
+  const handleItemClick = () => {
+    router.push(`/categories/${item._id}`)
+  }
+
   return (
-    <Card className="group w-full max-w-sm hover:shadow-lg transition-shadow duration-300">
+    <Card
+      className="group w-full max-w-sm hover:shadow-lg transition-shadow duration-300"
+      onClick={handleItemClick}
+    >
       <CardHeader>
         <div className="group relative w-full h-48 mb-4">
           <Image
