@@ -5,21 +5,9 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { format } from 'date-fns'
 import Image from 'next/image'
-import { getItemsForSeller } from '@/lib/actions/item-actions'
-
-interface ApiResponse {
-  message: string
-  data: Item[]
-  pagination: {
-    total: number
-    page: number
-    pages: number
-    limit: number
-  }
-}
+import { deleteItem, getItemsForSeller } from '@/lib/actions/item-actions'
 
 const ItemManagementDashboard = () => {
-  const router = useRouter()
   const [items, setItems] = useState<Item[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
@@ -35,8 +23,7 @@ const ItemManagementDashboard = () => {
     fetchItems()
   }, [currentPage, statusFilter, sortBy])
 
- // Updated fetchItems function
-const fetchItems = async () => {
+  const fetchItems = async () => {
     setLoading(true)
     try {
       // Call getItemsForSeller with proper parameters
@@ -45,8 +32,8 @@ const fetchItems = async () => {
         page: currentPage,
         sort: sortBy,
         q: searchQuery || undefined,
-      });
-      
+      })
+
       // response is the parsed JSON, not a fetch Response object
       setItems(response.data)
       setTotalPages(response.pagination.pages)
@@ -91,18 +78,8 @@ const fetchItems = async () => {
   }
 
   const handleDeleteItem = async (itemId: string) => {
-    if (!window.confirm('Are you sure you want to delete this item?')) {
-      return
-    }
-
     try {
-      const response = await fetch(`/api/items/${itemId}`, {
-        method: 'DELETE',
-      })
-
-      if (!response.ok) {
-        throw new Error('Failed to delete item')
-      }
+      await deleteItem({ itemId: itemId })
 
       setItems(items.filter((item) => item._id !== itemId))
     } catch (err) {
@@ -146,8 +123,6 @@ const fetchItems = async () => {
     try {
       const itemIds = Array.from(selectedItems)
 
-      // In a real implementation, you'd likely have a bulk update endpoint
-      // For this example, we'll update each item individually
       await Promise.all(
         itemIds.map((id) =>
           fetch(`/api/items/${id}/status`, {
@@ -160,7 +135,6 @@ const fetchItems = async () => {
         ),
       )
 
-      // Update items in local state
       setItems(
         items.map((item) =>
           selectedItems.has(item._id) ? { ...item, status: newStatus } : item,
@@ -179,24 +153,8 @@ const fetchItems = async () => {
       return
     }
 
-    if (
-      !window.confirm(
-        `Are you sure you want to delete ${selectedItems.size} items?`,
-      )
-    ) {
-      return
-    }
-
     try {
       const itemIds = Array.from(selectedItems)
-
-      await Promise.all(
-        itemIds.map((id) =>
-          fetch(`/api/items/${id}`, {
-            method: 'DELETE',
-          }),
-        ),
-      )
 
       setItems(items.filter((item) => !selectedItems.has(item._id)))
 

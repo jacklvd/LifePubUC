@@ -15,6 +15,7 @@ const nextConfig: NextConfig = {
       'cdnp.sanmar.com',
       'www.flinnsci.com',
       'i.pinimg.com',
+      'picsum.photos',
     ],
     remotePatterns: [
       {

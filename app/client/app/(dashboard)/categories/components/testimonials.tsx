@@ -7,7 +7,10 @@ const Testimonials = ({ testimonials = [], showViewAll = true }) => {
   return (
     <div className="space-y-4">
       {testimonials.map((testimonial) => (
-        <div key={testimonial.id} className="border-b border-gray-100 pb-4 last:border-0">
+        <div
+          key={testimonial.id}
+          className="border-b border-gray-100 pb-4 last:border-0"
+        >
           <div className="flex items-center gap-3 mb-2">
             <Avatar>
               <AvatarImage src={testimonial.avatar} alt={testimonial.name} />
@@ -20,26 +23,28 @@ const Testimonials = ({ testimonials = [], showViewAll = true }) => {
           </div>
           <div className="flex mb-2">
             {[1, 2, 3, 4, 5].map((star) => (
-              <Icon 
-                key={star} 
-                name="Star" 
-                className={star <= testimonial.rating ? 'text-yellow-400' : 'text-gray-300'} 
-                size={14} 
+              <Icon
+                key={star}
+                name="Star"
+                className={
+                  star <= testimonial.rating
+                    ? 'text-yellow-400'
+                    : 'text-gray-300'
+                }
+                size={14}
               />
             ))}
           </div>
           <p className="text-gray-700">{testimonial.comment}</p>
         </div>
       ))}
-      
+
       {showViewAll && testimonials.length > 0 && (
         <div className="mt-4 text-center">
-          <Button variant="outline">
-            View All Reviews
-          </Button>
+          <Button variant="outline">View All Reviews</Button>
         </div>
       )}
-      
+
       {testimonials.length === 0 && (
         <div className="text-center py-8">
           <div className="text-gray-400 mb-2">
