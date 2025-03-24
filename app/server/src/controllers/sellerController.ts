@@ -1,16 +1,14 @@
 import { Request, Response } from 'express'
 import Item from '../models/itemSchema'
 
-
 export const deleteItemForSeller = async (
   req: Request,
   res: Response,
 ): Promise<void> => {
   try {
     const { itemId } = req.params
-    console.log(itemId);
+    console.log(itemId)
     const item = await Item.findById(itemId)
-    
 
     if (!item) {
       res.status(404).json({ message: 'Item not found' })

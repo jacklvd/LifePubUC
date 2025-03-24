@@ -58,23 +58,23 @@ const ItemSchema = new Schema(
       required: true,
       enum: ['available', 'sold', 'reserved'],
       default: 'available',
-      index: true, 
+      index: true,
     },
     views: {
       type: Number,
       default: 0,
       min: 0,
     },
-    featured: { 
+    featured: {
       type: Boolean,
-      default: false
+      default: false,
     },
     rating: {
       type: Number,
       max: 5,
       min: 0,
-      default: 0
-    }
+      default: 0,
+    },
   },
   {
     timestamps: true,
