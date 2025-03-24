@@ -3,7 +3,8 @@
 
 import { useSearchParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { verifyEmail } from '@/lib/actions/auth'
+import { verifyEmail } from '@/lib/actions/auth-actions'
+import { Icon } from '@/components/icons'
 
 export default function VerifyEmail() {
   const searchParams = useSearchParams()
@@ -36,10 +37,12 @@ export default function VerifyEmail() {
     <div className="flex flex-col items-center justify-center h-screen">
       {isVerified ? (
         <h1 className="text-2xl font-bold text-green-600">
-          ✅ Email Verified!
+          <Icon name="BadgeCheck" /> Email Verified!
         </h1>
       ) : (
-        <h1 className="text-2xl font-bold text-yellow-600">🔄 Verifying...</h1>
+        <h1 className="text-2xl font-bold text-yellow-600">
+          <Icon name="RefreshCcw" /> Verifying...
+        </h1>
       )}
       <p className="text-gray-500 mt-2">{message}</p>
       <p className="text-gray-400 mt-4">Redirecting to sign-in...</p>

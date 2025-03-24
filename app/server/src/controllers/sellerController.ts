@@ -28,50 +28,59 @@ export const deleteItemForSeller = async (
   }
 }
 
-export const getItemsForSeller = async (req: Request, res: Response): Promise<void> => {
+export const getItemsForSeller = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
   try {
-    const { sellerId } = req.params;
-    
+    const { sellerId } = req.params
+
     if (!sellerId) {
-        res.status(400).json({ 
-            message: "Error creating shit",
-            data: {}
-        })
-        return;
+      res.status(400).json({
+        message: 'Error creating shit',
+        data: {},
+      })
+      return
     }
 
     const {
-      status = 'all', 
+      status = 'all',
       sort = '-createdAt',
       page = 1,
       limit = 10,
     } = req.query as unknown as {
-      status?: string;
-      sort?: string;
-      page?: number;
-      limit?: number;
-    };
+      status?: string
+      sort?: string
+      page?: number
+      limit?: number
+    }
 
-    const query: any = { seller: sellerId };
+    const query: any = { seller: sellerId }
 
     if (status !== 'all') {
-      query.status = status;
+      query.status = status
     }
 
     const skip = (page - 1) * limit;
 
-    const items = await Item.find(query).sort(sort).skip(skip).limit(limit);
+    const items = await Item.find(query).sort(sort).skip(skip).limit(limit)
 
-    const total = await Item.countDocuments(query);
+    const total = await Item.countDocuments(query)
 
     const analytics = {
-      totalActive: await Item.countDocuments({ seller: sellerId, status: 'available' }),
-      totalSold: await Item.countDocuments({ seller: sellerId, status: 'sold' }),
+      totalActive: await Item.countDocuments({
+        seller: sellerId,
+        status: 'available',
+      }),
+      totalSold: await Item.countDocuments({
+        seller: sellerId,
+        status: 'sold',
+      }),
       totalViews: await Item.aggregate([
         { $match: { seller: sellerId } },
-        { $group: { _id: null, totalViews: { $sum: '$views' } } }
-      ]).then(result => result[0]?.totalViews || 0)
-    };
+        { $group: { _id: null, totalViews: { $sum: '$views' } } },
+      ]).then((result) => result[0]?.totalViews || 0),
+    }
 
     res.status(200).json({
       message: 'Seller items retrieved successfully',
@@ -82,10 +91,10 @@ export const getItemsForSeller = async (req: Request, res: Response): Promise<vo
         pages: Math.ceil(total / limit),
         limit,
       },
-      analytics
-    });
+      analytics,
+    })
   } catch (error) {
-    console.error('Error fetching seller items:', error);
-    res.status(500).json({ message: 'Error fetching seller items', error });
+    console.error('Error fetching seller items:', error)
+    res.status(500).json({ message: 'Error fetching seller items', error })
   }
-};
+}
