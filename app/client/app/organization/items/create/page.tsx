@@ -307,7 +307,8 @@ const CreateItemPage = () => {
                 <p className="text-red-500 text-sm mt-1">{errors.price}</p>
               )}
               <p className="text-gray-500 text-sm mt-2">
-                Set a fair price that reflects your item&apos;s condition and value
+                Set a fair price that reflects your item&apos;s condition and
+                value
               </p>
             </div>
           </div>
