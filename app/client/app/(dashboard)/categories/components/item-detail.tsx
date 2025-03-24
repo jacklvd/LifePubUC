@@ -9,12 +9,12 @@ import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
 import StarRating from '@/components/star-rating'
-import ItemsGrid from '../components/items-grid'
+import ItemsGrid from './items-grid'
 import { getItemById } from '@/lib/actions/item-actions'
 
 const ItemDetailPage = () => {
   const router = useRouter()
-  const { itemId }: { itemId: string } = useParams()
+  const { itemId } = useParams()
   const [item, setItem] = useState<Item | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
@@ -59,7 +59,7 @@ const ItemDetailPage = () => {
 
   const handleAddToCart = () => {
     if (item) {
-      addItem({ ...item })
+      addItem({ ...item, quantity })
     }
   }
 
@@ -127,8 +127,7 @@ const ItemDetailPage = () => {
         <span className="text-red-500 mb-4">⚠️</span>
         <h2 className="text-2xl font-bold mb-2">Item Not Found</h2>
         <p className="text-gray-600 mb-4">
-          The item you&apos;re looking for doesn&apos;t exist or has been
-          removed.
+          The item you're looking for doesn't exist or has been removed.
         </p>
         <Button onClick={() => router.push('/category')}>Return to Shop</Button>
       </div>
@@ -291,14 +290,17 @@ const ItemDetailPage = () => {
             </h1>
 
             {/* Seller info (when populated) */}
-            {/* {item.sellerInfo && (
+            {item.sellerInfo && (
               <div className="flex items-center mt-2 text-sm text-gray-600">
                 <span>Sold by </span>
-                <a href="#" className="hover:underline ml-1 font-medium text-teal-700">
+                <a
+                  href="#"
+                  className="hover:underline ml-1 font-medium text-teal-700"
+                >
                   {item.sellerInfo.fullName || item.sellerInfo.username}
                 </a>
               </div>
-            )} */}
+            )}
 
             {/* Views */}
             <div className="mt-1 text-sm text-gray-500">
@@ -385,7 +387,7 @@ const ItemDetailPage = () => {
                 </p>
               </div>
             </div>
-            {item.rating && item.rating > 0 && (
+            {item.rating > 0 && (
               <div className="flex items-start space-x-2">
                 <div className="mt-0.5">
                   <StarRating rating={item.rating} size="sm" />
@@ -636,7 +638,7 @@ const ItemDetailPage = () => {
                 </div>
               </div>
 
-              {/* {item.sellerInfo && (
+              {item.sellerInfo && (
                 <div className="space-y-4">
                   <h3 className="text-lg font-medium">Seller Information</h3>
                   <div className="flex items-start space-x-4">
@@ -651,7 +653,9 @@ const ItemDetailPage = () => {
                       </div>
                     )}
                     <div>
-                      <h4 className="font-medium">{item.sellerInfo.fullName || item.sellerInfo.username}</h4>
+                      <h4 className="font-medium">
+                        {item.sellerInfo.fullName || item.sellerInfo.username}
+                      </h4>
                       {item.sellerInfo.email && (
                         <p className="text-sm text-gray-600 mt-1">
                           Contact: {item.sellerInfo.email}
@@ -660,7 +664,7 @@ const ItemDetailPage = () => {
                     </div>
                   </div>
                 </div>
-              )} */}
+              )}
             </div>
           </TabsContent>
         </Tabs>
@@ -673,7 +677,7 @@ const ItemDetailPage = () => {
           <ItemsGrid
             items={relatedItems}
             onAddToCart={addItem}
-            onItemSelect={(itemId: string) => router.push(`/item/${itemId}`)}
+            onItemSelect={(itemId) => router.push(`/item/${itemId}`)}
           />
         </div>
       )}
