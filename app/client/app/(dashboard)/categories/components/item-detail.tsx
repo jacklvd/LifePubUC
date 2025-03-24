@@ -22,7 +22,7 @@ const ItemDetailPage = () => {
   const [quantity, setQuantity] = useState(1)
   const [relatedItems, setRelatedItems] = useState<Item[]>([])
   const [activeTab, setActiveTab] = useState<string>('description')
-  
+
   const addItem = useCartStore((state) => state.addItem)
 
   useEffect(() => {
@@ -34,7 +34,7 @@ const ItemDetailPage = () => {
         const { data } = response
 
         setItem(data)
-        
+
         // Handle images according to schema (images are strings, not objects)
         if (data.images && data.images.length > 0) {
           setSelectedImage(data.images[0])
@@ -51,7 +51,7 @@ const ItemDetailPage = () => {
         setLoading(false)
       }
     }
-    
+
     if (itemId) {
       fetchItemDetails()
     }
@@ -75,7 +75,8 @@ const ItemDetailPage = () => {
 
   const handlePrevImage = () => {
     if (item && item.images.length > 0) {
-      const newIndex = (selectedImageIndex - 1 + item.images.length) % item.images.length
+      const newIndex =
+        (selectedImageIndex - 1 + item.images.length) % item.images.length
       setSelectedImageIndex(newIndex)
       setSelectedImage(item.images[newIndex])
     }
@@ -91,13 +92,19 @@ const ItemDetailPage = () => {
 
   // Format condition for display
   const formatCondition = (condition: string) => {
-    switch(condition) {
-      case 'new': return 'New'
-      case 'like_new': return 'Like New'
-      case 'good': return 'Good'
-      case 'fair': return 'Fair'
-      case 'poor': return 'Poor'
-      default: return condition
+    switch (condition) {
+      case 'new':
+        return 'New'
+      case 'like_new':
+        return 'Like New'
+      case 'good':
+        return 'Good'
+      case 'fair':
+        return 'Fair'
+      case 'poor':
+        return 'Poor'
+      default:
+        return condition
     }
   }
 
@@ -265,10 +272,16 @@ const ItemDetailPage = () => {
                   Featured
                 </Badge>
               )}
-              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 text-xs py-0">
+              <Badge
+                variant="outline"
+                className="bg-green-50 text-green-700 border-green-200 text-xs py-0"
+              >
                 {formatCondition(item.condition)}
               </Badge>
-              <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 text-xs py-0">
+              <Badge
+                variant="outline"
+                className="bg-blue-50 text-blue-700 border-blue-200 text-xs py-0"
+              >
                 {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
               </Badge>
             </div>
@@ -280,7 +293,10 @@ const ItemDetailPage = () => {
             {item.sellerInfo && (
               <div className="flex items-center mt-2 text-sm text-gray-600">
                 <span>Sold by </span>
-                <a href="#" className="hover:underline ml-1 font-medium text-teal-700">
+                <a
+                  href="#"
+                  className="hover:underline ml-1 font-medium text-teal-700"
+                >
                   {item.sellerInfo.fullName || item.sellerInfo.username}
                 </a>
               </div>
@@ -294,7 +310,9 @@ const ItemDetailPage = () => {
 
           {/* Price */}
           <div className="flex items-baseline">
-            <span className="text-2xl md:text-3xl font-bold">${item.price.amount.toFixed(2)}</span>
+            <span className="text-2xl md:text-3xl font-bold">
+              ${item.price.amount.toFixed(2)}
+            </span>
           </div>
 
           {/* Quick Details */}
@@ -317,7 +335,9 @@ const ItemDetailPage = () => {
               </svg>
               <div>
                 <p className="font-medium text-sm">Condition</p>
-                <p className="text-sm text-gray-600">{formatCondition(item.condition)}</p>
+                <p className="text-sm text-gray-600">
+                  {formatCondition(item.condition)}
+                </p>
               </div>
             </div>
             <div className="flex items-start space-x-2">
@@ -340,7 +360,9 @@ const ItemDetailPage = () => {
               </svg>
               <div>
                 <p className="font-medium text-sm">Category</p>
-                <p className="text-sm text-gray-600">{formatCategory(item.category)}</p>
+                <p className="text-sm text-gray-600">
+                  {formatCategory(item.category)}
+                </p>
               </div>
             </div>
             <div className="flex items-start space-x-2">
@@ -360,7 +382,9 @@ const ItemDetailPage = () => {
               </svg>
               <div>
                 <p className="font-medium text-sm">Status</p>
-                <p className="text-sm text-gray-600">{item.status.charAt(0).toUpperCase() + item.status.slice(1)}</p>
+                <p className="text-sm text-gray-600">
+                  {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
+                </p>
               </div>
             </div>
             {item.rating > 0 && (
@@ -598,7 +622,10 @@ const ItemDetailPage = () => {
                   </div>
                   <div className="flex">
                     <span className="font-medium w-32">Status:</span>
-                    <span>{item.status.charAt(0).toUpperCase() + item.status.slice(1)}</span>
+                    <span>
+                      {item.status.charAt(0).toUpperCase() +
+                        item.status.slice(1)}
+                    </span>
                   </div>
                   <div className="flex">
                     <span className="font-medium w-32">Featured:</span>
@@ -610,7 +637,7 @@ const ItemDetailPage = () => {
                   </div>
                 </div>
               </div>
-              
+
               {item.sellerInfo && (
                 <div className="space-y-4">
                   <h3 className="text-lg font-medium">Seller Information</h3>
@@ -626,7 +653,9 @@ const ItemDetailPage = () => {
                       </div>
                     )}
                     <div>
-                      <h4 className="font-medium">{item.sellerInfo.fullName || item.sellerInfo.username}</h4>
+                      <h4 className="font-medium">
+                        {item.sellerInfo.fullName || item.sellerInfo.username}
+                      </h4>
                       {item.sellerInfo.email && (
                         <p className="text-sm text-gray-600 mt-1">
                           Contact: {item.sellerInfo.email}
