@@ -11,12 +11,11 @@ const router = express.Router()
 
 // GET routes
 router.get('/session-status', getCheckoutSessionStatusStripe)
-
 // POST routes
 router.post('/accounts', createStripeAccount)
 router.post('/account-links', createStripeAccountLink)
 router.post('/payment-intent', createStripeCheckoutSession)
-
+// WEB HOOK routes
 router.post('/webhooks/stripe', handleStripeWebhook)
 
 export default router

@@ -58,13 +58,23 @@ const ItemSchema = new Schema(
       required: true,
       enum: ['available', 'sold', 'reserved'],
       default: 'available',
-      index: true, // Add index for status-based queries
+      index: true, 
     },
     views: {
       type: Number,
       default: 0,
       min: 0,
     },
+    featured: { 
+      type: Boolean,
+      default: false
+    },
+    rating: {
+      type: Number,
+      max: 5,
+      min: 0,
+      default: 0
+    }
   },
   {
     timestamps: true,
