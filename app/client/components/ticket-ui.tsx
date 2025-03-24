@@ -1,8 +1,8 @@
 // components/ticket-ui.tsx
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+// import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useEventProgress } from '@/context/event-context'
 import TicketCard from '@/components/ticket-ui/ticket-card'
 import CapacityCard from '@/components/ticket-ui/capactity-card'
@@ -33,8 +33,8 @@ const TicketUI: React.FC<TicketUIProps> = ({ eventId, userEmail }) => {
   // Use individual selectors for better performance
   // This avoids the "getSnapshot should be cached" error
   const initialize = useTicketStore((state) => state.initialize)
-  const activeTab = useTicketStore((state) => state.activeTab)
-  const setActiveTab = useTicketStore((state) => state.setActiveTab)
+  // const activeTab = useTicketStore((state) => state.activeTab)
+  // const setActiveTab = useTicketStore((state) => state.setActiveTab)
   const tickets = useTicketStore((state) => state.tickets)
   const totalCapacity = useTicketStore((state) => state.totalCapacity)
   const event = useTicketStore((state) => state.event)
@@ -85,7 +85,7 @@ const TicketUI: React.FC<TicketUIProps> = ({ eventId, userEmail }) => {
   // Initialize the store when component mounts
   useEffect(() => {
     initialize(eventId, userEmail, markStepCompleted)
-  }, [eventId, initialize, markStepCompleted])
+  }, [eventId, initialize, markStepCompleted, userEmail])
 
   // Effect to update event context after fetching
   useEffect(() => {
@@ -221,44 +221,47 @@ const TicketUI: React.FC<TicketUIProps> = ({ eventId, userEmail }) => {
             </div>
           </div>
 
-          <Tabs
+          {/* <Tabs
             defaultValue="admission"
             value={activeTab}
             onValueChange={setActiveTab}
-          >
-            <TabsList className="mb-4">
+          > */}
+          {/* <TabsList className="mb-4">
               <TabsTrigger value="admission">Admission</TabsTrigger>
               <TabsTrigger value="promotions">Promotions</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="admission" className="space-y-4">
-              {tickets.length === 0 ? (
-                <EmptyTicketState onAddClick={openAddDialog} />
-              ) : (
-                <>
-                  {tickets.map((ticket) => (
-                    <TicketCard
-                      key={ticket.id}
-                      ticket={ticket}
-                      formatTicketDate={formatTicketDate}
-                      onEdit={openEditDialog}
-                      onDelete={openDeleteDialog}
-                    />
-                  ))}
-
-                  <CapacityCard
-                    tickets={tickets}
-                    totalCapacity={totalCapacity}
-                    onEditCapacity={() => setIsCapacityDialogOpen(true)}
+            <TabsContent value="admission" className="space-y-4"> */}
+          <div className='space-y-4'>
+            {tickets.length === 0 ? (
+              <EmptyTicketState onAddClick={openAddDialog} />
+            ) : (
+              <>
+                {tickets.map((ticket) => (
+                  <TicketCard
+                    key={ticket.id}
+                    ticket={ticket}
+                    formatTicketDate={formatTicketDate}
+                    onEdit={openEditDialog}
+                    onDelete={openDeleteDialog}
                   />
-                </>
-              )}
-            </TabsContent>
+                ))}
+
+                <CapacityCard
+                  tickets={tickets}
+                  totalCapacity={totalCapacity}
+                  onEditCapacity={() => setIsCapacityDialogOpen(true)}
+                />
+              </>
+            )}
+          </div>
+
+          {/* </TabsContent>
 
             <TabsContent value="promotions">
               Promotions content would go here
             </TabsContent>
-          </Tabs>
+          </Tabs> */}
         </div>
 
         <div className="w-full lg:w-1/4">

@@ -115,7 +115,6 @@ const TicketDialogs: React.FC<TicketDialogsProps> = memo(
 
     // Event data
     eventDate,
-    eventEndTime,
     maxSaleEndDate,
 
     // Form setters
@@ -249,7 +248,7 @@ const TicketDialogs: React.FC<TicketDialogsProps> = memo(
             <DialogHeader>
               <DialogTitle>Delete Ticket</DialogTitle>
               <DialogDescription>
-                Are you sure you want to delete "{currentTicket?.name}"?
+                Are you sure you want to delete &quot;{currentTicket?.name}&quot;?
               </DialogDescription>
             </DialogHeader>
             <p className="py-4">
