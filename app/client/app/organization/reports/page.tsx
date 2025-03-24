@@ -12,11 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-} from '@/components/ui/tabs'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   Select,
   SelectContent,
@@ -30,27 +26,27 @@ import { Icon } from '@/components/icons'
 // Lazy load chart components
 const EventsOverview = dynamic(() => import('./components/events-overview'), {
   loading: () => <LoadingChart />,
-  ssr: false // Disable server-side rendering to reduce initial bundle size
+  ssr: false, // Disable server-side rendering to reduce initial bundle size
 })
 
 const EventsByStatus = dynamic(() => import('./components/events-status'), {
   loading: () => <LoadingChart />,
-  ssr: false
+  ssr: false,
 })
 
 const EventsTimeline = dynamic(() => import('./components/events-timeline'), {
   loading: () => <LoadingChart />,
-  ssr: false
+  ssr: false,
 })
 
 const ItemsOverview = dynamic(() => import('./components/items-overview'), {
   loading: () => <LoadingChart />,
-  ssr: false
+  ssr: false,
 })
 
 const RevenueOverview = dynamic(() => import('./components/revenue'), {
   loading: () => <LoadingChart />,
-  ssr: false
+  ssr: false,
 })
 
 // Custom loading component with animation
@@ -90,7 +86,7 @@ const mockProducts = [
     imageUrl: '/api/placeholder/400/220',
     stock: 120,
     totalRevenue: 924.63,
-    category: 'Apparel'
+    category: 'Apparel',
   },
   {
     title: 'VIP Experience Package',
@@ -99,7 +95,7 @@ const mockProducts = [
     imageUrl: '/api/placeholder/400/220',
     stock: 25,
     totalRevenue: 1199.88,
-    category: 'Experience'
+    category: 'Experience',
   },
   {
     title: 'Commemorative Poster',
@@ -108,7 +104,7 @@ const mockProducts = [
     imageUrl: '/api/placeholder/400/220',
     stock: 72,
     totalRevenue: 559.72,
-    category: 'Merchandise'
+    category: 'Merchandise',
   },
   {
     title: 'Digital Album Download',
@@ -117,15 +113,15 @@ const mockProducts = [
     imageUrl: '/api/placeholder/400/220',
     stock: Infinity,
     totalRevenue: 844.35,
-    category: 'Digital'
-  }
+    category: 'Digital',
+  },
 ]
 
 // Interface for time period options
 interface TimeRange {
-  label: string;
-  value: string;
-  months: number;
+  label: string
+  value: string
+  months: number
 }
 
 // Time period options for filtering
@@ -134,7 +130,7 @@ const timeRanges: TimeRange[] = [
   { label: 'Last 3 Months', value: '3m', months: 3 },
   { label: 'Last 6 Months', value: '6m', months: 6 },
   { label: 'Last 12 Months', value: '12m', months: 12 },
-  { label: 'All Time', value: 'all', months: 36 }
+  { label: 'All Time', value: 'all', months: 36 },
 ]
 
 // Generate monthly data - memoized to prevent recreating on every render
@@ -145,7 +141,7 @@ const generateMonthlyData = (months: number) => {
   // Get all months in the range
   const monthsArray = eachMonthOfInterval({
     start: subMonths(startOfMonth(now), months - 1),
-    end: startOfMonth(now)
+    end: startOfMonth(now),
   })
 
   for (let i = 0; i < monthsArray.length; i++) {
@@ -161,7 +157,7 @@ const generateMonthlyData = (months: number) => {
       month: monthLabel,
       eventsCreated,
       eventsSold,
-      revenue: Math.round(revenue)
+      revenue: Math.round(revenue),
     })
   }
 
@@ -199,7 +195,8 @@ const ReportsPage: React.FC = () => {
   // Generate chart data only when time range changes
   useEffect(() => {
     // Find the selected time range
-    const selectedRange = timeRanges.find(r => r.value === timeRange) || timeRanges[2]
+    const selectedRange =
+      timeRanges.find((r) => r.value === timeRange) || timeRanges[2]
 
     // Generate chart data for the selected range (using a web worker would be better)
     // Using setTimeout to prevent blocking the main thread with data generation
@@ -214,18 +211,24 @@ const ReportsPage: React.FC = () => {
   // Lazy compute statistics based on events
   const totalEvents = events.length
 
-  const upcomingEvents = events.filter(event => {
+  const upcomingEvents = events.filter((event) => {
     const eventDate = new Date(event.date)
     return eventDate > new Date() && event.status === 'on sale'
   }).length
 
-  const draftEvents = events.filter(event => event.status === 'draft').length
-  const liveEvents = events.filter(event => event.status === 'on sale').length
+  const draftEvents = events.filter((event) => event.status === 'draft').length
+  const liveEvents = events.filter((event) => event.status === 'on sale').length
 
   // Calculate revenue data from mock products
   // const totalProducts = mockProducts.length
-  const totalProductsSold = mockProducts.reduce((sum, product) => sum + product.sold, 0)
-  const totalRevenue = mockProducts.reduce((sum, product) => sum + product.totalRevenue, 0)
+  const totalProductsSold = mockProducts.reduce(
+    (sum, product) => sum + product.sold,
+    0,
+  )
+  const totalRevenue = mockProducts.reduce(
+    (sum, product) => sum + product.totalRevenue,
+    0,
+  )
 
   // Only render the active tab content
   const renderTabContent = () => {
@@ -381,7 +384,9 @@ const ReportsPage: React.FC = () => {
                             ${product.totalRevenue.toFixed(2)}
                           </td>
                           <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                            {product.stock === Infinity ? 'Unlimited' : product.stock}
+                            {product.stock === Infinity
+                              ? 'Unlimited'
+                              : product.stock}
                           </td>
                         </tr>
                       ))}
@@ -400,9 +405,7 @@ const ReportsPage: React.FC = () => {
             <Card>
               <CardHeader>
                 <CardTitle>Revenue Overview</CardTitle>
-                <CardDescription>
-                  Total revenue over time
-                </CardDescription>
+                <CardDescription>Total revenue over time</CardDescription>
               </CardHeader>
               <CardContent>
                 <RevenueOverview data={chartData} isLoading={false} />
@@ -456,7 +459,7 @@ const ReportsPage: React.FC = () => {
               <SelectTrigger className="w-40">
                 <SelectValue placeholder="Select time period" />
               </SelectTrigger>
-              <SelectContent className='bg-white-100'>
+              <SelectContent className="bg-white-100">
                 {timeRanges.map((range) => (
                   <SelectItem key={range.value} value={range.value}>
                     {range.label}
@@ -482,7 +485,9 @@ const ReportsPage: React.FC = () => {
                 <CardContent className="pt-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-gray-500">Total Events</p>
+                      <p className="text-sm font-medium text-gray-500">
+                        Total Events
+                      </p>
                       <p className="text-3xl font-bold">{totalEvents}</p>
                     </div>
                     <div className="p-2 bg-blue-100 rounded-full">
@@ -503,7 +508,9 @@ const ReportsPage: React.FC = () => {
                 <CardContent className="pt-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-gray-500">Upcoming Events</p>
+                      <p className="text-sm font-medium text-gray-500">
+                        Upcoming Events
+                      </p>
                       <p className="text-3xl font-bold">{upcomingEvents}</p>
                     </div>
                     <div className="p-2 bg-purple-100 rounded-full">
@@ -524,11 +531,16 @@ const ReportsPage: React.FC = () => {
                 <CardContent className="pt-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-gray-500">Products Sold</p>
+                      <p className="text-sm font-medium text-gray-500">
+                        Products Sold
+                      </p>
                       <p className="text-3xl font-bold">{totalProductsSold}</p>
                     </div>
                     <div className="p-2 bg-amber-100 rounded-full">
-                      <Icon name="ShoppingCart" className="h-6 w-6 text-amber-600" />
+                      <Icon
+                        name="ShoppingCart"
+                        className="h-6 w-6 text-amber-600"
+                      />
                     </div>
                   </div>
                   <div className="mt-4 flex items-center text-sm">
@@ -545,11 +557,18 @@ const ReportsPage: React.FC = () => {
                 <CardContent className="pt-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-gray-500">Total Revenue</p>
-                      <p className="text-3xl font-bold">${totalRevenue.toFixed(2)}</p>
+                      <p className="text-sm font-medium text-gray-500">
+                        Total Revenue
+                      </p>
+                      <p className="text-3xl font-bold">
+                        ${totalRevenue.toFixed(2)}
+                      </p>
                     </div>
                     <div className="p-2 bg-green-100 rounded-full">
-                      <Icon name="DollarSign" className="h-6 w-6 text-green-600" />
+                      <Icon
+                        name="DollarSign"
+                        className="h-6 w-6 text-green-600"
+                      />
                     </div>
                   </div>
                   <div className="mt-4 flex items-center text-sm">
@@ -565,7 +584,11 @@ const ReportsPage: React.FC = () => {
           )}
         </div>
 
-        <Tabs defaultValue="events" className="w-full mb-8" onValueChange={setActiveTab}>
+        <Tabs
+          defaultValue="events"
+          className="w-full mb-8"
+          onValueChange={setActiveTab}
+        >
           <TabsList className="mb-4">
             <TabsTrigger value="events">Events</TabsTrigger>
             <TabsTrigger value="items">Items</TabsTrigger>

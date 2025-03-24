@@ -62,7 +62,7 @@ import {
   SquareMenu,
   TrendingUp,
   DollarSign,
-  BarChart
+  BarChart,
 } from 'lucide-react'
 
 const ICONS = {
@@ -129,7 +129,7 @@ const ICONS = {
   SquareMenu: SquareMenu,
   TrendingUp: TrendingUp,
   DollarSign: DollarSign,
-  BarChart: BarChart
+  BarChart: BarChart,
 } as const
 
 export type IconNames = keyof typeof ICONS

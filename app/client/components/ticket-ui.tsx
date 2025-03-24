@@ -232,7 +232,7 @@ const TicketUI: React.FC<TicketUIProps> = ({ eventId, userEmail }) => {
             </TabsList>
 
             <TabsContent value="admission" className="space-y-4"> */}
-          <div className='space-y-4'>
+          <div className="space-y-4">
             {tickets.length === 0 ? (
               <EmptyTicketState onAddClick={openAddDialog} />
             ) : (

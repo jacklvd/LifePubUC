@@ -9,5 +9,5 @@ export {
   EventsByStatus,
   EventsTimeline,
   ItemsOverview,
-  RevenueOverview
+  RevenueOverview,
 }
