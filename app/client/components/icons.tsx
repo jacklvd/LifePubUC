@@ -56,6 +56,11 @@ import {
   Edit,
   Ticket,
   Eye,
+  AlertCircle,
+  Menu,
+  Logs,
+  SquareMenu,
+  TrendingUp
 } from 'lucide-react'
 
 const ICONS = {
@@ -116,6 +121,11 @@ const ICONS = {
   Edit: Edit,
   Ticket: Ticket,
   Eye: Eye,
+  AlertCircle: AlertCircle,
+  Menu: Menu,
+  Logs: Logs,
+  SquareMenu: SquareMenu,
+  TrendingUp: TrendingUp
 } as const
 
 export type IconNames = keyof typeof ICONS

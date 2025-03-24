@@ -1,27 +1,28 @@
 // components/ticket-ui.tsx
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { useTicketManagement } from '@/hooks/use-ticket'
 import { useEventProgress } from '@/context/event-context'
 import TicketCard from '@/components/ticket-ui/ticket-card'
 import CapacityCard from '@/components/ticket-ui/capactity-card'
 import TicketDialogs from '@/components/ticket-ui/ticket-dialogs'
 import SidebarContent from '@/components/ticket-ui/sidebar-content'
 import EmptyTicketState from '@/components/ticket-ui/empty-ticket-state'
-import { toast } from 'sonner'
+import { useTicketStore } from '@/store/ticketStore'
+import { CalendarType } from '@/constants'
 
 interface TicketUIProps {
   eventId: string
+  userEmail?: string
 }
 
-const TicketUI: React.FC<TicketUIProps> = ({ eventId }) => {
+const TicketUI: React.FC<TicketUIProps> = ({ eventId, userEmail }) => {
   const router = useRouter()
 
   // Use the event progress context
   const {
-    setEventId,
+    setEventId: setProgressEventId,
     setEventTitle,
     setEventDate,
     setActiveStep,
@@ -29,19 +30,73 @@ const TicketUI: React.FC<TicketUIProps> = ({ eventId }) => {
     completedSteps,
   } = useEventProgress()
 
-  // Use our custom ticket hook
-  const ticketHook = useTicketManagement(eventId, markStepCompleted)
+  // Use individual selectors for better performance
+  // This avoids the "getSnapshot should be cached" error
+  const initialize = useTicketStore((state) => state.initialize)
+  const activeTab = useTicketStore((state) => state.activeTab)
+  const setActiveTab = useTicketStore((state) => state.setActiveTab)
+  const tickets = useTicketStore((state) => state.tickets)
+  const totalCapacity = useTicketStore((state) => state.totalCapacity)
+  const event = useTicketStore((state) => state.event)
+  const loading = useTicketStore((state) => state.loading)
+  const error = useTicketStore((state) => state.error)
+  const timeOptions = useTicketStore((state) => state.timeOptions)
+
+  // Dialog states
+  const activeDialog = useTicketStore((state) => state.activeDialog)
+  const activeCalendar = useTicketStore((state) => state.activeCalendar)
+  const currentTicket = useTicketStore((state) => state.currentTicket)
+
+  // Dialog actions
+  const openAddDialog = useTicketStore((state) => state.openAddDialog)
+  const openEditDialog = useTicketStore((state) => state.openEditDialog)
+  const openDeleteDialog = useTicketStore((state) => state.openDeleteDialog)
+  const closeAllDialogs = useTicketStore((state) => state.closeAllDialogs)
+  const setCalendar = useTicketStore((state) => state.setCalendar)
+
+  // Form state - using stable selectors
+  const form = useTicketStore((state) => state.form)
+  const {
+    ticketType,
+    ticketName,
+    ticketCapacity,
+    ticketPrice,
+    saleStartDate,
+    saleEndDate,
+    startTime,
+    endTime,
+    minPerOrder,
+    maxPerOrder
+  } = form
+
+  // Form actions
+  const updateFormField = useTicketStore((state) => state.updateFormField)
+
+  // CRUD operations
+  const addTicket = useTicketStore((state) => state.addTicket)
+  const updateTicketAction = useTicketStore((state) => state.updateTicket)
+  const deleteTicketAction = useTicketStore((state) => state.deleteTicket)
+  const updateCapacity = useTicketStore((state) => state.updateCapacity)
+
+  // Utils
+  const formatTicketDate = useTicketStore((state) => state.formatTicketDate)
+  const isEndDateDisabled = useTicketStore((state) => state.isEndDateDisabled)
+
+  // Initialize the store when component mounts
+  useEffect(() => {
+    initialize(eventId, userEmail, markStepCompleted)
+  }, [eventId, initialize, markStepCompleted])
 
   // Effect to update event context after fetching
   useEffect(() => {
     try {
-      if (ticketHook.event) {
-        setEventId(eventId)
-        setEventTitle(ticketHook.event?.title || '')
+      if (event) {
+        setProgressEventId(eventId)
+        setEventTitle(event?.title || '')
         // Always provide a string, use empty string instead of null
         setEventDate(
-          ticketHook.event?.date
-            ? new Date(ticketHook.event.date).toLocaleDateString()
+          event?.date
+            ? new Date(event.date).toLocaleDateString()
             : '',
         )
         setActiveStep('tickets')
@@ -51,18 +106,17 @@ const TicketUI: React.FC<TicketUIProps> = ({ eventId }) => {
           markStepCompleted('build')
         }
       } else {
-        toast.error('Event data is not available yet.')
-        console.warn('Event data is not available yet.')
+        // Do nothing if event is not loaded yet
         return
       }
     } catch (error) {
       console.error('Error updating event context:', error)
-      setEventId('') // Reset eventId in case of error
+      setProgressEventId('') // Reset eventId in case of error
     }
   }, [
-    ticketHook.event,
+    event,
     eventId,
-    setEventId,
+    setProgressEventId,
     setEventTitle,
     setEventDate,
     setActiveStep,
@@ -72,7 +126,7 @@ const TicketUI: React.FC<TicketUIProps> = ({ eventId }) => {
 
   // Effect to check if build step is completed before allowing access
   useEffect(() => {
-    if (!completedSteps.includes('build') && !ticketHook.error) {
+    if (!completedSteps.includes('build') && !error) {
       console.warn('You need to complete the build step first')
 
       const redirectPath = eventId
@@ -81,7 +135,7 @@ const TicketUI: React.FC<TicketUIProps> = ({ eventId }) => {
 
       router.push(redirectPath)
     }
-  }, [completedSteps, eventId, router, ticketHook.error])
+  }, [completedSteps, eventId, router, error])
 
   const handleContinueToPublish = () => {
     // Mark tickets step as completed if not already
@@ -91,7 +145,7 @@ const TicketUI: React.FC<TicketUIProps> = ({ eventId }) => {
     router.push(`/organization/events/${eventId}/publish`)
   }
 
-  if (ticketHook.loading) {
+  if (loading) {
     return (
       <div className="container mx-auto p-4 flex justify-center items-center h-screen">
         <div className="text-center">
@@ -101,8 +155,35 @@ const TicketUI: React.FC<TicketUIProps> = ({ eventId }) => {
     )
   }
 
-  // Get the time options array directly from the hook
-  const timeOptions = ticketHook.generateTimeOptions || []
+  // Map state to props for form field setters with proper TypeScript types
+  const setTicketType = (value: 'Free' | 'Paid' | 'Donation') => updateFormField('ticketType', value)
+  const setTicketName = (value: string) => updateFormField('ticketName', value)
+  const setTicketCapacity = (value: number) => updateFormField('ticketCapacity', value)
+  const setTicketPrice = (value: number | undefined) => updateFormField('ticketPrice', value)
+  const setSaleStartDate = (value: Date | undefined) => updateFormField('saleStartDate', value)
+  const setSaleEndDate = (value: Date | undefined) => updateFormField('saleEndDate', value)
+  const setStartTime = (value: string) => updateFormField('startTime', value)
+  const setEndTime = (value: string) => updateFormField('endTime', value)
+  const setMinPerOrder = (value: number) => updateFormField('minPerOrder', value)
+  const setMaxPerOrder = (value: number) => updateFormField('maxPerOrder', value)
+
+  // Calendar open states mapped to activeCalendar
+  const startDateCalendarOpen = activeCalendar === 'start'
+  const endDateCalendarOpen = activeCalendar === 'end'
+  const setStartDateCalendarOpen = (open: boolean) => setCalendar(open ? 'start' : null)
+  const setEndDateCalendarOpen = (open: boolean) => setCalendar(open ? 'end' : null)
+
+  // Dialog open states mapped to activeDialog
+  const isAddDialogOpen = activeDialog === 'add'
+  const isEditDialogOpen = activeDialog === 'edit'
+  const isDeleteDialogOpen = activeDialog === 'delete'
+  const isCapacityDialogOpen = activeDialog === 'capacity'
+
+  // Dialog setters mapped to store methods
+  const setIsAddDialogOpen = (open: boolean) => open ? openAddDialog() : closeAllDialogs()
+  const setIsEditDialogOpen = (open: boolean) => open ? (currentTicket && openEditDialog(currentTicket)) : closeAllDialogs()
+  const setIsDeleteDialogOpen = (open: boolean) => open ? (currentTicket && openDeleteDialog(currentTicket)) : closeAllDialogs()
+  const setIsCapacityDialogOpen = (open: boolean) => open ? setCalendar('capacity' as CalendarType) : closeAllDialogs()
 
   return (
     <div className="container mx-auto p-4">
@@ -113,12 +194,12 @@ const TicketUI: React.FC<TicketUIProps> = ({ eventId }) => {
             <div className="flex gap-2">
               <Button
                 className="bg-orange-600 hover:bg-orange-700"
-                onClick={ticketHook.openAddDialog} // Use openAddDialog directly
+                onClick={openAddDialog}
               >
                 Add more tickets
               </Button>
 
-              {ticketHook.tickets.length > 0 && (
+              {tickets.length > 0 && (
                 <Button
                   className="bg-green-600 hover:bg-green-700"
                   onClick={handleContinueToPublish}
@@ -131,55 +212,42 @@ const TicketUI: React.FC<TicketUIProps> = ({ eventId }) => {
 
           <Tabs
             defaultValue="admission"
-            value={ticketHook.activeTab}
-            onValueChange={ticketHook.setActiveTab}
+            value={activeTab}
+            onValueChange={setActiveTab}
           >
             <TabsList className="mb-4">
               <TabsTrigger value="admission">Admission</TabsTrigger>
-              <TabsTrigger value="addons">Add-ons</TabsTrigger>
               <TabsTrigger value="promotions">Promotions</TabsTrigger>
-              <TabsTrigger value="holds">Holds</TabsTrigger>
-              <TabsTrigger value="settings">Settings</TabsTrigger>
             </TabsList>
 
             <TabsContent value="admission" className="space-y-4">
-              {ticketHook.tickets.length === 0 ? (
+              {tickets.length === 0 ? (
                 <EmptyTicketState
-                  onAddClick={ticketHook.openAddDialog} // Use openAddDialog directly
+                  onAddClick={openAddDialog}
                 />
               ) : (
                 <>
-                  {ticketHook.tickets.map((ticket) => (
+                  {tickets.map((ticket) => (
                     <TicketCard
                       key={ticket.id}
                       ticket={ticket}
-                      formatTicketDate={ticketHook.formatTicketDate}
-                      onEdit={ticketHook.openEditDialog} // Use openEditDialog directly
-                      onDelete={ticketHook.openDeleteDialog} // Use openDeleteDialog directly
+                      formatTicketDate={formatTicketDate}
+                      onEdit={openEditDialog}
+                      onDelete={openDeleteDialog}
                     />
                   ))}
 
                   <CapacityCard
-                    tickets={ticketHook.tickets}
-                    totalCapacity={ticketHook.totalCapacity}
-                    onEditCapacity={() =>
-                      ticketHook.setIsCapacityDialogOpen(true)
-                    }
+                    tickets={tickets}
+                    totalCapacity={totalCapacity}
+                    onEditCapacity={() => setIsCapacityDialogOpen(true)}
                   />
                 </>
               )}
             </TabsContent>
 
-            {/* Other tab contents */}
-            <TabsContent value="addons">
-              Add-ons content would go here
-            </TabsContent>
             <TabsContent value="promotions">
               Promotions content would go here
-            </TabsContent>
-            <TabsContent value="holds">Holds content would go here</TabsContent>
-            <TabsContent value="settings">
-              Settings content would go here
             </TabsContent>
           </Tabs>
         </div>
@@ -191,52 +259,52 @@ const TicketUI: React.FC<TicketUIProps> = ({ eventId }) => {
 
       {/* Dialogs */}
       <TicketDialogs
-        isAddDialogOpen={ticketHook.isAddDialogOpen}
-        setIsAddDialogOpen={ticketHook.setIsAddDialogOpen}
-        isEditDialogOpen={ticketHook.isEditDialogOpen}
-        setIsEditDialogOpen={ticketHook.setIsEditDialogOpen}
-        isCapacityDialogOpen={ticketHook.isCapacityDialogOpen}
-        setIsCapacityDialogOpen={ticketHook.setIsCapacityDialogOpen}
-        isDeleteDialogOpen={ticketHook.isDeleteDialogOpen}
-        setIsDeleteDialogOpen={ticketHook.setIsDeleteDialogOpen}
-        totalCapacity={ticketHook.totalCapacity}
-        setTotalCapacity={ticketHook.setTotalCapacity}
-        currentTicket={ticketHook.currentTicket}
-        ticketType={ticketHook.ticketType}
-        ticketName={ticketHook.ticketName}
-        ticketCapacity={ticketHook.ticketCapacity}
-        ticketPrice={ticketHook.ticketPrice}
-        saleStartDate={ticketHook.saleStartDate}
-        saleEndDate={ticketHook.saleEndDate}
-        startTime={ticketHook.startTime}
-        endTime={ticketHook.endTime}
-        minPerOrder={ticketHook.minPerOrder}
-        maxPerOrder={ticketHook.maxPerOrder}
+        isAddDialogOpen={isAddDialogOpen}
+        setIsAddDialogOpen={setIsAddDialogOpen}
+        isEditDialogOpen={isEditDialogOpen}
+        setIsEditDialogOpen={setIsEditDialogOpen}
+        isCapacityDialogOpen={isCapacityDialogOpen}
+        setIsCapacityDialogOpen={setIsCapacityDialogOpen}
+        isDeleteDialogOpen={isDeleteDialogOpen}
+        setIsDeleteDialogOpen={setIsDeleteDialogOpen}
+        totalCapacity={totalCapacity}
+        setTotalCapacity={setTicketCapacity}
+        currentTicket={currentTicket}
+        ticketType={ticketType}
+        ticketName={ticketName}
+        ticketCapacity={ticketCapacity}
+        ticketPrice={ticketPrice}
+        saleStartDate={saleStartDate}
+        saleEndDate={saleEndDate}
+        startTime={startTime}
+        endTime={endTime}
+        minPerOrder={minPerOrder}
+        maxPerOrder={maxPerOrder}
         eventDate={
-          ticketHook.event?.date ? new Date(ticketHook.event.date) : undefined
+          event?.date ? new Date(event.date) : undefined
         }
-        eventEndTime={ticketHook.eventEndTime}
-        maxSaleEndDate={ticketHook.maxSaleEndDate}
-        setTicketType={ticketHook.setTicketType}
-        setTicketName={ticketHook.setTicketName}
-        setTicketCapacity={ticketHook.setTicketCapacity}
-        setTicketPrice={ticketHook.setTicketPrice}
-        setSaleStartDate={ticketHook.setSaleStartDate}
-        setSaleEndDate={ticketHook.setSaleEndDate}
-        setStartTime={ticketHook.setStartTime}
-        setEndTime={ticketHook.setEndTime}
-        setMinPerOrder={ticketHook.setMinPerOrder}
-        setMaxPerOrder={ticketHook.setMaxPerOrder}
-        handleAddTicket={ticketHook.handleAddTicket}
-        handleUpdateTicket={ticketHook.handleUpdateTicket}
-        handleDeleteTicket={ticketHook.handleDeleteTicket}
-        handleUpdateCapacity={ticketHook.handleUpdateCapacity}
+        eventEndTime={event?.endTime || '11:59 PM'}
+        maxSaleEndDate={event?.date ? new Date(event.date) : undefined}
+        setTicketType={setTicketType}
+        setTicketName={setTicketName}
+        setTicketCapacity={setTicketCapacity}
+        setTicketPrice={setTicketPrice}
+        setSaleStartDate={setSaleStartDate}
+        setSaleEndDate={setSaleEndDate}
+        setStartTime={setStartTime}
+        setEndTime={setEndTime}
+        setMinPerOrder={setMinPerOrder}
+        setMaxPerOrder={setMaxPerOrder}
+        handleAddTicket={addTicket}
+        handleUpdateTicket={updateTicketAction}
+        handleDeleteTicket={deleteTicketAction}
+        handleUpdateCapacity={updateCapacity}
         generateTimeOptions={timeOptions}
-        startDateCalendarOpen={ticketHook.startDateCalendarOpen}
-        setStartDateCalendarOpen={ticketHook.setStartDateCalendarOpen}
-        endDateCalendarOpen={ticketHook.endDateCalendarOpen}
-        setEndDateCalendarOpen={ticketHook.setEndDateCalendarOpen}
-        isEndDateDisabled={ticketHook.isEndDateDisabled}
+        startDateCalendarOpen={startDateCalendarOpen}
+        setStartDateCalendarOpen={setStartDateCalendarOpen}
+        endDateCalendarOpen={endDateCalendarOpen}
+        setEndDateCalendarOpen={setEndDateCalendarOpen}
+        isEndDateDisabled={isEndDateDisabled}
       />
     </div>
   )
