@@ -12,6 +12,8 @@ import {
   carouselSlides,
 } from '@/constants'
 
+import ShopMakerCommunities from '@/components/shop-maker'
+
 const LandingPage = () => {
   const [currentSlide, setCurrentSlide] = useState(0)
   const totalSlides = carouselSlides.length
@@ -209,6 +211,8 @@ const LandingPage = () => {
           ))}
         </div>
       </div>
+
+      <ShopMakerCommunities />
     </div>
   )
 }

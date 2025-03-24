@@ -13,12 +13,12 @@ import { Icon } from '@/components/icons'
 
 const CategoryPage = () => {
   const [items, setItems] = useState<Item[]>([])
-  const [filteredItems, setFilteredItems] = useState([])
+  const [filteredItems, setFilteredItems] = useState<Item[]>([])
   const [loading, setLoading] = useState(true)
-  const [selectedCategory, setSelectedCategory] = useState(null)
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000])
-  const [sortOption, setSortOption] = useState('recommended')
+  const [sortOption, setSortOption] = useState<string>('recommended')
   const [showFilters, setShowFilters] = useState(true)
   const [availabilityFilters, setAvailabilityFilters] = useState({
     inStock: false,
@@ -29,7 +29,7 @@ const CategoryPage = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState(12)
   const [totalPages, setTotalPages] = useState(1)
-  const [paginatedItems, setPaginatedItems] = useState([])
+  const [paginatedItems, setPaginatedItems] = useState<Item[]>([])
 
   const addItem = useCartStore((state) => state.addItem)
 
@@ -41,10 +41,8 @@ const CategoryPage = () => {
         )
         const data = await response.json()
 
-        
         setItems(data?.data || [])
         setFilteredItems(data?.data || [])
-        
       } catch (error) {
         console.error('Error fetching items:', error)
       } finally {
@@ -60,21 +58,24 @@ const CategoryPage = () => {
 
     // Apply category filter
     if (selectedCategory) {
-      result = result.filter(item => item.category === selectedCategory)
+      result = result.filter((item) => item.category === selectedCategory)
     }
 
     // Apply search query filter
     if (searchQuery) {
       const query = searchQuery.toLowerCase()
-      result = result.filter(item => 
-        item.title.toLowerCase().includes(query) || 
-        (item.description && item.description.toLowerCase().includes(query))
+      result = result.filter(
+        (item) =>
+          item.title.toLowerCase().includes(query) ||
+          (item.description && item.description.toLowerCase().includes(query)),
       )
     }
 
     // Apply price range filter
-    result = result.filter(item => 
-      item.price.amount >= priceRange[0] && item.price.amount <= priceRange[1]
+    result = result.filter(
+      (item) =>
+        item.price.amount >= priceRange[0] &&
+        item.price.amount <= priceRange[1],
     )
 
     // Apply availability filters
@@ -94,15 +95,27 @@ const CategoryPage = () => {
     } else if (sortOption === 'priceHighToLow') {
       result.sort((a, b) => b.price.amount - a.price.amount)
     } else if (sortOption === 'newest') {
-      result.sort((a, b) => new Date(b?.createdAt || "").getTime() - new Date(a?.createdAt || "").getTime())
-    } 
+      result.sort(
+        (a, b) =>
+          new Date(b?.createdAt || '').getTime() -
+          new Date(a?.createdAt || '').getTime(),
+      )
+    }
 
-    // setFilteredItems(result)
+    setFilteredItems(result)
     // Reset to first page when filters change
     setCurrentPage(1)
     // Calculate total pages
     setTotalPages(Math.ceil(result.length / itemsPerPage))
-  }, [items, selectedCategory, searchQuery, priceRange, sortOption, availabilityFilters, itemsPerPage])
+  }, [
+    items,
+    selectedCategory,
+    searchQuery,
+    priceRange,
+    sortOption,
+    availabilityFilters,
+    itemsPerPage,
+  ])
 
   // Handle pagination
   useEffect(() => {
@@ -111,11 +124,11 @@ const CategoryPage = () => {
     setPaginatedItems(filteredItems.slice(startIndex, endIndex))
   }, [filteredItems, currentPage, itemsPerPage])
 
-  const handleCategorySelect = (category: any) => {
+  const handleCategorySelect = (category: string) => {
     setSelectedCategory(category === selectedCategory ? null : category)
   }
 
-  const handleSearchChange = (query: any) => {
+  const handleSearchChange = (query: string) => {
     setSearchQuery(query)
   }
 
@@ -123,24 +136,24 @@ const CategoryPage = () => {
     setPriceRange(value)
   }
 
-  const handleSortChange = (value: any) => {
+  const handleSortChange = (value: string) => {
     setSortOption(value)
   }
 
-  const handleAvailabilityChange = (key: number, checked) => {
-    setAvailabilityFilters(prev => ({
-      ...prev,
-      [key]: checked
-    }))
-  }
+  // const handleAvailabilityChange = (key: number, checked) => {
+  //   setAvailabilityFilters(prev => ({
+  //     ...prev,
+  //     [key]: checked
+  //   }))
+  // }
 
-  const handlePageChange = (page) => {
+  const handlePageChange = (page: number) => {
     setCurrentPage(page)
     // Scroll to top when changing pages
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  const handleItemsPerPageChange = (value) => {
+  const handleItemsPerPageChange = (value: number) => {
     setItemsPerPage(value)
   }
 
@@ -151,7 +164,7 @@ const CategoryPage = () => {
     setAvailabilityFilters({
       inStock: false,
       preOrder: false,
-      limitedEdition: false
+      limitedEdition: false,
     })
     setSortOption('recommended')
   }
@@ -162,10 +175,10 @@ const CategoryPage = () => {
   return (
     <div className="w-full min-h-screen bg-gray-50">
       {/* Categories Section */}
-      <CategoriesSection 
-        categories={categories} 
-        selectedCategory={selectedCategory} 
-        onCategorySelect={handleCategorySelect} 
+      <CategoriesSection
+        categories={categories}
+        selectedCategory={selectedCategory}
+        onCategorySelect={handleCategorySelect}
       />
 
       {/* Main Content with Sidebar */}
@@ -210,7 +223,7 @@ const CategoryPage = () => {
                   onAddToCart={addItem}
                   onItemSelect={() => {}}
                 />
-                
+
                 <Pagination
                   currentPage={currentPage}
                   totalPages={totalPages}
@@ -222,13 +235,20 @@ const CategoryPage = () => {
               </>
             ) : (
               <div className="flex flex-col items-center justify-center h-64 text-center">
-                <Icon name="Search" className="text-gray-400 mb-4" width={400} />
-                <h3 className="text-xl font-medium text-gray-700 mb-2">No items found</h3>
+                <Icon
+                  name="Search"
+                  className="text-gray-400 mb-4"
+                  width={400}
+                />
+                <h3 className="text-xl font-medium text-gray-700 mb-2">
+                  No items found
+                </h3>
                 <p className="text-gray-500 max-w-md">
-                  Try adjusting your search or filter criteria to find what you're looking for.
+                  Try adjusting your search or filter criteria to find what
+                  you&apos;re looking for.
                 </p>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   className="mt-4"
                   onClick={clearFilters}
                 >

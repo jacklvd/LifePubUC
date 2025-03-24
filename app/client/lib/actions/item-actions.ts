@@ -33,6 +33,36 @@ export async function createItem({ formData }: { formData: any }) {
   }
 }
 
+export async function getItemById({
+  itemId,
+}: {
+  itemId: string | string[] | undefined
+}) {
+  const session = await auth()
+
+  if (!session?.user?.id || '') {
+    throw new Error('Authentication required')
+  }
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/items/${itemId}`,
+      {
+        method: 'GET',
+      },
+    )
+
+    if (!response.ok) {
+      throw new Error('Failed to get item')
+    }
+
+    return await response.json()
+  } catch (error) {
+    console.error('Error getting item:', error)
+    throw error
+  }
+}
+
 export async function getItemsForSeller({
   status,
   page = 1,
@@ -75,6 +105,32 @@ export async function getItemsForSeller({
     return await response.json()
   } catch (error) {
     console.error('Error fetching seller items:', error)
+    throw error
+  }
+}
+
+export async function deleteItem({ itemId }: { itemId: string }) {
+  const session = await auth()
+
+  if (!session?.user?.id || '') {
+    throw new Error('Authentication required')
+  }
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/sellers/${session?.user?.id}/items/${itemId}`,
+      {
+        method: 'DELETE',
+      },
+    )
+
+    if (!response.ok) {
+      throw new Error('Failed to delete Item')
+    }
+
+    return await response.json()
+  } catch (error) {
+    console.error('Error creating Item account:', error)
     throw error
   }
 }
