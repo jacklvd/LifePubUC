@@ -16,7 +16,7 @@ const OrganizationSideBar = () => {
   const pathname = usePathname() // get current route
 
   return (
-    <div className="w-16 bg-white border-r border-gray-200 flex flex-col items-center py-6 space-y-6">
+    <div className="w-16 bg-white-100 border-r border-gray-200 flex flex-col items-center py-6 space-y-6">
       <div className="flex flex-col items-center space-y-6">
         <TooltipProvider>
           {eventSideBarIcons.map((icon, index) => {

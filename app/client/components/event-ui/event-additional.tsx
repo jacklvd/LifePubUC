@@ -25,12 +25,12 @@ import {
 } from '@/components/ui/accordion'
 
 interface AdditionalProps {
-  highlights: {
+  highlights?: {
     ageRestriction?: string
     doorTime?: string
     parkingInfo?: string
   }
-  faqs: Array<{
+  faqs?: Array<{
     question: string
     answer: string
   }>
