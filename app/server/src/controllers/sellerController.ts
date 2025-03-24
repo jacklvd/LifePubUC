@@ -1,6 +1,33 @@
 import { Request, Response } from 'express'
 import Item from '../models/itemSchema'
 
+
+export const deleteItemForSeller = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    const { itemId } = req.params
+    console.log(itemId);
+    const item = await Item.findById(itemId)
+    
+
+    if (!item) {
+      res.status(404).json({ message: 'Item not found' })
+      return
+    }
+
+    await item.deleteOne()
+
+    res.status(200).json({
+      message: 'Item deleted successfully',
+    })
+  } catch (error) {
+    console.error('Error deleting item:', error)
+    res.status(500).json({ message: 'Error deleting item', error })
+  }
+}
+
 export const getItemsForSeller = async (
   req: Request,
   res: Response,
@@ -16,7 +43,6 @@ export const getItemsForSeller = async (
       return
     }
 
-    console.log(sellerId)
     const {
       status = 'all',
       sort = '-createdAt',
@@ -29,14 +55,12 @@ export const getItemsForSeller = async (
       limit?: number
     }
 
-    const query: any = { seller: sellerId }
+    const query: any = { seller: sellerId };
 
-    // Only filter by status if not 'all'
     if (status !== 'all') {
       query.status = status
     }
 
-    // Calculate skip value for pagination
     const skip = (page - 1) * limit
 
     const items = await Item.find(query).sort(sort).skip(skip).limit(limit)

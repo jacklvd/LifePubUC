@@ -127,8 +127,7 @@ const createStripeCheckoutSession = async (
     return
   }
 
-  try {
-    // Group cart items by seller
+  try {    
     const itemsBySeller: Record<string, CartItem[]> = {}
 
     for (const item of cartItems) {
@@ -138,7 +137,6 @@ const createStripeCheckoutSession = async (
       itemsBySeller[item.seller].push(item)
     }
 
-    // Create line items and transfers for each seller
     const lineItems = []
     const transferData = []
 
@@ -152,7 +150,6 @@ const createStripeCheckoutSession = async (
         return
       }
 
-      // Add line items for this seller
       for (const item of items) {
         lineItems.push({
           price_data: {
@@ -197,6 +194,13 @@ const createStripeCheckoutSession = async (
     //   status: 'pending',
     // });
 
+    // await Transaction.create({
+    //   checkoutSessionId: session.id,
+    //   buyerId,
+    //   transferData,
+    //   status: "pending" 
+    // })
+
     res.json({
       message: 'Checkout session created',
       data: {
@@ -212,6 +216,8 @@ const createStripeCheckoutSession = async (
     })
   }
 }
+
+
 
 /****************
  * WEBHOOKS
@@ -233,19 +239,15 @@ const handleStripeWebhook = async (req: Request, res: Response) => {
     return
   }
 
-  // Handle the event
   switch (event.type) {
     case 'checkout.session.completed': {
       const session = event.data.object as Stripe.Checkout.Session
 
-      // Extract metadata
       const buyerId = session.metadata?.buyerId
       const sellerIds = JSON.parse(session.metadata?.sellerData || '[]')
 
       console.log('Payment succeeded for session:', session.id)
 
-      // Here you would update your database to record the completed payment
-      // And process transfers to sellers
       try {
         // Update order status
         // await Order.findOneAndUpdate(
@@ -313,8 +315,6 @@ const handleStripeWebhook = async (req: Request, res: Response) => {
 const getCheckoutSessionStatusStripe = async (req: Request, res: Response) => {
   const sessionId = req.query.session_id as String
 
-  console.log('Session status here')
-
   if (!sessionId || typeof sessionId !== 'string') {
     res.status(404).json({
       message: 'No Session Id',
@@ -326,6 +326,10 @@ const getCheckoutSessionStatusStripe = async (req: Request, res: Response) => {
   try {
     // Pass the raw string without JSON.stringify
     const session = await stripe.checkout.sessions.retrieve(sessionId)
+
+    if (session.status === "complete") { 
+      // add to transaction for users
+    }
 
     res.status(200).json({
       message: 'Payment Success',
