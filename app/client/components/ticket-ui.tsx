@@ -66,7 +66,7 @@ const TicketUI: React.FC<TicketUIProps> = ({ eventId, userEmail }) => {
     startTime,
     endTime,
     minPerOrder,
-    maxPerOrder
+    maxPerOrder,
   } = form
 
   // Form actions
@@ -95,9 +95,7 @@ const TicketUI: React.FC<TicketUIProps> = ({ eventId, userEmail }) => {
         setEventTitle(event?.title || '')
         // Always provide a string, use empty string instead of null
         setEventDate(
-          event?.date
-            ? new Date(event.date).toLocaleDateString()
-            : '',
+          event?.date ? new Date(event.date).toLocaleDateString() : '',
         )
         setActiveStep('tickets')
 
@@ -156,22 +154,31 @@ const TicketUI: React.FC<TicketUIProps> = ({ eventId, userEmail }) => {
   }
 
   // Map state to props for form field setters with proper TypeScript types
-  const setTicketType = (value: 'Free' | 'Paid' | 'Donation') => updateFormField('ticketType', value)
+  const setTicketType = (value: 'Free' | 'Paid' | 'Donation') =>
+    updateFormField('ticketType', value)
   const setTicketName = (value: string) => updateFormField('ticketName', value)
-  const setTicketCapacity = (value: number) => updateFormField('ticketCapacity', value)
-  const setTicketPrice = (value: number | undefined) => updateFormField('ticketPrice', value)
-  const setSaleStartDate = (value: Date | undefined) => updateFormField('saleStartDate', value)
-  const setSaleEndDate = (value: Date | undefined) => updateFormField('saleEndDate', value)
+  const setTicketCapacity = (value: number) =>
+    updateFormField('ticketCapacity', value)
+  const setTicketPrice = (value: number | undefined) =>
+    updateFormField('ticketPrice', value)
+  const setSaleStartDate = (value: Date | undefined) =>
+    updateFormField('saleStartDate', value)
+  const setSaleEndDate = (value: Date | undefined) =>
+    updateFormField('saleEndDate', value)
   const setStartTime = (value: string) => updateFormField('startTime', value)
   const setEndTime = (value: string) => updateFormField('endTime', value)
-  const setMinPerOrder = (value: number) => updateFormField('minPerOrder', value)
-  const setMaxPerOrder = (value: number) => updateFormField('maxPerOrder', value)
+  const setMinPerOrder = (value: number) =>
+    updateFormField('minPerOrder', value)
+  const setMaxPerOrder = (value: number) =>
+    updateFormField('maxPerOrder', value)
 
   // Calendar open states mapped to activeCalendar
   const startDateCalendarOpen = activeCalendar === 'start'
   const endDateCalendarOpen = activeCalendar === 'end'
-  const setStartDateCalendarOpen = (open: boolean) => setCalendar(open ? 'start' : null)
-  const setEndDateCalendarOpen = (open: boolean) => setCalendar(open ? 'end' : null)
+  const setStartDateCalendarOpen = (open: boolean) =>
+    setCalendar(open ? 'start' : null)
+  const setEndDateCalendarOpen = (open: boolean) =>
+    setCalendar(open ? 'end' : null)
 
   // Dialog open states mapped to activeDialog
   const isAddDialogOpen = activeDialog === 'add'
@@ -180,10 +187,14 @@ const TicketUI: React.FC<TicketUIProps> = ({ eventId, userEmail }) => {
   const isCapacityDialogOpen = activeDialog === 'capacity'
 
   // Dialog setters mapped to store methods
-  const setIsAddDialogOpen = (open: boolean) => open ? openAddDialog() : closeAllDialogs()
-  const setIsEditDialogOpen = (open: boolean) => open ? (currentTicket && openEditDialog(currentTicket)) : closeAllDialogs()
-  const setIsDeleteDialogOpen = (open: boolean) => open ? (currentTicket && openDeleteDialog(currentTicket)) : closeAllDialogs()
-  const setIsCapacityDialogOpen = (open: boolean) => open ? setCalendar('capacity' as CalendarType) : closeAllDialogs()
+  const setIsAddDialogOpen = (open: boolean) =>
+    open ? openAddDialog() : closeAllDialogs()
+  const setIsEditDialogOpen = (open: boolean) =>
+    open ? currentTicket && openEditDialog(currentTicket) : closeAllDialogs()
+  const setIsDeleteDialogOpen = (open: boolean) =>
+    open ? currentTicket && openDeleteDialog(currentTicket) : closeAllDialogs()
+  const setIsCapacityDialogOpen = (open: boolean) =>
+    open ? setCalendar('capacity' as CalendarType) : closeAllDialogs()
 
   return (
     <div className="container mx-auto p-4">
@@ -222,9 +233,7 @@ const TicketUI: React.FC<TicketUIProps> = ({ eventId, userEmail }) => {
 
             <TabsContent value="admission" className="space-y-4">
               {tickets.length === 0 ? (
-                <EmptyTicketState
-                  onAddClick={openAddDialog}
-                />
+                <EmptyTicketState onAddClick={openAddDialog} />
               ) : (
                 <>
                   {tickets.map((ticket) => (
@@ -280,9 +289,7 @@ const TicketUI: React.FC<TicketUIProps> = ({ eventId, userEmail }) => {
         endTime={endTime}
         minPerOrder={minPerOrder}
         maxPerOrder={maxPerOrder}
-        eventDate={
-          event?.date ? new Date(event.date) : undefined
-        }
+        eventDate={event?.date ? new Date(event.date) : undefined}
         eventEndTime={event?.endTime || '11:59 PM'}
         maxSaleEndDate={event?.date ? new Date(event.date) : undefined}
         setTicketType={setTicketType}

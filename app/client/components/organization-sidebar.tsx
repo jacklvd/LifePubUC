@@ -49,7 +49,11 @@ const OrganizationSideBar = () => {
                   <span className="ml-3 sm:hidden">{icon.title}</span>
                 </button>
               </TooltipTrigger>
-              <TooltipContent side="right" align="center" className="hidden sm:block">
+              <TooltipContent
+                side="right"
+                align="center"
+                className="hidden sm:block"
+              >
                 {icon.title}
               </TooltipContent>
             </Tooltip>
@@ -65,7 +69,11 @@ const OrganizationSideBar = () => {
       <div className="sm:hidden fixed bottom-4 left-4 z-50">
         <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
           <SheetTrigger asChild>
-            <Button variant="outline" size="icon" className="h-8 w-8 rounded-full bg-white-100 shadow-md">
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-8 w-8 rounded-full bg-white-100 shadow-md"
+            >
               <Icon name="SquareMenu" className="h-4 w-4" />
             </Button>
           </SheetTrigger>
