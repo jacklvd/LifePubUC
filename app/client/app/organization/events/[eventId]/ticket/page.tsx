@@ -20,7 +20,7 @@ export default function TicketManagementPage({ params }: TicketPageProps) {
   const [loading, setLoading] = useState(true)
 
   // Access store error state
-  const storeError = useTicketStore(state => state.error)
+  const storeError = useTicketStore((state) => state.error)
 
   useEffect(() => {
     // Verify the event exists at the page level

@@ -175,34 +175,40 @@ interface TicketState {
   form: TicketFormState
 
   // Methods
-  initialize: (eventId: string, userEmail?: string, markStepCompleted: (step: EventStep) => void) => Promise<void>
+  initialize: (
+    eventId: string,
+    userEmail?: string,
+    markStepCompleted: (step: EventStep) => void,
+  ) => Promise<void>
   setActiveTab: (tab: string) => void
-  
+
   // Dialog & Calendar Controls
   openAddDialog: () => void
   openEditDialog: (ticket: Ticket) => void
   openDeleteDialog: (ticket: Ticket) => void
   closeAllDialogs: () => void
   setCalendar: (calendar: CalendarType) => void
-  
+
   // Form Updates
-  updateFormField: <K extends keyof TicketFormState>(field: K, value: TicketFormState[K]) => void
+  updateFormField: <K extends keyof TicketFormState>(
+    field: K,
+    value: TicketFormState[K],
+  ) => void
   resetFormForAdd: () => void
   setFormForEdit: (ticket: Ticket) => void
-  
+
   // CRUD Operations
   addTicket: () => Promise<void>
   updateTicket: () => Promise<void>
   deleteTicket: () => Promise<void>
   updateCapacity: () => Promise<void>
-  
+
   // Form Validation
   isEndDateDisabled: (date: Date) => boolean
-  
+
   // Formatters
   formatTicketDate: (date: Date) => string
 }
-
 
 interface LocationSuggestion {
   place_id: string

@@ -9,15 +9,15 @@ import {
   ActionButtons,
   EventsSection,
   ProductsSection,
-  IndustryStats
+  IndustryStats,
 } from './components'
 
 interface ProductData {
-  title: string;
-  price: number;
-  sold: number;
-  imageUrl: string;
-  stock: number;
+  title: string
+  price: number
+  sold: number
+  imageUrl: string
+  stock: number
 }
 
 // Mock data for products
@@ -27,15 +27,15 @@ const recentProducts: ProductData[] = [
     price: 24.99,
     sold: 37,
     imageUrl: '/api/placeholder/400/220',
-    stock: 120
+    stock: 120,
   },
   {
     title: 'VIP Experience Package',
     price: 99.99,
     sold: 12,
     imageUrl: '/api/placeholder/400/220',
-    stock: 25
-  }
+    stock: 25,
+  },
 ]
 
 const OrganizationHome: React.FC = () => {
@@ -83,15 +83,10 @@ const OrganizationHome: React.FC = () => {
           <ActionButtons />
 
           {/* Events Section */}
-          <EventsSection
-            events={recentEvents}
-            isLoading={isLoading}
-          />
+          <EventsSection events={recentEvents} isLoading={isLoading} />
 
           {/* Products Section */}
-          <ProductsSection
-            products={recentProducts}
-          />
+          <ProductsSection products={recentProducts} />
 
           {/* Industry Stats */}
           <IndustryStats />

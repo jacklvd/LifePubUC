@@ -232,12 +232,16 @@ export default function PublishPage({ params }: PublishPageProps) {
       <div className="flex flex-col bg-gray-50 min-h-screen">
         <div className="flex-1 overflow-auto p-3 sm:p-4 md:p-6">
           <div className="container mx-auto max-w-4xl">
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6">Publish Your Event</h1>
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6">
+              Publish Your Event
+            </h1>
 
             <div className="space-y-4 sm:space-y-6">
               <Card className="bg-white shadow-sm">
                 <CardHeader className="p-4 sm:p-6">
-                  <CardTitle className="text-lg sm:text-xl">Review and Publish</CardTitle>
+                  <CardTitle className="text-lg sm:text-xl">
+                    Review and Publish
+                  </CardTitle>
                   <CardDescription className="text-xs sm:text-sm">
                     Complete the checklist before publishing your event
                   </CardDescription>
@@ -316,7 +320,9 @@ export default function PublishPage({ params }: PublishPageProps) {
 
               <Card className="bg-white shadow-sm">
                 <CardHeader className="p-4 sm:p-6">
-                  <CardTitle className="text-lg sm:text-xl">Preview Your Event</CardTitle>
+                  <CardTitle className="text-lg sm:text-xl">
+                    Preview Your Event
+                  </CardTitle>
                   <CardDescription className="text-xs sm:text-sm">
                     See how your event will appear to attendees
                   </CardDescription>
@@ -336,7 +342,12 @@ export default function PublishPage({ params }: PublishPageProps) {
                     variant="outline"
                     size="sm"
                     className="text-xs sm:text-sm"
-                    onClick={() => window.open(`/organization/events/${eventId}/preview`, '_blank')}
+                    onClick={() =>
+                      window.open(
+                        `/organization/events/${eventId}/preview`,
+                        '_blank',
+                      )
+                    }
                   >
                     Open in New Tab
                   </Button>
@@ -346,7 +357,9 @@ export default function PublishPage({ params }: PublishPageProps) {
               {/* Event Summary Card */}
               <Card className="bg-white shadow-sm">
                 <CardHeader className="p-4 sm:p-6">
-                  <CardTitle className="text-lg sm:text-xl">Event Summary</CardTitle>
+                  <CardTitle className="text-lg sm:text-xl">
+                    Event Summary
+                  </CardTitle>
                   <CardDescription className="text-xs sm:text-sm">
                     Quick overview of your event
                   </CardDescription>
@@ -355,30 +368,53 @@ export default function PublishPage({ params }: PublishPageProps) {
                   <div className="space-y-3">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
-                        <h3 className="text-xs sm:text-sm font-medium text-gray-500">Event Name</h3>
-                        <p className="text-sm sm:text-base truncate">{event.title}</p>
+                        <h3 className="text-xs sm:text-sm font-medium text-gray-500">
+                          Event Name
+                        </h3>
+                        <p className="text-sm sm:text-base truncate">
+                          {event.title}
+                        </p>
                       </div>
                       <div>
-                        <h3 className="text-xs sm:text-sm font-medium text-gray-500">Date & Time</h3>
-                        <p className="text-sm sm:text-base">{formatDate(event.date, 'display')}, {event.startTime} - {event.endTime}</p>
+                        <h3 className="text-xs sm:text-sm font-medium text-gray-500">
+                          Date & Time
+                        </h3>
+                        <p className="text-sm sm:text-base">
+                          {formatDate(event.date, 'display')}, {event.startTime}{' '}
+                          - {event.endTime}
+                        </p>
                       </div>
                       <div>
-                        <h3 className="text-xs sm:text-sm font-medium text-gray-500">Location</h3>
-                        <p className="text-sm sm:text-base truncate">{event.location}</p>
+                        <h3 className="text-xs sm:text-sm font-medium text-gray-500">
+                          Location
+                        </h3>
+                        <p className="text-sm sm:text-base truncate">
+                          {event.location}
+                        </p>
                       </div>
                       <div>
-                        <h3 className="text-xs sm:text-sm font-medium text-gray-500">Capacity</h3>
-                        <p className="text-sm sm:text-base">{event.totalCapacity || 'Not specified'}</p>
+                        <h3 className="text-xs sm:text-sm font-medium text-gray-500">
+                          Capacity
+                        </h3>
+                        <p className="text-sm sm:text-base">
+                          {event.totalCapacity || 'Not specified'}
+                        </p>
                       </div>
                     </div>
 
                     <div>
-                      <h3 className="text-xs sm:text-sm font-medium text-gray-500">Tickets ({event.tickets?.length || 0})</h3>
+                      <h3 className="text-xs sm:text-sm font-medium text-gray-500">
+                        Tickets ({event.tickets?.length || 0})
+                      </h3>
                       {event.tickets && event.tickets.length > 0 ? (
                         <ul className="mt-1 space-y-1">
                           {event.tickets.slice(0, 3).map((ticket: any) => (
                             <li key={ticket.id} className="text-xs sm:text-sm">
-                              {ticket.name}: {ticket.type === 'Free' ? 'Free' : `$${ticket.price}`} ({ticket.capacity} available)
+                              {ticket.name}:{' '}
+                              {ticket.type === 'Free'
+                                ? 'Free'
+                                : `$${ticket.price}`}{' '}
+                              ({ticket.capacity} available)
                             </li>
                           ))}
                           {event.tickets.length > 3 && (
@@ -388,7 +424,9 @@ export default function PublishPage({ params }: PublishPageProps) {
                           )}
                         </ul>
                       ) : (
-                        <p className="text-xs sm:text-sm text-gray-500">No tickets created</p>
+                        <p className="text-xs sm:text-sm text-gray-500">
+                          No tickets created
+                        </p>
                       )}
                     </div>
                   </div>

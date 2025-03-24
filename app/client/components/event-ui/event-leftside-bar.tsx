@@ -6,7 +6,13 @@ import { useState, useEffect } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { useRouter, usePathname } from 'next/navigation'
 import { formatDate } from '@/lib/date-formatter'
-import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader } from '@/components/ui/sheet'
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetTitle,
+  SheetHeader,
+} from '@/components/ui/sheet'
 import { Icon } from '@/components/icons'
 
 // Define step types
@@ -35,12 +41,13 @@ const StepIndicator = ({
 }) => {
   return (
     <div
-      className={`w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center mr-2 sm:mr-3 ${isCompleted
-        ? 'bg-blue-500 text-white-100'
-        : currentStep === step
-          ? 'border-2 border-blue-500 bg-white-100'
-          : 'border border-gray-300 bg-white-100'
-        }`}
+      className={`w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center mr-2 sm:mr-3 ${
+        isCompleted
+          ? 'bg-blue-500 text-white-100'
+          : currentStep === step
+            ? 'border-2 border-blue-500 bg-white-100'
+            : 'border border-gray-300 bg-white-100'
+      }`}
     >
       {isCompleted ? (
         <Icon name="Check" className="h-2 w-2 sm:h-3 sm:w-3 text-white-100" />
@@ -190,7 +197,9 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
           <div className="h-4 sm:h-6 bg-gradient-to-r from-orange-300 to-red-300" />
           <CardContent className="p-3 sm:p-4">
             {/* show only partial of event title */}
-            <h2 className="text-sm sm:text-lg font-medium truncate">{eventTitle}</h2>
+            <h2 className="text-sm sm:text-lg font-medium truncate">
+              {eventTitle}
+            </h2>
             <div className="flex items-center text-gray-600 text-xs sm:text-sm mt-1 sm:mt-2">
               <Icon name="Calendar" className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
               <span>{formatEventDate(eventDate)}</span>
@@ -203,10 +212,9 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
             <div className="mt-2 sm:mt-4">
               <Badge
                 variant="outline"
-                className={`rounded-full px-2 sm:px-3 text-xs sm:text-sm border-gray-300 ${eventStatus === 'on sale'
-                  ? 'bg-green-50 text-green-700'
-                  : ''
-                  }`}
+                className={`rounded-full px-2 sm:px-3 text-xs sm:text-sm border-gray-300 ${
+                  eventStatus === 'on sale' ? 'bg-green-50 text-green-700' : ''
+                }`}
               >
                 {eventStatus === 'on sale' ? 'On Sale' : 'Draft'}
               </Badge>
@@ -216,7 +224,9 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
       </div>
 
       <div className="flex-1 p-3 sm:p-4">
-        <p className="text-xs sm:text-sm font-medium text-gray-500 mb-2 sm:mb-3">Steps</p>
+        <p className="text-xs sm:text-sm font-medium text-gray-500 mb-2 sm:mb-3">
+          Steps
+        </p>
         <div className="space-y-2 sm:space-y-4">
           {/* Build step */}
           <div
@@ -294,7 +304,10 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
               <Icon name="Logs" className="h-5 w-5" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="p-0 max-w-[240px] border-r bg-white-100">
+          <SheetContent
+            side="left"
+            className="p-0 max-w-[240px] border-r bg-white-100"
+          >
             <SheetHeader className="p-4">
               <SheetTitle>Progress Bar</SheetTitle>
             </SheetHeader>
