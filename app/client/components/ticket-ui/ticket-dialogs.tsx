@@ -1,39 +1,39 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// components/ui/ticket-ui/ticket-dialogs.tsx
-import React from 'react'
+// components/ticket-ui/ticket-dialogs.tsx
+import React, { memo } from 'react'
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { DialogFooter } from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
 import TicketForm from './ticket-form'
+import { useTicketStore } from '@/store/ticketStore'
 
 interface TicketDialogsProps {
-  // Add dialog
+  // Dialog open states
   isAddDialogOpen: boolean
-  setIsAddDialogOpen: (open: boolean) => void
-
-  // Edit dialog
   isEditDialogOpen: boolean
-  setIsEditDialogOpen: (open: boolean) => void
-
-  // Capacity dialog
   isCapacityDialogOpen: boolean
+  isDeleteDialogOpen: boolean
+
+  // Dialog setters
+  setIsAddDialogOpen: (open: boolean) => void
+  setIsEditDialogOpen: (open: boolean) => void
   setIsCapacityDialogOpen: (open: boolean) => void
+  setIsDeleteDialogOpen: (open: boolean) => void
+
+  // Capacity state
   totalCapacity: number
   setTotalCapacity: (capacity: number) => void
 
-  // Delete dialog
-  isDeleteDialogOpen: boolean
-  setIsDeleteDialogOpen: (open: boolean) => void
+  // Current ticket being edited/deleted
   currentTicket: Ticket | null
 
-  // Form props
+  // Form state
   ticketType: 'Free' | 'Paid' | 'Donation'
   ticketName: string
   ticketCapacity: number
@@ -44,6 +44,8 @@ interface TicketDialogsProps {
   endTime: string
   minPerOrder: number
   maxPerOrder: number
+
+  // Event data
   eventDate?: Date
   eventEndTime?: string
   maxSaleEndDate?: Date
@@ -60,33 +62,45 @@ interface TicketDialogsProps {
   setMinPerOrder: (min: number) => void
   setMaxPerOrder: (max: number) => void
 
+  // Calendar state
+  startDateCalendarOpen: boolean
+  setStartDateCalendarOpen: (open: boolean) => void
+  endDateCalendarOpen: boolean
+  setEndDateCalendarOpen: (open: boolean) => void
+
   // Handlers
   handleAddTicket: () => Promise<void>
   handleUpdateTicket: () => Promise<void>
   handleDeleteTicket: () => Promise<void>
   handleUpdateCapacity: () => Promise<void>
 
-  // Time options
-  generateTimeOptions: string[] // Updated: Now expecting array directly
-  startDateCalendarOpen: boolean
-  setStartDateCalendarOpen: (open: boolean) => void
-  endDateCalendarOpen: boolean
-  setEndDateCalendarOpen: (open: boolean) => void
-  isEndDateDisabled: (date: Date) => boolean
+  // Helper functions
+  generateTimeOptions: string[]
+  isEndDateDisabled?: (date: Date) => boolean
 }
 
-const TicketDialogs: React.FC<TicketDialogsProps> = ({
+// Use React.memo to prevent unnecessary re-renders
+const TicketDialogs: React.FC<TicketDialogsProps> = memo(({
+  // Dialog open states
   isAddDialogOpen,
-  setIsAddDialogOpen,
   isEditDialogOpen,
-  setIsEditDialogOpen,
   isCapacityDialogOpen,
-  setIsCapacityDialogOpen,
   isDeleteDialogOpen,
+
+  // Dialog setters
+  setIsAddDialogOpen,
+  setIsEditDialogOpen,
+  setIsCapacityDialogOpen,
   setIsDeleteDialogOpen,
+
+  // Capacity state
   totalCapacity,
   setTotalCapacity,
+
+  // Current ticket
   currentTicket,
+
+  // Form state
   ticketType,
   ticketName,
   ticketCapacity,
@@ -97,8 +111,13 @@ const TicketDialogs: React.FC<TicketDialogsProps> = ({
   endTime,
   minPerOrder,
   maxPerOrder,
+
+  // Event data
   eventDate,
+  eventEndTime,
   maxSaleEndDate,
+
+  // Form setters
   setTicketType,
   setTicketName,
   setTicketCapacity,
@@ -109,29 +128,37 @@ const TicketDialogs: React.FC<TicketDialogsProps> = ({
   setEndTime,
   setMinPerOrder,
   setMaxPerOrder,
-  handleAddTicket,
-  handleUpdateTicket,
-  handleDeleteTicket,
-  handleUpdateCapacity,
-  generateTimeOptions,
+
+  // Calendar state
   startDateCalendarOpen,
   setStartDateCalendarOpen,
   endDateCalendarOpen,
   setEndDateCalendarOpen,
+
+  // Handlers
+  handleAddTicket,
+  handleUpdateTicket,
+  handleDeleteTicket,
+  handleUpdateCapacity,
+
+  // Helper functions
+  generateTimeOptions,
   isEndDateDisabled,
 }) => {
+  // Get submission state directly from the store
+  const isSubmitting = useTicketStore(state => state.isSubmitting);
+
   return (
     <>
       {/* Add Ticket Dialog */}
       <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-        <DialogContent className="sm:max-w-md bg-white-100">
+        <DialogContent className="sm:max-w-md md:max-w-lg bg-white-100">
           <DialogHeader>
-            <DialogTitle>Add New Ticket</DialogTitle>
+            <DialogTitle>Add Ticket</DialogTitle>
             <DialogDescription>
-              Create a new ticket for your event
+              Create a new ticket for your event.
             </DialogDescription>
           </DialogHeader>
-
           <TicketForm
             ticketType={ticketType}
             ticketName={ticketName}
@@ -157,24 +184,27 @@ const TicketDialogs: React.FC<TicketDialogsProps> = ({
             setMaxPerOrder={setMaxPerOrder}
             onCancel={() => setIsAddDialogOpen(false)}
             onSubmit={handleAddTicket}
-            submitButtonText="Create Ticket"
+            submitButtonText="Add Ticket"
             generateTimeOptions={generateTimeOptions}
             startDateCalendarOpen={startDateCalendarOpen}
             setStartDateCalendarOpen={setStartDateCalendarOpen}
             endDateCalendarOpen={endDateCalendarOpen}
             setEndDateCalendarOpen={setEndDateCalendarOpen}
             isEndDateDisabled={isEndDateDisabled}
+            isSubmitting={isSubmitting}
           />
         </DialogContent>
       </Dialog>
 
       {/* Edit Ticket Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="sm:max-w-md bg-white-100">
+        <DialogContent className="sm:max-w-md md:max-w-lg bg-white-100">
           <DialogHeader>
-            <DialogTitle>Edit ticket</DialogTitle>
+            <DialogTitle>Edit Ticket</DialogTitle>
+            <DialogDescription>
+              Update the details for {currentTicket?.name}.
+            </DialogDescription>
           </DialogHeader>
-
           <TicketForm
             ticketType={ticketType}
             ticketName={ticketName}
@@ -200,94 +230,90 @@ const TicketDialogs: React.FC<TicketDialogsProps> = ({
             setMaxPerOrder={setMaxPerOrder}
             onCancel={() => setIsEditDialogOpen(false)}
             onSubmit={handleUpdateTicket}
-            submitButtonText="Save"
+            submitButtonText="Update Ticket"
             generateTimeOptions={generateTimeOptions}
             startDateCalendarOpen={startDateCalendarOpen}
             setStartDateCalendarOpen={setStartDateCalendarOpen}
             endDateCalendarOpen={endDateCalendarOpen}
             setEndDateCalendarOpen={setEndDateCalendarOpen}
             isEndDateDisabled={isEndDateDisabled}
+            isSubmitting={isSubmitting}
           />
         </DialogContent>
       </Dialog>
 
-      {/* Edit Capacity Dialog */}
-      <Dialog
-        open={isCapacityDialogOpen}
-        onOpenChange={setIsCapacityDialogOpen}
-      >
+      {/* Delete Ticket Dialog */}
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent className="sm:max-w-md bg-white-100">
           <DialogHeader>
-            <DialogTitle>Event capacity</DialogTitle>
+            <DialogTitle>Delete Ticket</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete "{currentTicket?.name}"?
+            </DialogDescription>
           </DialogHeader>
-
-          <div className="space-y-4 py-4">
-            <p className="text-sm text-gray-500">
-              Event capacity is the total number of tickets available for sale
-              at your event. When you set an event capacity, your event will
-              sell out as soon as you sell that number of total tickets. You can
-              adjust your event capacity to prevent overselling.
-            </p>
-
-            <div>
-              <label className="text-sm">Capacity*</label>
-              <Input
-                type="number"
-                value={totalCapacity}
-                onChange={(e) =>
-                  setTotalCapacity(parseInt(e.target.value) || 0)
-                }
-                min={0}
-              />
-            </div>
-          </div>
-
+          <p className="py-4">
+            This action cannot be undone. This will permanently delete the ticket
+            and remove it from our servers.
+          </p>
           <DialogFooter>
             <Button
               variant="outline"
-              onClick={() => setIsCapacityDialogOpen(false)}
+              onClick={() => setIsDeleteDialogOpen(false)}
+              disabled={isSubmitting}
             >
               Cancel
             </Button>
             <Button
-              className="bg-orange-600 hover:bg-orange-700"
-              onClick={handleUpdateCapacity}
+              variant="destructive"
+              onClick={handleDeleteTicket}
+              disabled={isSubmitting}
             >
-              Save
+              {isSubmitting ? 'Deleting...' : 'Delete'}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      {/* Delete Confirmation Dialog */}
-      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+      {/* Update Capacity Dialog */}
+      <Dialog open={isCapacityDialogOpen} onOpenChange={setIsCapacityDialogOpen}>
         <DialogContent className="sm:max-w-md bg-white-100">
           <DialogHeader>
-            <DialogTitle>Delete ticket</DialogTitle>
+            <DialogTitle>Update Event Capacity</DialogTitle>
+            <DialogDescription>
+              Set the maximum capacity for your event.
+            </DialogDescription>
           </DialogHeader>
-
           <div className="py-4">
-            <p>
-              Are you sure you want to delete the &quot;{currentTicket?.name}
-              &quot; ticket? This action cannot be undone.
-            </p>
+            <label className="text-sm mb-2 block">Total Capacity</label>
+            <Input
+              type="number"
+              value={totalCapacity}
+              onChange={(e) => setTotalCapacity(parseInt(e.target.value) || 0)}
+              min={0}
+              disabled={isSubmitting}
+            />
           </div>
-
           <DialogFooter>
             <Button
               variant="outline"
-              onClick={() => setIsDeleteDialogOpen(false)}
+              onClick={() => setIsCapacityDialogOpen(false)}
+              disabled={isSubmitting}
             >
               Cancel
             </Button>
-            <Button variant="destructive" onClick={handleDeleteTicket}>
-              Delete
+            <Button
+              onClick={handleUpdateCapacity}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Updating...' : 'Update Capacity'}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
     </>
   )
-}
+})
+
+TicketDialogs.displayName = 'TicketDialogs'
 
 export default TicketDialogs

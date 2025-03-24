@@ -4,7 +4,7 @@ import { CalendarHeader } from './calendar-header'
 import { MonthView } from './month-view'
 import { WeekView } from './week-view'
 import CalendarEventPopup from './event-calendar-popup'
-import useEventStore from '@/store/useEventStore'
+import useEventStore from '@/store/eventStore'
 
 interface EventCalendarProps {
   events: Event[]

@@ -2,7 +2,7 @@
 'use client'
 import React, { useEffect, useRef } from 'react'
 import { formatDate } from '@/lib/date-formatter'
-import { formatTime } from '@/lib/time-formatter'
+import { formatTime } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/icons'
 import {

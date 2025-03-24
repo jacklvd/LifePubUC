@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 // components/ui/ticket-ui/ticket-form.tsx
-import React from 'react'
+import React, { memo } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -39,15 +38,16 @@ interface TicketFormProps {
   onCancel: () => void
   onSubmit: () => void
   submitButtonText: string
-  generateTimeOptions: string[] // Updated: Now expecting array directly
+  generateTimeOptions: string[] // Array of time options
   startDateCalendarOpen: boolean
   setStartDateCalendarOpen: (open: boolean) => void
   endDateCalendarOpen: boolean
   setEndDateCalendarOpen: (open: boolean) => void
   isEndDateDisabled?: (date: Date) => boolean
+  isSubmitting?: boolean // New prop for loading state
 }
 
-const TicketForm: React.FC<TicketFormProps> = ({
+const TicketForm: React.FC<TicketFormProps> = memo(({
   ticketType,
   ticketName,
   ticketCapacity,
@@ -79,6 +79,7 @@ const TicketForm: React.FC<TicketFormProps> = ({
   endDateCalendarOpen,
   setEndDateCalendarOpen,
   isEndDateDisabled,
+  isSubmitting = false, // Default to false
 }) => {
   return (
     <>
@@ -88,6 +89,7 @@ const TicketForm: React.FC<TicketFormProps> = ({
             variant={ticketType === 'Paid' ? 'default' : 'outline'}
             className={`flex-1 ${ticketType === 'Paid' ? 'bg-blue-100 text-blue-700 border-blue-200' : ''}`}
             onClick={() => setTicketType('Paid')}
+            disabled={isSubmitting}
           >
             Paid
           </Button>
@@ -95,6 +97,7 @@ const TicketForm: React.FC<TicketFormProps> = ({
             variant={ticketType === 'Free' ? 'default' : 'outline'}
             className={`flex-1 ${ticketType === 'Free' ? 'bg-blue-100 text-blue-700 border-blue-200' : ''}`}
             onClick={() => setTicketType('Free')}
+            disabled={isSubmitting}
           >
             Free
           </Button>
@@ -102,6 +105,7 @@ const TicketForm: React.FC<TicketFormProps> = ({
             variant={ticketType === 'Donation' ? 'default' : 'outline'}
             className={`flex-1 ${ticketType === 'Donation' ? 'bg-blue-100 text-blue-700 border-blue-200' : ''}`}
             onClick={() => setTicketType('Donation')}
+            disabled={isSubmitting}
           >
             Donation
           </Button>
@@ -113,6 +117,7 @@ const TicketForm: React.FC<TicketFormProps> = ({
             value={ticketName}
             onChange={(e) => setTicketName(e.target.value)}
             placeholder="e.g. General Admission"
+            disabled={isSubmitting}
           />
         </div>
 
@@ -123,6 +128,7 @@ const TicketForm: React.FC<TicketFormProps> = ({
             value={ticketCapacity}
             onChange={(e) => setTicketCapacity(parseInt(e.target.value) || 0)}
             min={0}
+            disabled={isSubmitting}
           />
         </div>
 
@@ -138,7 +144,7 @@ const TicketForm: React.FC<TicketFormProps> = ({
                   e.target.value ? parseFloat(e.target.value) : undefined,
                 )
               }
-              disabled={ticketType === 'Free'}
+              disabled={ticketType === 'Free' || isSubmitting}
               placeholder={ticketType === 'Free' ? 'Free' : '0.00'}
               min={0}
               step={0.01}
@@ -154,6 +160,7 @@ const TicketForm: React.FC<TicketFormProps> = ({
               setDate={setSaleStartDate}
               isOpen={startDateCalendarOpen}
               setIsOpen={setStartDateCalendarOpen}
+              disabled={isSubmitting}
             />
           </div>
 
@@ -163,6 +170,7 @@ const TicketForm: React.FC<TicketFormProps> = ({
               className="w-full rounded-md border px-3 py-2 cursor-pointer"
               value={startTime}
               onChange={(e) => setStartTime(e.target.value)}
+              disabled={isSubmitting}
             >
               <option value="">Select time</option>
               {generateTimeOptions.map((time) => (
@@ -183,6 +191,7 @@ const TicketForm: React.FC<TicketFormProps> = ({
               isOpen={endDateCalendarOpen}
               setIsOpen={setEndDateCalendarOpen}
               disabledDates={isEndDateDisabled}
+              disabled={isSubmitting}
             />
             {eventDate && maxSaleEndDate && (
               <p className="text-xs text-gray-500 mt-1">
@@ -198,6 +207,7 @@ const TicketForm: React.FC<TicketFormProps> = ({
               className="w-full rounded-md border px-3 py-2 cursor-pointer"
               value={endTime}
               onChange={(e) => setEndTime(e.target.value)}
+              disabled={isSubmitting}
             >
               <option value="">Select time</option>
               {generateTimeOptions.map((time) => (
@@ -223,6 +233,7 @@ const TicketForm: React.FC<TicketFormProps> = ({
                       setMinPerOrder(parseInt(e.target.value) || 1)
                     }
                     min={1}
+                    disabled={isSubmitting}
                   />
                 </div>
                 <div>
@@ -234,6 +245,7 @@ const TicketForm: React.FC<TicketFormProps> = ({
                       setMaxPerOrder(parseInt(e.target.value) || 10)
                     }
                     min={1}
+                    disabled={isSubmitting}
                   />
                 </div>
               </div>
@@ -243,18 +255,26 @@ const TicketForm: React.FC<TicketFormProps> = ({
       </div>
 
       <DialogFooter>
-        <Button variant="outline" onClick={onCancel}>
+        <Button
+          variant="outline"
+          onClick={onCancel}
+          disabled={isSubmitting}
+        >
           Cancel
         </Button>
         <Button
           className="bg-orange-600 hover:bg-orange-700"
           onClick={onSubmit}
+          disabled={isSubmitting}
         >
-          {submitButtonText}
+          {isSubmitting ? 'Saving...' : submitButtonText}
         </Button>
       </DialogFooter>
     </>
   )
-}
+})
+
+// Add display name for debugging
+TicketForm.displayName = 'TicketForm'
 
 export default TicketForm

@@ -10,7 +10,6 @@ import { useEventProgress } from '@/context/event-context'
 
 import EventDateTimePicker from '@/components/event-ui/event-datetime-picker'
 import EventTitleInput from '@/components/event-ui/event-title-picker'
-// import LeftSideBar from '@/components/event-ui/event-leftside-bar'
 import EventAdditional from '@/components/event-ui/event-additional'
 import EventLocationPicker from '@/components/event-ui/event-location'
 import EventPhotoUpload from '@/components/event-ui/event-photo'
@@ -142,16 +141,6 @@ export const EventFormUI: React.FC<EventFormUIProps> = ({
 
   return (
     <div className="flex h-screen bg-gray-50">
-      {/* Left Sidebar */}
-      {/* <LeftSideBar
-                eventId={eventId || undefined}
-                eventTitle={eventData.title || 'New Event'}
-                eventDate={formattedDate}
-                location={eventLocation || locationName}
-                activeStep="build"
-                completedSteps={completedSteps}
-                isEditing={isEditing}
-            /> */}
 
       {/* Main Content */}
       <div className="flex-1 overflow-auto">
