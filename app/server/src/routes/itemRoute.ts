@@ -24,5 +24,4 @@ router.put('/:id', updateItem)
 router.put('/:id/status', updateItemStatus)
 // DELETE routes
 
-
 export default router

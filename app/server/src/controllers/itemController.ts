@@ -1,11 +1,15 @@
 import { Request, Response } from 'express'
 import Item from '../models/itemSchema'
-import User from "../models/userSchema"
-import { v2 as cloudinary } from 'cloudinary';
+import User from '../models/userSchema'
+import { v2 as cloudinary } from 'cloudinary'
 
 import multer from 'multer'
 import { CloudinaryStorage } from 'multer-storage-cloudinary'
-import { CLOUDINARY_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET } from '../../config/env';
+import {
+  CLOUDINARY_NAME,
+  CLOUDINARY_API_KEY,
+  CLOUDINARY_API_SECRET,
+} from '../../config/env'
 
 export function createCloudinaryStorage() {
   cloudinary.config({
@@ -247,7 +251,6 @@ export const updateItem = async (
 
 // Delete item
 
-
 export const searchItems = async (
   req: Request,
   res: Response,
@@ -315,27 +318,32 @@ export const updateItemStatus = async (
 
 export const getCloudinarySignature = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
-    const timestamp = Math.round(new Date().getTime() / 1000);
-    const folder = 'items'; 
-    
-    const signature = cloudinary.utils.api_sign_request({
-      timestamp: timestamp,
-      folder: folder,
-      transformation: 'w_1000,c_limit'
-    }, process.env.CLOUDINARY_API_SECRET || '');
-    
+    const timestamp = Math.round(new Date().getTime() / 1000)
+    const folder = 'items'
+
+    const signature = cloudinary.utils.api_sign_request(
+      {
+        timestamp: timestamp,
+        folder: folder,
+        transformation: 'w_1000,c_limit',
+      },
+      process.env.CLOUDINARY_API_SECRET || '',
+    )
+
     res.status(200).json({
       signature,
       timestamp,
       cloudName: CLOUDINARY_NAME,
       apiKey: process.env.CLOUDINARY_API_KEY,
       folder,
-    });
+    })
   } catch (error) {
-    console.error('Error generating upload signature:', error);
-    res.status(500).json({ message: 'Error generating upload signature', error });
+    console.error('Error generating upload signature:', error)
+    res
+      .status(500)
+      .json({ message: 'Error generating upload signature', error })
   }
-};
+}

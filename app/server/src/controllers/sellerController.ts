@@ -1,6 +1,5 @@
 import { Request, Response } from 'express'
-import Item from '../models/itemSchema';
-
+import Item from '../models/itemSchema'
 
 export const deleteItemForSeller = async (
   req: Request,
@@ -8,9 +7,8 @@ export const deleteItemForSeller = async (
 ): Promise<void> => {
   try {
     const { itemId } = req.params
-    console.log(itemId);
+    console.log(itemId)
     const item = await Item.findById(itemId)
-    
 
     if (!item) {
       res.status(404).json({ message: 'Item not found' })
@@ -61,7 +59,7 @@ export const getItemsForSeller = async (
       query.status = status
     }
 
-    const skip = (page - 1) * limit;
+    const skip = (page - 1) * limit
 
     const items = await Item.find(query).sort(sort).skip(skip).limit(limit)
 
