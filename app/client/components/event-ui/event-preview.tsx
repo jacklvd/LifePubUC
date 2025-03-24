@@ -85,14 +85,67 @@ const EventPreview: React.FC<EventPreviewProps> = ({
             </div>
 
             {/* Event description */}
-            <Card>
-                <CardHeader className="p-4 sm:p-6">
-                    <CardTitle className="text-base sm:text-lg">Event Description</CardTitle>
-                </CardHeader>
-                <CardContent className="p-4 sm:p-6 pt-0 sm:pt-0">
-                    <p className="whitespace-pre-line text-sm sm:text-base">{event.description || 'No description provided.'}</p>
-                </CardContent>
-            </Card>
+            {event.description && (
+                <Card>
+                    <CardHeader className="p-4 sm:p-6">
+                        <CardTitle className="text-base sm:text-lg">Event Description</CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-4 sm:p-6 pt-0 sm:pt-0">
+                        <p className="whitespace-pre-line text-sm sm:text-base">{event.description}</p>
+                    </CardContent>
+                </Card>
+            )}
+
+            {/* Agenda */}
+            {event.agenda && event.agenda.length > 0 && (
+                <Card>
+                    <CardHeader className="p-4 sm:p-6">
+                        <CardTitle className="text-base sm:text-lg">Event Agenda</CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-4 sm:p-6 pt-0 sm:pt-0">
+                        <div className="space-y-4">
+                            {event.agenda.map((section: any) => (
+                                <div key={section.id} className="border-b pb-3 last:border-0">
+                                    <h3 className="font-medium text-sm sm:text-base mb-2">{section.title}</h3>
+
+                                    {section.items && section.items.length > 0 ? (
+                                        <div className="space-y-3 pl-2 sm:pl-4">
+                                            {section.items.map((item: any) => (
+                                                <div key={item.id} className="border-l-2 border-gray-200 pl-3 py-1">
+                                                    <p className="font-medium text-xs sm:text-sm">{item.title}</p>
+
+                                                    {(item.startTime || item.endTime) && (
+                                                        <p className="text-xs text-gray-500 mt-1">
+                                                            {item.startTime && item.endTime
+                                                                ? `${item.startTime} - ${item.endTime}`
+                                                                : item.startTime || item.endTime
+                                                            }
+                                                        </p>
+                                                    )}
+
+                                                    {item.host && (
+                                                        <p className="text-xs sm:text-sm mt-1">
+                                                            <span className="font-medium">Host:</span> {item.host}
+                                                        </p>
+                                                    )}
+
+                                                    {item.description && (
+                                                        <p className="text-xs sm:text-sm text-gray-600 mt-1">
+                                                            {item.description}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <p className="text-xs sm:text-sm text-gray-500">No items in this section</p>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    </CardContent>
+                </Card>
+            )}
 
             {/* Tickets preview */}
             <Card>
@@ -108,7 +161,7 @@ const EventPreview: React.FC<EventPreviewProps> = ({
                                         <div>
                                             <h3 className="font-medium text-sm sm:text-base">{ticket.name}</h3>
                                             <p className="text-xs sm:text-sm text-gray-500">
-                                                {ticket.type === 'Free' ? 'Free' : ticket.type === 'Donation' ? 'Donation' : `${ticket.price?.toFixed(2)}`}
+                                                {ticket.type === 'Free' ? 'Free' : ticket.type === 'Donation' ? 'Donation' : `$${ticket.price?.toFixed(2)}`}
                                             </p>
                                         </div>
                                         <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100 self-start">
@@ -189,8 +242,10 @@ const EventPreview: React.FC<EventPreviewProps> = ({
                         <Button className={triggerClass}>Preview Event</Button>
                     </SheetTrigger>
                 )}
-                <SheetContent side="right"
-                    className="h-[85vh] sm:h-full w-full sm:max-w-md md:max-w-lg lg:max-w-xl">
+                <SheetContent
+                    side="right"
+                    className="h-[125vh] sm:h-full w-full sm:max-w-md md:max-w-lg lg:max-w-xl bg-white-100"
+                >
                     <SheetHeader className="mb-4 sm:mb-6">
                         <SheetTitle className="text-lg">Event Preview</SheetTitle>
                         <SheetDescription className="text-sm">
@@ -200,7 +255,7 @@ const EventPreview: React.FC<EventPreviewProps> = ({
 
                     {renderPreviewContent()}
 
-                    <SheetFooter className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 bg-white border-t">
+                    <SheetFooter className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 bg-white-100 border-t">
                         <SheetClose asChild>
                             <Button className="w-full">Close Preview</Button>
                         </SheetClose>

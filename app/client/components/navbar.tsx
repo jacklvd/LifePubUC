@@ -37,7 +37,6 @@ const burgerStyles = {
   // },
   bmOverlay: {
     background: 'rgba(0, 0, 0, 0.1)', // Dark background
-    zIndex: '100', // Ensure menu is above content
   },
   bmMenu: {
     background: '#edf6f9',
@@ -46,7 +45,6 @@ const burgerStyles = {
     // width: "calc(100vw - 130px)", // Adjust for sidebar width
     maxWidth: '280px',
     // boxShadow: "2px 0px 10px rgba(0, 0, 0, 0.1)",
-    zIndex: '101', // Ensure it's above overlay
   },
   bmMenuWrap: {
     position: 'fixed',
@@ -141,7 +139,7 @@ const Navbar = () => {
         </div>
 
         {/* MOBILE MENU TOGGLE (Hamburger Menu) */}
-        <div className="md:hidden flex items-center justify-end text-black ml-auto z-[102]">
+        <div className="md:hidden flex items-center justify-end text-black ml-auto">
           <Hamburger
             toggled={menuOpen}
             toggle={setMenuOpen}

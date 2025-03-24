@@ -91,7 +91,7 @@ const EventDetailPage = () => {
   }
 
   const handleEdit = () => {
-    router.push(`/organization/events/${eventId}/build`)
+    router.push(`/organization/events/${eventId}/edit`)
   }
 
   if (loading) {
@@ -161,9 +161,8 @@ const EventDetailPage = () => {
             <Image
               src={event.media}
               alt={event.title}
-              objectFit='cover'
               fill
-            // className="object-cover"
+              className="object-cover"
             />
           ) : (
             <div className="w-full h-full bg-gray-200 flex items-center justify-center">
@@ -376,7 +375,7 @@ const EventDetailPage = () => {
                   <Button
                     className="mt-3 sm:mt-4 text-xs sm:text-sm"
                     size="sm"
-                    onClick={() => router.push(`/organization/events/${eventId}/build`)}
+                    onClick={() => router.push(`/organization/events/${eventId}/edit`)}
                   >
                     Edit Event
                   </Button>
@@ -413,7 +412,7 @@ const EventDetailPage = () => {
                   <Button
                     className="mt-3 sm:mt-4 text-xs sm:text-sm"
                     size="sm"
-                    onClick={() => router.push(`/organization/events/${eventId}/build`)}
+                    onClick={() => router.push(`/organization/events/${eventId}/edit`)}
                   >
                     Edit Event
                   </Button>
