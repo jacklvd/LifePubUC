@@ -2,7 +2,7 @@
 
 import AuthForm from '@/components/authform'
 import { signUpSchema } from '@/lib/validations'
-import { signUp } from '@/lib/actions/auth'
+import { signUp } from '@/lib/actions/auth-actions'
 
 const Page = () => (
   <AuthForm

@@ -20,6 +20,42 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.pexels.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'example.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i5.walmartimages.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'm.media-amazon.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'as2.ftcdn.net',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdnp.sanmar.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.flinnsci.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.pinimg.com',
+      },
+      {
+        protocol: 'https',
         hostname: 'img.freepik.com',
       },
       {
@@ -33,10 +69,6 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'plus.unsplash.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'i5.walmartimages.com',
       },
       {
         protocol: 'https',
@@ -56,31 +88,11 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'images.unsplash.com',
-      },
-      {
-        protocol: 'https',
         hostname: 'avatars.githubusercontent.com',
       },
       {
         protocol: 'https',
-        hostname: 'cdnp.sanmar.com',
-      },
-      {
-        protocol: 'https',
         hostname: 'res.cloudinary.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'images.pexels.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'as2.ftcdn.net',
-      },
-      {
-        protocol: 'https',
-        hostname: 'i.pinimg.com',
       },
       {
         protocol: 'https',
@@ -96,15 +108,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'example.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'm.media-amazon.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'www.flinnsci.com',
+        hostname: 'upcdn.io',
       },
     ],
   },
