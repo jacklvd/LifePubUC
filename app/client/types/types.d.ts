@@ -199,6 +199,7 @@ interface User {
 
 interface Item {
   _id: string
+  id?: string
   title: string
   description: string
   seller?: string // User ID reference
@@ -210,11 +211,24 @@ interface Item {
   images: string[]
   status: string
   views: number
-  createdAt?: Date
-  updatedAt?: Date
+  rating?: number
+  featured?: boolean
+  currency?: string
+  createdAt: Date
+  updatedAt: Date
 }
 
 interface Category {
   title: string
   url: string
+}
+
+interface PriceData {
+  amount: string | number
+}
+
+// Section type definition
+interface Section {
+  id: string
+  label: string
 }

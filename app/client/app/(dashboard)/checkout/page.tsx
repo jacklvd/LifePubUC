@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import Image from 'next/image'
 import Link from 'next/link'
-import StripeProvider from '../../../components/checkout-ui/stripe-provider'
+import StripeProvider from './components/stripe-provider'
 
 import { EmbeddedCheckout } from '@stripe/react-stripe-js'
 

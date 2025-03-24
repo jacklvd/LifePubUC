@@ -4,9 +4,8 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { createItem } from '@/lib/actions/item-actions'
 
-interface PriceData {
-  amount: string | number
-}
+import PhotoSection from '../components/photo-section'
+import ItemDetailSection from '../components/item-detail-section'
 
 interface FormData {
   title: string
@@ -17,7 +16,6 @@ interface FormData {
   images: File[]
 }
 
-// Define types for form errors
 interface FormErrors {
   title?: string
   description?: string
@@ -28,11 +26,21 @@ interface FormErrors {
   form?: string
 }
 
-// Section type definition
+interface PriceData {
+  amount: string | number
+}
+
 interface Section {
   id: string
   label: string
 }
+
+const sections: Section[] = [
+  { id: 'photos', label: 'Photos' },
+  { id: 'details', label: 'Item details' },
+  { id: 'pricing', label: 'Pricing' },
+  { id: 'review', label: 'Review' },
+]
 
 const CreateItemPage = () => {
   const router = useRouter()
@@ -52,9 +60,8 @@ const CreateItemPage = () => {
   const [uploadedImages, setUploadedImages] = useState<File[]>([])
   const [previewImages, setPreviewImages] = useState<string[]>([])
 
-  // Category options based on Etsy-like categories
   const categories: string[] = [
-    'textbook',
+    'Textbook',
     'Clothing & Accessories',
     'Home & Living',
     'Jewelry',
@@ -67,15 +74,7 @@ const CreateItemPage = () => {
     'Other',
   ]
 
-  // Condition options
-  const conditions: string[] = ['New', 'Like New', 'Good', 'fair', 'Poor']
-
-  const sections: Section[] = [
-    { id: 'photos', label: 'Photos' },
-    { id: 'details', label: 'Item details' },
-    { id: 'pricing', label: 'Pricing' },
-    { id: 'review', label: 'Review' },
-  ]
+  const conditions: string[] = ['New', 'Like New', 'Good', 'Fair', 'Poor']
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
@@ -110,7 +109,6 @@ const CreateItemPage = () => {
     if (!e.target.files || e.target.files.length === 0) return
 
     const files = Array.from(e.target.files)
-
     const newPreviewImages = files.map((file) => URL.createObjectURL(file))
 
     setUploadedImages([...uploadedImages, ...files])
@@ -263,185 +261,22 @@ const CreateItemPage = () => {
 
       <form onSubmit={handleSubmit}>
         {/* Photos Section */}
-        {activeSection === 'photos' && (
-          <div className="mb-8">
-            <h2 className="text-xl font-semibold mb-4">
-              Add photos of your item
-            </h2>
-            <p className="text-gray-600 mb-4">
-              Add up to 10 photos to show your item from all angles. Photos
-              should be at least 1000px wide.
-            </p>
-
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-6">
-              {/* Image upload box */}
-              <div className="border-2 border-dashed border-gray-300 rounded p-4 flex flex-col items-center justify-center aspect-square cursor-pointer hover:bg-gray-50">
-                <input
-                  type="file"
-                  id="images"
-                  name="images"
-                  accept="image/*"
-                  multiple
-                  onChange={handleImageUpload}
-                  className="hidden"
-                />
-                <label
-                  htmlFor="images"
-                  className="w-full h-full flex flex-col items-center justify-center cursor-pointer"
-                >
-                  <svg
-                    className="w-10 h-10 text-gray-400 mb-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M12 4v16m8-8H4"
-                    />
-                  </svg>
-                  <span className="text-sm text-gray-500">Add photos</span>
-                </label>
-              </div>
-
-              {/* Preview images */}
-              {previewImages.map((src, index) => (
-                <div
-                  key={index}
-                  className="relative border border-gray-200 rounded overflow-hidden aspect-square"
-                >
-                  <Image
-                    src={src}
-                    alt={`Preview ${index + 1}`}
-                    width={400}
-                    height={400}
-                    className="w-full h-full object-cover"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => removeImage(index)}
-                    className="absolute top-2 right-2 bg-white rounded-full p-1 shadow hover:bg-gray-100"
-                  >
-                    <svg
-                      className="w-5 h-5 text-gray-600"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </button>
-                </div>
-              ))}
-            </div>
-
-            {errors.images && (
-              <p className="text-red-500 text-sm mt-1">{errors.images}</p>
-            )}
-          </div>
-        )}
+        <PhotoSection
+          activeSection={activeSection}
+          previewImages={previewImages}
+          handleImageUpload={handleImageUpload}
+          removeImage={removeImage}
+        />
 
         {/* Item Details Section */}
-        {activeSection === 'details' && (
-          <div className="mb-8">
-            <h2 className="text-xl font-semibold mb-4">Item details</h2>
-
-            <div className="mb-6">
-              <label htmlFor="title" className="block font-medium mb-1">
-                Title
-              </label>
-              <input
-                type="text"
-                id="title"
-                name="title"
-                value={formData.title}
-                onChange={handleChange}
-                className={`w-full p-3 border ${errors.title ? 'border-red-500' : 'border-gray-300'} rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500`}
-                placeholder="What are you selling?"
-              />
-              {errors.title && (
-                <p className="text-red-500 text-sm mt-1">{errors.title}</p>
-              )}
-            </div>
-
-            <div className="mb-6">
-              <label htmlFor="description" className="block font-medium mb-1">
-                Description
-              </label>
-              <textarea
-                id="description"
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                rows={6}
-                className={`w-full p-3 border ${errors.description ? 'border-red-500' : 'border-gray-300'} rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500`}
-                placeholder="Describe your item in detail - condition, features, what makes it special..."
-              ></textarea>
-              {errors.description && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.description}
-                </p>
-              )}
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label htmlFor="category" className="block font-medium mb-1">
-                  Category
-                </label>
-                <select
-                  id="category"
-                  name="category"
-                  value={formData.category}
-                  onChange={handleChange}
-                  className={`w-full p-3 border ${errors.category ? 'border-red-500' : 'border-gray-300'} rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500`}
-                >
-                  <option value="">Select a category</option>
-                  {categories.map((category) => (
-                    <option key={category} value={category}>
-                      {category}
-                    </option>
-                  ))}
-                </select>
-                {errors.category && (
-                  <p className="text-red-500 text-sm mt-1">{errors.category}</p>
-                )}
-              </div>
-
-              <div>
-                <label htmlFor="condition" className="block font-medium mb-1">
-                  Condition
-                </label>
-                <select
-                  id="condition"
-                  name="condition"
-                  value={formData.condition}
-                  onChange={handleChange}
-                  className={`w-full p-3 border ${errors.condition ? 'border-red-500' : 'border-gray-300'} rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500`}
-                >
-                  <option value="">Select condition</option>
-                  {conditions.map((condition) => (
-                    <option key={condition} value={condition}>
-                      {condition}
-                    </option>
-                  ))}
-                </select>
-                {errors.condition && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.condition}
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
+        <ItemDetailSection
+          activeSection={activeSection}
+          formData={formData}
+          errors={errors}
+          handleChange={handleChange}
+          categories={categories}
+          conditions={conditions}
+        />
 
         {/* Pricing Section */}
         {activeSection === 'pricing' && (
@@ -464,7 +299,9 @@ const CreateItemPage = () => {
                   onChange={handleChange}
                   step="0.01"
                   min="0"
-                  className={`w-full pl-8 p-3 border ${errors.price ? 'border-red-500' : 'border-gray-300'} rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500`}
+                  className={`w-full pl-8 p-3 border ${
+                    errors.price ? 'border-red-500' : 'border-gray-300'
+                  } rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500`}
                   placeholder="0.00"
                 />
               </div>
