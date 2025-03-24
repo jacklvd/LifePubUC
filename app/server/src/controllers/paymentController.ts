@@ -127,7 +127,7 @@ const createStripeCheckoutSession = async (
     return
   }
 
-  try {    
+  try {
     const itemsBySeller: Record<string, CartItem[]> = {}
 
     for (const item of cartItems) {
@@ -198,7 +198,7 @@ const createStripeCheckoutSession = async (
     //   checkoutSessionId: session.id,
     //   buyerId,
     //   transferData,
-    //   status: "pending" 
+    //   status: "pending"
     // })
 
     res.json({
@@ -216,8 +216,6 @@ const createStripeCheckoutSession = async (
     })
   }
 }
-
-
 
 /****************
  * WEBHOOKS
@@ -327,7 +325,7 @@ const getCheckoutSessionStatusStripe = async (req: Request, res: Response) => {
     // Pass the raw string without JSON.stringify
     const session = await stripe.checkout.sessions.retrieve(sessionId)
 
-    if (session.status === "complete") { 
+    if (session.status === 'complete') {
       // add to transaction for users
     }
 
