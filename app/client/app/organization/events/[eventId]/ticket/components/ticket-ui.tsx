@@ -1,5 +1,5 @@
 // components/ticket-ui.tsx
-import React, { useEffect } from 'react'
+import React, { useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 // import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -135,6 +135,26 @@ const TicketUI: React.FC<TicketUIProps> = ({ eventId, userEmail }) => {
     }
   }, [completedSteps, eventId, router, error])
 
+  // Map state to props for form field setters with proper TypeScript types
+  const setTicketType = useCallback((value: 'Free' | 'Paid' | 'Donation') =>
+    updateFormField('ticketType', value), [updateFormField])
+  const setTicketName = useCallback((value: string) =>
+    updateFormField('ticketName', value), [updateFormField])
+  const setTicketCapacity = useCallback((value: number) =>
+    updateFormField('ticketCapacity', value), [updateFormField])
+  const setTicketPrice = useCallback((value: number | undefined) =>
+    updateFormField('ticketPrice', value), [updateFormField])
+  const setSaleStartDate = useCallback((value: Date | undefined) =>
+    updateFormField('saleStartDate', value), [updateFormField])
+  const setSaleEndDate = useCallback((value: Date | undefined) =>
+    updateFormField('saleEndDate', value), [updateFormField])
+  const setStartTime = useCallback((value: string) => updateFormField('startTime', value), [updateFormField])
+  const setEndTime = useCallback((value: string) => updateFormField('endTime', value), [updateFormField])
+  const setMinPerOrder = useCallback((value: number) =>
+    updateFormField('minPerOrder', value), [updateFormField])
+  const setMaxPerOrder = useCallback((value: number) =>
+    updateFormField('maxPerOrder', value), [updateFormField])
+
   const handleContinueToPublish = () => {
     // Mark tickets step as completed if not already
     markStepCompleted('tickets')
@@ -153,24 +173,7 @@ const TicketUI: React.FC<TicketUIProps> = ({ eventId, userEmail }) => {
     )
   }
 
-  // Map state to props for form field setters with proper TypeScript types
-  const setTicketType = (value: 'Free' | 'Paid' | 'Donation') =>
-    updateFormField('ticketType', value)
-  const setTicketName = (value: string) => updateFormField('ticketName', value)
-  const setTicketCapacity = (value: number) =>
-    updateFormField('ticketCapacity', value)
-  const setTicketPrice = (value: number | undefined) =>
-    updateFormField('ticketPrice', value)
-  const setSaleStartDate = (value: Date | undefined) =>
-    updateFormField('saleStartDate', value)
-  const setSaleEndDate = (value: Date | undefined) =>
-    updateFormField('saleEndDate', value)
-  const setStartTime = (value: string) => updateFormField('startTime', value)
-  const setEndTime = (value: string) => updateFormField('endTime', value)
-  const setMinPerOrder = (value: number) =>
-    updateFormField('minPerOrder', value)
-  const setMaxPerOrder = (value: number) =>
-    updateFormField('maxPerOrder', value)
+
 
   // Calendar open states mapped to activeCalendar
   const startDateCalendarOpen = activeCalendar === 'start'
