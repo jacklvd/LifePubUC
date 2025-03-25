@@ -10,7 +10,7 @@ import {
   getEventTickets,
   getUserEvents,
   deleteEvent,
-  getAllEvents
+  getAllEvents,
 } from '../controllers/eventController'
 
 const router = express.Router()

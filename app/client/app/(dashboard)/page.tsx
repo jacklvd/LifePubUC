@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-"use client"
+'use client'
 
 import React, { useState, useEffect } from 'react'
 import { eventsTemp, landingPageIcons, eventTabs } from '@/constants'
@@ -42,7 +42,7 @@ const LandingPage = () => {
       const params: GetAllEventsParams = {
         limit: 8,
         sort: sortOption as 'newest' | 'oldest' | 'price-low' | 'price-high',
-        location: location
+        location: location,
       }
 
       if (activeCategory !== null) {
@@ -90,7 +90,7 @@ const LandingPage = () => {
       const params: GetAllEventsParams = {
         limit: 8,
         sort: sortOption as 'newest' | 'oldest' | 'price-low' | 'price-high',
-        location: location
+        location: location,
       }
 
       if (activeCategory !== null) {
@@ -116,7 +116,7 @@ const LandingPage = () => {
 
   const toggleSaveEvent = (eventId: string): void => {
     if (savedEvents.includes(eventId)) {
-      setSavedEvents(savedEvents.filter(id => id !== eventId))
+      setSavedEvents(savedEvents.filter((id) => id !== eventId))
     } else {
       setSavedEvents([...savedEvents, eventId])
     }
@@ -125,7 +125,6 @@ const LandingPage = () => {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
-
       <FeaturedCarousel />
 
       <CategoryIcons
@@ -137,7 +136,13 @@ const LandingPage = () => {
       <LocationSelector
         location={location}
         setLocation={setLocation}
-        locations={['Cincinnati', 'New York', 'Los Angeles', 'Chicago', 'Miami']}
+        locations={[
+          'Cincinnati',
+          'New York',
+          'Los Angeles',
+          'Chicago',
+          'Miami',
+        ]}
       />
 
       <EventTabs
@@ -165,9 +170,7 @@ const LandingPage = () => {
         setActiveTab={setActiveTab}
       />
 
-      <UpcomingTimeline
-        location={location}
-      />
+      <UpcomingTimeline location={location} />
 
       <Newsletter />
 
