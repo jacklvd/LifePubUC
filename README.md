@@ -36,7 +36,7 @@ Foster a Stronger Community: At its core, Life Pub is all about building connect
 - I also want the app to:
   - Facilitate and secure transactions.
   - Avoid requiring numerous procedures to set up my account (e.g., simplified setup compared to TikTok Shop).
-## 📱 User Interface Specification
+##  User Interface Specification
 - Developed using **Figma** and implemented in **React.js (Web)**.
 - Key UI elements:
   - Clean login and registration with University OAuth.
@@ -53,7 +53,7 @@ Foster a Stronger Community: At its core, Life Pub is all about building connect
 
 ---
 
-## 📖 User Manual
+##  User Manual
 - **How to Use LifePub**:
   1. Register/Login using your UC email.
   2. Choose preferences in onboarding.
@@ -68,22 +68,22 @@ Foster a Stronger Community: At its core, Life Pub is all about building connect
 
 ---
 
-## 📽 Spring Final PPT Presentation
+##  Spring Final PPT Presentation
 - [View Presentation](https://drive.google.com/file/d/14uWp9nQtuBMD5WSqP1hMEdwiTqUpklGQ/view?usp=sharing)
 
 ---
 
-## 🖼 Final Expo Poster
+##  Final Expo Poster
 - 
 ---
 
-## 🧾 Assessments
+##  Assessments
 
-### 📝 Initial Self-Assessments (Fall Semester)
+###  Initial Self-Assessments (Fall Semester)
 - [Quan Le](https://docs.google.com/document/d/1hQbV365ZZpOAT3V0a0dDD-z3xuq_cu1_6PxtNohWYOE/edit?usp=sharing)
 - [Long Vo](https://docs.google.com/document/d/1mVfOXcnEK43ZyxZ4KTXCkwdsOW5tnd6EnP02TQxXTwk/edit?usp=sharing)
 
-### 📝 Final Self-Assessments (Spring Semester)
+###  Final Self-Assessments (Spring Semester)
 - Linked individually in `/docs/self-assessments`.
 
 
@@ -169,7 +169,7 @@ We have mostly used free resources or tier from AWS, Azure and free resources on
 - show monetary value of donated items and donation sources.
 
 N/A
-## ⏳ Summary of Hours and Justification
+## Summary of Hours and Justification
 | Team Member | Hours (Fall) | Hours (Spring) | Total | Description |
 |-------------|--------------|----------------|--------|-------------|
 | Quan Le     | 45 hrs       | 45 hrs         | 90 hrs | Backend, Database, API, Testing |
