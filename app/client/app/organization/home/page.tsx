@@ -11,6 +11,7 @@ import {
   ProductsSection,
   IndustryStats,
 } from './components'
+import Skeleton from "react-loading-skeleton"
 
 interface ProductData {
   title: string
@@ -69,7 +70,12 @@ const OrganizationHome: React.FC = () => {
   }, [userEmail])
 
   if (isLoading) {
-    return <div className="flex-1 justify-center items-center">Loading...</div>
+    return <div className="flex-1 justify-center items-center">
+      <Skeleton count={5} className="w-full h-12 mb-4" />
+      <Skeleton count={3} className="w-full h-12 mb-4" />
+      <Skeleton count={2} className="w-full h-12 mb-4" />
+      <Skeleton count={1} className="w-full h-12 mb-4" />
+    </div>
   }
 
   return (

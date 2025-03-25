@@ -181,3 +181,56 @@ export const deleteEvent = async (
     )
   }
 }
+
+export const getAllEvents = async (
+  params?: GetAllEventsParams
+): Promise<Event[]> => {
+  try {
+    // Build query string with parameters
+    const queryParams = new URLSearchParams()
+    
+    if (params?.category) {
+      queryParams.append('category', params.category)
+    }
+    
+    if (params?.status) {
+      queryParams.append('status', params.status)
+    }
+    
+    if (params?.limit) {
+      queryParams.append('limit', params.limit.toString())
+    }
+    
+    if (params?.sort) {
+      queryParams.append('sort', params.sort)
+    }
+    
+    if (params?.date) {
+      queryParams.append('date', params.date)
+    }
+    
+    if (params?.location) {
+      queryParams.append('location', params.location)
+    }
+    
+    if (params?.search) {
+      queryParams.append('search', params.search)
+    }
+    
+    const queryString = queryParams.toString()
+    const url = `${API_BASE_URL}/api/events/all-events${queryString ? `?${queryString}` : ''}`
+
+    const response = await axios.get(url)
+
+    if (response.status !== 200) {
+      throw new Error(`Failed to fetch events. Status: ${response.status}`)
+    }
+
+    return response.data.events || []
+  } catch (error: any) {
+    console.error('Error fetching events:', error)
+    throw new Error(
+      error.response?.data?.message || 'An error occurred fetching events.'
+    )
+  }
+}
