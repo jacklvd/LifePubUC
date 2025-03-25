@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react'
 import Image from 'next/image'
 import { format } from 'date-fns'
-import { Icon } from '../icons'
+import { Icon } from '../../../../../components/icons'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -36,8 +37,8 @@ const EventPreview: React.FC<EventPreviewProps> = ({
   const formatDate = (date: string) => {
     try {
       return format(new Date(date), 'MMMM d, yyyy')
-    } catch (error) {
-      return date
+    } catch (error: any) {
+      return error.message || 'Invalid date'
     }
   }
 

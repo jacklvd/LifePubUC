@@ -4,17 +4,12 @@
 
 import React from 'react'
 import { Button } from '@/components/ui/button'
-import { Icon } from '@/components/icons'
-import { GoogleMap, Marker } from '@react-google-maps/api'
-import { useEventProgress } from '@/context/event-context'
-
-import EventDateTimePicker from '@/components/event-ui/event-datetime-picker'
-import EventTitleInput from '@/components/event-ui/event-title-picker'
-import EventAdditional from '@/components/event-ui/event-additional'
-import EventLocationPicker from '@/components/event-ui/event-location'
-import EventPhotoUpload from '@/components/event-ui/event-photo'
-import EventAgenda from '@/components/event-ui/event-agenda'
-import EventInsight from '@/components/event-ui/event-insight'
+import EventTitleInput from '@/app/organization/events/components/form-ui/event-title-picker'
+import EventAdditional from './event-additional'
+import EventPhotoUpload from '@/app/organization/events/components/form-ui/event-photo'
+import EventAgenda from '@/app/organization/events/components/form-ui/event-agenda'
+import EventInsight from '@/app/organization/events/components/form-ui/event-insight'
+import DateLocationSection from './date-location'
 
 interface EventFormUIProps {
   // States
@@ -126,18 +121,6 @@ export const EventFormUI: React.FC<EventFormUIProps> = ({
   // Optional props
   submitButtonText = 'Save and continue',
 }) => {
-  // Use the progress context
-  const {
-    eventId,
-    eventDate,
-    eventLocation,
-    completedSteps,
-    activeStep,
-    isEditing,
-  } = useEventProgress()
-
-  // Format date for display if needed
-  const formattedDate = eventDate || (date ? date.toISOString() : undefined)
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -163,76 +146,38 @@ export const EventFormUI: React.FC<EventFormUIProps> = ({
           />
 
           {/* Date and Location Section */}
-          <div className="mb-6">
-            <div className="relative rounded-md overflow-hidden border bg-white-100 p-6">
-              <div className="flex justify-between mb-4">
-                <div className="w-1/2 pr-4">
-                  <EventDateTimePicker
-                    date={date}
-                    setDate={setDate}
-                    calendarOpen={calendarOpen}
-                    setCalendarOpen={setCalendarOpen}
-                    startHour={startHour}
-                    startMinute={startMinute}
-                    startPeriod={startPeriod}
-                    endHour={endHour}
-                    endMinute={endMinute}
-                    endPeriod={endPeriod}
-                    setStartHour={setStartHour}
-                    setStartMinute={setStartMinute}
-                    setStartPeriod={setStartPeriod}
-                    setEndHour={setEndHour}
-                    setEndMinute={setEndMinute}
-                    setEndPeriod={setEndPeriod}
-                    errors={errors}
-                  />
-                </div>
-
-                <div className="w-1/2 pl-4">
-                  <EventLocationPicker
-                    locationName={locationName}
-                    handleLocationChange={handleLocationChange}
-                    handleLocationSearch={handleLocationSearch}
-                    locationSuggestions={locationSuggestions}
-                    showSuggestions={showSuggestions}
-                    handleSelectSuggestion={handleSelectSuggestion}
-                    showMap={showMap}
-                    toggleMap={toggleMap}
-                    errors={errors}
-                    locationInputRef={locationInputRef}
-                  />
-                </div>
-                <Button
-                  variant="ghost"
-                  className="absolute top-4 right-4 h-8 w-8 p-0 rounded-full border"
-                >
-                  <Icon name="Plus" className="h-4 w-4" />
-                </Button>
-              </div>
-
-              {showMap && (
-                <div className="rounded-md overflow-hidden bg-gray-100 h-64 mt-2">
-                  {isLoaded ? (
-                    <GoogleMap
-                      mapContainerStyle={{ width: '100%', height: '100%' }}
-                      center={mapCenter}
-                      zoom={13}
-                      onClick={handleMapClick}
-                      options={{
-                        gestureHandling: 'cooperative',
-                      }}
-                    >
-                      {markerPosition && <Marker position={markerPosition} />}
-                    </GoogleMap>
-                  ) : (
-                    <div className="h-full bg-gray-200 flex items-center justify-center">
-                      <span className="text-gray-500">Loading map...</span>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
+          <DateLocationSection
+            date={date}
+            setDate={setDate}
+            calendarOpen={calendarOpen}
+            setCalendarOpen={setCalendarOpen}
+            startHour={startHour}
+            startMinute={startMinute}
+            startPeriod={startPeriod}
+            endHour={endHour}
+            endMinute={endMinute}
+            endPeriod={endPeriod}
+            setStartHour={setStartHour}
+            setStartMinute={setStartMinute}
+            setStartPeriod={setStartPeriod}
+            setEndHour={setEndHour}
+            setEndMinute={setEndMinute}
+            setEndPeriod={setEndPeriod}
+            errors={errors}
+            locationName={locationName}
+            handleLocationChange={handleLocationChange}
+            handleLocationSearch={handleLocationSearch}
+            locationSuggestions={locationSuggestions}
+            showSuggestions={showSuggestions}
+            handleSelectSuggestion={handleSelectSuggestion}
+            showMap={showMap}
+            toggleMap={toggleMap}
+            handleMapClick={handleMapClick}
+            markerPosition={markerPosition}
+            mapCenter={mapCenter}
+            isLoaded={isLoaded}
+            locationInputRef={locationInputRef}
+          />
 
           {/* Overview Section */}
           <EventInsight

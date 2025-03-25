@@ -1,5 +1,5 @@
 'use client'
-import React, { useRef, useCallback } from 'react'
+import React, { useRef, useCallback, useMemo } from 'react'
 import { CalendarHeader } from './calendar-header'
 import { MonthView } from './month-view'
 import { WeekView } from './week-view'
@@ -10,7 +10,7 @@ interface EventCalendarProps {
   events: Event[]
 }
 
-const EventCalendar: React.FC<EventCalendarProps> = ({ events = [] }) => {
+const EventCalendar: React.FC<EventCalendarProps> = () => {
   // Reference for the week view container
   const weekContainerRef = useRef<HTMLDivElement>(null)
 
@@ -90,20 +90,23 @@ const EventCalendar: React.FC<EventCalendarProps> = ({ events = [] }) => {
     'Nov',
     'Dec',
   ]
-  const fullMonths = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ]
+  const fullMonths = useMemo(
+    () => [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ],
+    [],
+  )
 
   // Calculate week view title
   const getWeekViewTitle = useCallback(() => {

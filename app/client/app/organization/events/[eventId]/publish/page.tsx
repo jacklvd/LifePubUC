@@ -15,10 +15,10 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { toast } from 'sonner'
 import { getEventById, publishEvent } from '@/lib/actions/event-actions'
 import { useEventProgress } from '@/context/event-context'
-import EventFlowLayout from '@/components/event-ui/event-flow-layout'
+import EventFlowLayout from '@/app/organization/events/components/event-flow-layout'
 import { formatDate } from '@/lib/date-formatter'
 import EventFallBack from '@/components/event-fallback'
-import EventPreview from '@/components/event-ui/event-preview'
+import EventPreview from '@/app/organization/events/components/preview-ui/event-preview'
 
 interface PublishPageProps {
   params: Promise<{

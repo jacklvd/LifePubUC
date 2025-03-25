@@ -1,6 +1,6 @@
 'use client'
 import React, { useState } from 'react'
-import EventCard from '@/components/event-ui/event-card'
+import EventCard from '@/app/organization/events/components/event-card'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,

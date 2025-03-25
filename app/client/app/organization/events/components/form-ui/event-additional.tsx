@@ -3,8 +3,8 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Badge } from '../ui/badge'
-import { Button } from '../ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/icons'
 import {
   Dialog,

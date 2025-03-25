@@ -10,8 +10,8 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useRouter } from 'next/navigation'
 import { Icon } from '@/components/icons'
-import EventCalendar from '@/components/event-ui/event-calendar'
-import EventList from '@/components/event-ui/event-list'
+import EventCalendar from '@/app/organization/events/components/event-calendar'
+import EventList from '@/app/organization/events/components/event-list'
 import { toast } from 'sonner'
 import {
   getUserEvents,
@@ -80,7 +80,7 @@ const EventsPage = () => {
   }
 
   return (
-    <div className="container mx-auto max-w-6xl py-6 px-4 sm:py-8">
+    <div className="container mx-auto max-w-6xl py-6 px-4 sm:py-8 mb-10">
       {/* Header */}
       <h1 className="text-3xl sm:text-4xl font-bold text-purple-950 mb-4 sm:mb-6">
         Events
@@ -111,11 +111,10 @@ const EventsPage = () => {
             <Button
               variant={viewMode === 'list' ? 'default' : 'outline'}
               onClick={() => setViewMode('list')}
-              className={`rounded-l-md rounded-r-none px-3 sm:px-4 ${
-                viewMode === 'list'
-                  ? 'bg-blue-600 hover:bg-blue-700'
-                  : 'border-r-0'
-              }`}
+              className={`rounded-l-md rounded-r-none px-3 sm:px-4 ${viewMode === 'list'
+                ? 'bg-blue-600 hover:bg-blue-700'
+                : 'border-r-0'
+                }`}
             >
               <Icon name="LayoutList" className="h-4 w-4 sm:mr-2" />
               <span className="hidden sm:inline">List</span>
@@ -123,9 +122,8 @@ const EventsPage = () => {
             <Button
               variant={viewMode === 'calendar' ? 'default' : 'outline'}
               onClick={() => setViewMode('calendar')}
-              className={`rounded-r-md rounded-l-none px-3 sm:px-4 ${
-                viewMode === 'calendar' ? 'bg-blue-600 hover:bg-blue-700' : ''
-              }`}
+              className={`rounded-r-md rounded-l-none px-3 sm:px-4 ${viewMode === 'calendar' ? 'bg-blue-600 hover:bg-blue-700' : ''
+                }`}
             >
               <Icon name="Calendar" className="h-4 w-4 sm:mr-2" />
               <span className="hidden sm:inline">Calendar</span>
@@ -182,11 +180,11 @@ const EventsPage = () => {
           <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
         </div>
       ) : /* Calendar or List View */
-      viewMode === 'calendar' ? (
-        <EventCalendar events={filteredEvents} />
-      ) : (
-        <EventList events={filteredEvents} onDelete={handleDeleteEvent} />
-      )}
+        viewMode === 'calendar' ? (
+          <EventCalendar events={filteredEvents} />
+        ) : (
+          <EventList events={filteredEvents} onDelete={handleDeleteEvent} />
+        )}
     </div>
   )
 }
