@@ -1,4 +1,4 @@
-### LifePub 
+# LifePub 
 
 **Purpose**: Enhance student engagement in campus life.
 
