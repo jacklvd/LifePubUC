@@ -74,7 +74,7 @@ Foster a Stronger Community: At its core, Life Pub is all about building connect
 ---
 
 ##  Final Expo Poster
-- 
+- ![Final Expo Poster](./poster.png)
 ---
 
 ##  Assessments
