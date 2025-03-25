@@ -49,7 +49,7 @@ Foster a Stronger Community: At its core, Life Pub is all about building connect
 ---
 
 ##  Test Plan and Results
-- (https://docs.google.com/document/d/1vNS3mEVG18eDTFYcbdBctBfJNVSZ_po-tNbXryvhgCI/edit?tab=t.0#heading=h.ewuf5sq9gn4g)
+- [Test plan](https://docs.google.com/document/d/1vNS3mEVG18eDTFYcbdBctBfJNVSZ_po-tNbXryvhgCI/edit?tab=t.0#heading=h.ewuf5sq9gn4g)
 
 ---
 
