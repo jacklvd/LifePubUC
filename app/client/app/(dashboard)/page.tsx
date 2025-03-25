@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // app/components/landing/LandingPage.tsx
+// app/components/landing/LandingPage.tsx
 'use client'
 import React, { useState, useEffect } from 'react'
 import { eventsTemp, landingPageIcons, eventTabs } from '@/constants'
@@ -211,8 +212,8 @@ const LandingPage: React.FC = () => {
               <div
                 key={index}
                 className={`absolute top-0 left-0 w-full h-full transition-opacity duration-500 ${index === currentSlide
-                    ? 'opacity-100'
-                    : 'opacity-0 pointer-events-none'
+                  ? 'opacity-100'
+                  : 'opacity-0 pointer-events-none'
                   }`}
               >
                 <div className="flex h-full">
