@@ -68,6 +68,14 @@ const OrganizationHome: React.FC = () => {
     fetchEvents()
   }, [userEmail])
 
+  if (isLoading) {
+    return (
+      <div className="flex-1 justify-center items-center">
+        Loading...
+      </div>
+    )
+  }
+
   return (
     <>
       {/* Main Content */}
