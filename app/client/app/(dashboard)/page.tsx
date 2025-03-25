@@ -172,11 +172,11 @@ const LandingPage = () => {
 
       <UpcomingTimeline location={location} />
 
-      <Newsletter />
-
       <CreatorCTA />
 
       <ShopMakerCommunities />
+
+      <Newsletter />
     </div>
   )
 }
