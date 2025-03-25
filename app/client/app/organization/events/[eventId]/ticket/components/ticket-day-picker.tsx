@@ -1,4 +1,3 @@
-// components/ui/ticket-ui/ticket-day-picker.tsx
 import React, { memo } from 'react'
 import { format } from 'date-fns'
 import {

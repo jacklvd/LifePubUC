@@ -294,9 +294,9 @@ export const WeekView: React.FC<WeekViewProps> = React.memo(
             return { event, position }
           })
           .filter((item) => item.position !== null) as {
-          event: Event
-          position: { top: number; height: number; left: number; width: number }
-        }[]
+            event: Event
+            position: { top: number; height: number; left: number; width: number }
+          }[]
 
         return positionedEvents
       })
@@ -397,7 +397,7 @@ export const WeekView: React.FC<WeekViewProps> = React.memo(
           {/* Current time indicator - red line */}
           {weekDays.some((day) => isSameDay(day.fullDate, today)) && (
             <div
-              className="absolute left-0 right-0 z-20 pointer-events-none"
+              className="absolute left-0 right-0 z-10 pointer-events-none"
               style={{ top: `${currentTime.top}px` }}
             >
               <div className="flex items-center">

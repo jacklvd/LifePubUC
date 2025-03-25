@@ -1,5 +1,5 @@
 // components/ticket-ui.tsx
-import React, { useEffect } from 'react'
+import React, { useEffect, useCallback, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 // import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -11,6 +11,7 @@ import SidebarContent from '@/app/organization/events/[eventId]/ticket/component
 import EmptyTicketState from '@/app/organization/events/[eventId]/ticket/components/empty-ticket-state'
 import { useTicketStore } from '@/store/ticketStore'
 import { CalendarType } from '@/constants'
+import ErrorBoundary from '@/components/error'
 
 interface TicketUIProps {
   eventId: string
@@ -19,6 +20,7 @@ interface TicketUIProps {
 
 const TicketUI: React.FC<TicketUIProps> = ({ eventId, userEmail }) => {
   const router = useRouter()
+  const [isPending, startTransition] = useTransition()
 
   // Use the event progress context
   const {
@@ -135,42 +137,51 @@ const TicketUI: React.FC<TicketUIProps> = ({ eventId, userEmail }) => {
     }
   }, [completedSteps, eventId, router, error])
 
-  const handleContinueToPublish = () => {
-    // Mark tickets step as completed if not already
-    markStepCompleted('tickets')
+  const handleAddTicket = useCallback(async () => {
+    // Show immediate loading feedback
+    const promise = addTicket()
 
-    // Navigate to publish page
-    router.push(`/organization/events/${eventId}/publish`)
-  }
+    // Defer expensive UI updates until after the ticket is added
+    startTransition(() => {
+      // Any expensive state updates or calculations can go here
+      // This will give priority to keeping the UI responsive
+    })
 
-  if (loading) {
-    return (
-      <div className="container mx-auto p-4 flex justify-center items-center h-screen">
-        <div className="text-center">
-          <p>Loading ticket information...</p>
-        </div>
-      </div>
-    )
-  }
+    return promise
+  }, [addTicket])
+
+  const handleUpdateTicket = useCallback(async () => {
+    // Show immediate loading feedback
+    const promise = updateTicketAction()
+
+    // Defer expensive UI updates until after the ticket is updated
+    startTransition(() => {
+      // Any expensive state updates or calculations can go here
+      // This will give priority to keeping the UI responsive
+    })
+
+    return promise
+  }, [updateTicketAction])
 
   // Map state to props for form field setters with proper TypeScript types
-  const setTicketType = (value: 'Free' | 'Paid' | 'Donation') =>
-    updateFormField('ticketType', value)
-  const setTicketName = (value: string) => updateFormField('ticketName', value)
-  const setTicketCapacity = (value: number) =>
-    updateFormField('ticketCapacity', value)
-  const setTicketPrice = (value: number | undefined) =>
-    updateFormField('ticketPrice', value)
-  const setSaleStartDate = (value: Date | undefined) =>
-    updateFormField('saleStartDate', value)
-  const setSaleEndDate = (value: Date | undefined) =>
-    updateFormField('saleEndDate', value)
-  const setStartTime = (value: string) => updateFormField('startTime', value)
-  const setEndTime = (value: string) => updateFormField('endTime', value)
-  const setMinPerOrder = (value: number) =>
-    updateFormField('minPerOrder', value)
-  const setMaxPerOrder = (value: number) =>
-    updateFormField('maxPerOrder', value)
+  const setTicketType = useCallback((value: 'Free' | 'Paid' | 'Donation') =>
+    updateFormField('ticketType', value), [updateFormField])
+  const setTicketName = useCallback((value: string) =>
+    updateFormField('ticketName', value), [updateFormField])
+  const setTicketCapacity = useCallback((value: number) =>
+    updateFormField('ticketCapacity', value), [updateFormField])
+  const setTicketPrice = useCallback((value: number | undefined) =>
+    updateFormField('ticketPrice', value), [updateFormField])
+  const setSaleStartDate = useCallback((value: Date | undefined) =>
+    updateFormField('saleStartDate', value), [updateFormField])
+  const setSaleEndDate = useCallback((value: Date | undefined) =>
+    updateFormField('saleEndDate', value), [updateFormField])
+  const setStartTime = useCallback((value: string) => updateFormField('startTime', value), [updateFormField])
+  const setEndTime = useCallback((value: string) => updateFormField('endTime', value), [updateFormField])
+  const setMinPerOrder = useCallback((value: number) =>
+    updateFormField('minPerOrder', value), [updateFormField])
+  const setMaxPerOrder = useCallback((value: number) =>
+    updateFormField('maxPerOrder', value), [updateFormField])
 
   // Calendar open states mapped to activeCalendar
   const startDateCalendarOpen = activeCalendar === 'start'
@@ -195,6 +206,34 @@ const TicketUI: React.FC<TicketUIProps> = ({ eventId, userEmail }) => {
     open ? currentTicket && openDeleteDialog(currentTicket) : closeAllDialogs()
   const setIsCapacityDialogOpen = (open: boolean) =>
     open ? setCalendar('capacity' as CalendarType) : closeAllDialogs()
+
+  const handleContinueToPublish = () => {
+    // Mark tickets step as completed if not already
+    markStepCompleted('tickets')
+
+    // Navigate to publish page
+    router.push(`/organization/events/${eventId}/publish`)
+  }
+
+  if (loading) {
+    return (
+      <div className="container mx-auto p-4 flex justify-center items-center h-screen">
+        <div className="text-center">
+          <p>Loading ticket information...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (isPending) {
+    return (
+      <div className="container mx-auto p-4 flex justify-center items-center h-screen">
+        <div className="text-center">
+          <p>Loading...</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="container mx-auto p-4">
@@ -269,53 +308,57 @@ const TicketUI: React.FC<TicketUIProps> = ({ eventId, userEmail }) => {
         </div>
       </div>
 
+      <ErrorBoundary>
+
+        <TicketDialogs
+          isAddDialogOpen={isAddDialogOpen}
+          setIsAddDialogOpen={setIsAddDialogOpen}
+          isEditDialogOpen={isEditDialogOpen}
+          setIsEditDialogOpen={setIsEditDialogOpen}
+          isCapacityDialogOpen={isCapacityDialogOpen}
+          setIsCapacityDialogOpen={setIsCapacityDialogOpen}
+          isDeleteDialogOpen={isDeleteDialogOpen}
+          setIsDeleteDialogOpen={setIsDeleteDialogOpen}
+          totalCapacity={totalCapacity}
+          setTotalCapacity={setTicketCapacity}
+          currentTicket={currentTicket}
+          ticketType={ticketType}
+          ticketName={ticketName}
+          ticketCapacity={ticketCapacity}
+          ticketPrice={ticketPrice}
+          saleStartDate={saleStartDate}
+          saleEndDate={saleEndDate}
+          startTime={startTime}
+          endTime={endTime}
+          minPerOrder={minPerOrder}
+          maxPerOrder={maxPerOrder}
+          eventDate={event?.date ? new Date(event.date) : undefined}
+          eventEndTime={event?.endTime || '11:59 PM'}
+          maxSaleEndDate={event?.date ? new Date(event.date) : undefined}
+          setTicketType={setTicketType}
+          setTicketName={setTicketName}
+          setTicketCapacity={setTicketCapacity}
+          setTicketPrice={setTicketPrice}
+          setSaleStartDate={setSaleStartDate}
+          setSaleEndDate={setSaleEndDate}
+          setStartTime={setStartTime}
+          setEndTime={setEndTime}
+          setMinPerOrder={setMinPerOrder}
+          setMaxPerOrder={setMaxPerOrder}
+          handleAddTicket={handleAddTicket}
+          handleUpdateTicket={handleUpdateTicket}
+          handleDeleteTicket={deleteTicketAction}
+          handleUpdateCapacity={updateCapacity}
+          generateTimeOptions={timeOptions}
+          startDateCalendarOpen={startDateCalendarOpen}
+          setStartDateCalendarOpen={setStartDateCalendarOpen}
+          endDateCalendarOpen={endDateCalendarOpen}
+          setEndDateCalendarOpen={setEndDateCalendarOpen}
+          isEndDateDisabled={isEndDateDisabled}
+        />
+      </ErrorBoundary>
       {/* Dialogs */}
-      <TicketDialogs
-        isAddDialogOpen={isAddDialogOpen}
-        setIsAddDialogOpen={setIsAddDialogOpen}
-        isEditDialogOpen={isEditDialogOpen}
-        setIsEditDialogOpen={setIsEditDialogOpen}
-        isCapacityDialogOpen={isCapacityDialogOpen}
-        setIsCapacityDialogOpen={setIsCapacityDialogOpen}
-        isDeleteDialogOpen={isDeleteDialogOpen}
-        setIsDeleteDialogOpen={setIsDeleteDialogOpen}
-        totalCapacity={totalCapacity}
-        setTotalCapacity={setTicketCapacity}
-        currentTicket={currentTicket}
-        ticketType={ticketType}
-        ticketName={ticketName}
-        ticketCapacity={ticketCapacity}
-        ticketPrice={ticketPrice}
-        saleStartDate={saleStartDate}
-        saleEndDate={saleEndDate}
-        startTime={startTime}
-        endTime={endTime}
-        minPerOrder={minPerOrder}
-        maxPerOrder={maxPerOrder}
-        eventDate={event?.date ? new Date(event.date) : undefined}
-        eventEndTime={event?.endTime || '11:59 PM'}
-        maxSaleEndDate={event?.date ? new Date(event.date) : undefined}
-        setTicketType={setTicketType}
-        setTicketName={setTicketName}
-        setTicketCapacity={setTicketCapacity}
-        setTicketPrice={setTicketPrice}
-        setSaleStartDate={setSaleStartDate}
-        setSaleEndDate={setSaleEndDate}
-        setStartTime={setStartTime}
-        setEndTime={setEndTime}
-        setMinPerOrder={setMinPerOrder}
-        setMaxPerOrder={setMaxPerOrder}
-        handleAddTicket={addTicket}
-        handleUpdateTicket={updateTicketAction}
-        handleDeleteTicket={deleteTicketAction}
-        handleUpdateCapacity={updateCapacity}
-        generateTimeOptions={timeOptions}
-        startDateCalendarOpen={startDateCalendarOpen}
-        setStartDateCalendarOpen={setStartDateCalendarOpen}
-        endDateCalendarOpen={endDateCalendarOpen}
-        setEndDateCalendarOpen={setEndDateCalendarOpen}
-        isEndDateDisabled={isEndDateDisabled}
-      />
+
     </div>
   )
 }

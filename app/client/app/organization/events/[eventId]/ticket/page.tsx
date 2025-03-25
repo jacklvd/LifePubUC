@@ -2,12 +2,14 @@
 // app/organization/events/[eventId]/ticket/page.tsx
 'use client'
 
-import React, { use, useEffect, useState } from 'react'
+import React, { use, useEffect, useState, lazy, Suspense } from 'react'
 import EventFlowLayout from '@/app/organization/events/components/event-flow-layout'
-import TicketUI from '@/app/organization/events/[eventId]/ticket/components/ticket-ui'
 import EventFallBack from '@/components/event-fallback'
 import { useTicketStore } from '@/store/ticketStore'
 import { getEventById } from '@/lib/actions/event-actions'
+import Skeleton from 'react-loading-skeleton'
+
+const TicketUI = lazy(() => import('@/app/organization/events/[eventId]/ticket/components/ticket-ui'))
 
 interface TicketPageProps {
   params: Promise<{
@@ -60,7 +62,9 @@ export default function TicketManagementPage({ params }: TicketPageProps) {
     <EventFlowLayout>
       <div className="flex h-screen bg-gray-50">
         <div className="flex-1 overflow-auto">
-          <TicketUI eventId={eventId} />
+          <Suspense fallback={<Skeleton count={8} />}>
+            <TicketUI eventId={eventId} />
+          </Suspense>
         </div>
       </div>
     </EventFlowLayout>

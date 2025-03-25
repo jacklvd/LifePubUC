@@ -1,4 +1,16 @@
+// types/types.d.ts
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
+interface GetAllEventsParams {
+  category?: string
+  status?: string
+  limit?: number
+  sort?: 'newest' | 'oldest' | 'price-low' | 'price-high'
+  date?: 'today' | 'weekend' | 'upcoming'
+  location?: string
+  search?: string
+}
 
 interface EventState {
   // UI State

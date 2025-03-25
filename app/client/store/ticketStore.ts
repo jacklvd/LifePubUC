@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // store/ticketStore.ts
 /**
  * Ticket Store using Zustand
@@ -113,33 +114,6 @@ const initialFormState: TicketFormState = {
   maxPerOrder: 10,
 }
 
-/**
- * Ticket Store using Zustand
- *
- * For optimal performance, use individual selectors for each piece of state:
- *
- * @example
- * // RECOMMENDED: Use individual selectors
- * const tickets = useTicketStore((state) => state.tickets)
- * const addTicket = useTicketStore((state) => state.addTicket)
- *
- * // AVOID: Using object destructuring with multiple properties
- * // This can cause infinite loops and performance issues
- * const { tickets, addTicket } = useTicketStore((state) => ({
- *   tickets: state.tickets,
- *   addTicket: state.addTicket
- * }))
- *
- * // If you must use object destructuring, use the useShallow middleware from zustand/shallow:
- * // import { shallow } from 'zustand/shallow'
- * // const { tickets, addTicket } = useTicketStore(
- * //   (state) => ({ tickets: state.tickets, addTicket: state.addTicket }),
- * //   shallow
- * // )
- */
-
-// Define selector types to ensure type safety
-type TicketStoreSelector<T> = (state: TicketState) => T
 
 // Create the store with suggested usage patterns for performance
 export const useTicketStore = create<TicketState>()(

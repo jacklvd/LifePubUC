@@ -1,5 +1,5 @@
-// components/ui/ticket-ui/ticket-form.tsx
 import React, { memo } from 'react'
+// import { useDebounce } from '@/hooks/use-debouce'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -82,6 +82,28 @@ const TicketForm: React.FC<TicketFormProps> = memo(
     isEndDateDisabled,
     isSubmitting = false, // Default to false
   }) => {
+    // const [localCapacity, setLocalCapacity] = useState(ticketCapacity)
+    // const [localPrice, setLocalPrice] = useState(ticketPrice)
+    // const [localName, setLocalName] = useState(ticketName)
+
+    // // Debounce the values before sending to parent/store
+    // const debouncedCapacity = useDebounce(localCapacity, 100)
+    // const debouncedPrice = useDebounce(localPrice, 100)
+    // const debouncedName = useDebounce(localName, 100)
+
+    // // Update parent state only when debounced values change
+    // useEffect(() => {
+    //   setTicketCapacity(debouncedCapacity)
+    // }, [debouncedCapacity, setTicketCapacity])
+
+    // useEffect(() => {
+    //   setTicketPrice(debouncedPrice)
+    // }, [debouncedPrice, setTicketPrice])
+
+    // useEffect(() => {
+    //   setTicketName(debouncedName)
+    // }, [debouncedName, setTicketName])
+
     return (
       <>
         <div className="grid gap-4 py-4">
@@ -142,7 +164,7 @@ const TicketForm: React.FC<TicketFormProps> = memo(
                 value={ticketPrice || ''}
                 onChange={(e) =>
                   setTicketPrice(
-                    e.target.value ? parseFloat(e.target.value) : undefined,
+                    e.target.value ? parseFloat(e.target.value) : undefined
                   )
                 }
                 disabled={ticketType === 'Free' || isSubmitting}
