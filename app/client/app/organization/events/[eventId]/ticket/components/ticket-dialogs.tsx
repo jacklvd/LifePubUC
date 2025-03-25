@@ -147,106 +147,120 @@ const TicketDialogs: React.FC<TicketDialogsProps> = memo(
   }) => {
     // Get submission state directly from the store
     const isSubmitting = useTicketStore((state) => state.isSubmitting)
-    const renderAddDialog = useMemo(() => (
-      <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-        <DialogContent className="sm:max-w-md md:max-w-lg bg-white-100">
-          <DialogHeader>
-            <DialogTitle>Add Ticket</DialogTitle>
-            <DialogDescription>
-              Create a new ticket for your event.
-            </DialogDescription>
-          </DialogHeader>
-          <TicketForm
-            ticketType={ticketType}
-            ticketName={ticketName}
-            ticketCapacity={ticketCapacity}
-            ticketPrice={ticketPrice}
-            saleStartDate={saleStartDate}
-            saleEndDate={saleEndDate}
-            startTime={startTime}
-            endTime={endTime}
-            minPerOrder={minPerOrder}
-            maxPerOrder={maxPerOrder}
-            eventDate={eventDate}
-            maxSaleEndDate={maxSaleEndDate}
-            setTicketType={setTicketType}
-            setTicketName={setTicketName}
-            setTicketCapacity={setTicketCapacity}
-            setTicketPrice={setTicketPrice}
-            setSaleStartDate={setSaleStartDate}
-            setSaleEndDate={setSaleEndDate}
-            setStartTime={setStartTime}
-            setEndTime={setEndTime}
-            setMinPerOrder={setMinPerOrder}
-            setMaxPerOrder={setMaxPerOrder}
-            onCancel={() => setIsAddDialogOpen(false)}
-            onSubmit={handleAddTicket}
-            submitButtonText="Add Ticket"
-            generateTimeOptions={generateTimeOptions}
-            startDateCalendarOpen={startDateCalendarOpen}
-            setStartDateCalendarOpen={setStartDateCalendarOpen}
-            endDateCalendarOpen={endDateCalendarOpen}
-            setEndDateCalendarOpen={setEndDateCalendarOpen}
-            isEndDateDisabled={isEndDateDisabled}
-            isSubmitting={isSubmitting}
-          />
-        </DialogContent>
-      </Dialog>
-    ), [
-      isAddDialogOpen, setIsAddDialogOpen,
-      ticketType, ticketName, ticketCapacity, /* other form props */,
-      isSubmitting
-    ])
+    const renderAddDialog = useMemo(
+      () => (
+        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+          <DialogContent className="sm:max-w-md md:max-w-lg bg-white-100">
+            <DialogHeader>
+              <DialogTitle>Add Ticket</DialogTitle>
+              <DialogDescription>
+                Create a new ticket for your event.
+              </DialogDescription>
+            </DialogHeader>
+            <TicketForm
+              ticketType={ticketType}
+              ticketName={ticketName}
+              ticketCapacity={ticketCapacity}
+              ticketPrice={ticketPrice}
+              saleStartDate={saleStartDate}
+              saleEndDate={saleEndDate}
+              startTime={startTime}
+              endTime={endTime}
+              minPerOrder={minPerOrder}
+              maxPerOrder={maxPerOrder}
+              eventDate={eventDate}
+              maxSaleEndDate={maxSaleEndDate}
+              setTicketType={setTicketType}
+              setTicketName={setTicketName}
+              setTicketCapacity={setTicketCapacity}
+              setTicketPrice={setTicketPrice}
+              setSaleStartDate={setSaleStartDate}
+              setSaleEndDate={setSaleEndDate}
+              setStartTime={setStartTime}
+              setEndTime={setEndTime}
+              setMinPerOrder={setMinPerOrder}
+              setMaxPerOrder={setMaxPerOrder}
+              onCancel={() => setIsAddDialogOpen(false)}
+              onSubmit={handleAddTicket}
+              submitButtonText="Add Ticket"
+              generateTimeOptions={generateTimeOptions}
+              startDateCalendarOpen={startDateCalendarOpen}
+              setStartDateCalendarOpen={setStartDateCalendarOpen}
+              endDateCalendarOpen={endDateCalendarOpen}
+              setEndDateCalendarOpen={setEndDateCalendarOpen}
+              isEndDateDisabled={isEndDateDisabled}
+              isSubmitting={isSubmitting}
+            />
+          </DialogContent>
+        </Dialog>
+      ),
+      [
+        isAddDialogOpen,
+        setIsAddDialogOpen,
+        ticketType,
+        ticketName,
+        ticketCapacity /* other form props */,
+        ,
+        isSubmitting,
+      ],
+    )
 
-    const reanderEditDialog = useMemo(() => (
-      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="sm:max-w-md md:max-w-lg bg-white-100">
-          <DialogHeader>
-            <DialogTitle>Edit Ticket</DialogTitle>
-            <DialogDescription>
-              Update the details for {currentTicket?.name}.
-            </DialogDescription>
-          </DialogHeader>
-          <TicketForm
-            ticketType={ticketType}
-            ticketName={ticketName}
-            ticketCapacity={ticketCapacity}
-            ticketPrice={ticketPrice}
-            saleStartDate={saleStartDate}
-            saleEndDate={saleEndDate}
-            startTime={startTime}
-            endTime={endTime}
-            minPerOrder={minPerOrder}
-            maxPerOrder={maxPerOrder}
-            eventDate={eventDate}
-            maxSaleEndDate={maxSaleEndDate}
-            setTicketType={setTicketType}
-            setTicketName={setTicketName}
-            setTicketCapacity={setTicketCapacity}
-            setTicketPrice={setTicketPrice}
-            setSaleStartDate={setSaleStartDate}
-            setSaleEndDate={setSaleEndDate}
-            setStartTime={setStartTime}
-            setEndTime={setEndTime}
-            setMinPerOrder={setMinPerOrder}
-            setMaxPerOrder={setMaxPerOrder}
-            onCancel={() => setIsEditDialogOpen(false)}
-            onSubmit={handleUpdateTicket}
-            submitButtonText="Update Ticket"
-            generateTimeOptions={generateTimeOptions}
-            startDateCalendarOpen={startDateCalendarOpen}
-            setStartDateCalendarOpen={setStartDateCalendarOpen}
-            endDateCalendarOpen={endDateCalendarOpen}
-            setEndDateCalendarOpen={setEndDateCalendarOpen}
-            isEndDateDisabled={isEndDateDisabled}
-          />
-        </DialogContent>
-      </Dialog>
-    ), [
-      isEditDialogOpen, setIsEditDialogOpen,
-      ticketType, ticketName, ticketCapacity, /* other form props */,
-      isSubmitting
-    ])
+    const reanderEditDialog = useMemo(
+      () => (
+        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+          <DialogContent className="sm:max-w-md md:max-w-lg bg-white-100">
+            <DialogHeader>
+              <DialogTitle>Edit Ticket</DialogTitle>
+              <DialogDescription>
+                Update the details for {currentTicket?.name}.
+              </DialogDescription>
+            </DialogHeader>
+            <TicketForm
+              ticketType={ticketType}
+              ticketName={ticketName}
+              ticketCapacity={ticketCapacity}
+              ticketPrice={ticketPrice}
+              saleStartDate={saleStartDate}
+              saleEndDate={saleEndDate}
+              startTime={startTime}
+              endTime={endTime}
+              minPerOrder={minPerOrder}
+              maxPerOrder={maxPerOrder}
+              eventDate={eventDate}
+              maxSaleEndDate={maxSaleEndDate}
+              setTicketType={setTicketType}
+              setTicketName={setTicketName}
+              setTicketCapacity={setTicketCapacity}
+              setTicketPrice={setTicketPrice}
+              setSaleStartDate={setSaleStartDate}
+              setSaleEndDate={setSaleEndDate}
+              setStartTime={setStartTime}
+              setEndTime={setEndTime}
+              setMinPerOrder={setMinPerOrder}
+              setMaxPerOrder={setMaxPerOrder}
+              onCancel={() => setIsEditDialogOpen(false)}
+              onSubmit={handleUpdateTicket}
+              submitButtonText="Update Ticket"
+              generateTimeOptions={generateTimeOptions}
+              startDateCalendarOpen={startDateCalendarOpen}
+              setStartDateCalendarOpen={setStartDateCalendarOpen}
+              endDateCalendarOpen={endDateCalendarOpen}
+              setEndDateCalendarOpen={setEndDateCalendarOpen}
+              isEndDateDisabled={isEndDateDisabled}
+            />
+          </DialogContent>
+        </Dialog>
+      ),
+      [
+        isEditDialogOpen,
+        setIsEditDialogOpen,
+        ticketType,
+        ticketName,
+        ticketCapacity /* other form props */,
+        ,
+        isSubmitting,
+      ],
+    )
 
     return (
       <>

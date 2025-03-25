@@ -507,25 +507,25 @@ export const getAllEvents = async (req: any, res: any) => {
 
     // Build query object
     let query: any = {}
-    
+
     // Only return published events by default
     query.status = status
-    
+
     // Add category filter if provided
     if (category) {
       query.category = category
     }
-    
+
     // Add location filter if provided
     if (location) {
       query.location = { $regex: location, $options: 'i' }
     }
-    
+
     // Add date filtering
     if (date) {
       const today = new Date()
       today.setHours(0, 0, 0, 0)
-      
+
       switch (date) {
         case 'today':
           const tomorrow = new Date(today)
@@ -536,13 +536,13 @@ export const getAllEvents = async (req: any, res: any) => {
           // Calculate weekend dates
           let daysUntilWeekend = 5 - today.getDay() // Friday is 5
           if (daysUntilWeekend < 0) daysUntilWeekend += 7
-          
+
           const friday = new Date(today)
           friday.setDate(today.getDate() + daysUntilWeekend)
-          
+
           const sunday = new Date(friday)
           sunday.setDate(friday.getDate() + 2)
-          
+
           query.date = { $gte: friday, $lt: sunday }
           break
         case 'upcoming':
@@ -550,7 +550,7 @@ export const getAllEvents = async (req: any, res: any) => {
           break
       }
     }
-    
+
     // Add search functionality
     if (search) {
       // Search across multiple fields
@@ -561,7 +561,7 @@ export const getAllEvents = async (req: any, res: any) => {
         { location: { $regex: search, $options: 'i' } },
       ]
     }
-    
+
     // Set sort order based on parameter
     let sortOrder: any = { date: -1 } // Default to newest first
     if (sort === 'oldest') {
@@ -571,23 +571,21 @@ export const getAllEvents = async (req: any, res: any) => {
     } else if (sort === 'price-high') {
       sortOrder = { 'tickets.price': -1 }
     }
-    
+
     // Convert limit to number
     const limitNum = parseInt(limit)
 
     // Execute query with pagination
-    const events = await Event.find(query)
-      .sort(sortOrder)
-      .limit(limitNum)
-      
+    const events = await Event.find(query).sort(sortOrder).limit(limitNum)
+
     // Count total matches (without limit)
     const totalCount = await Event.countDocuments(query)
-      
+
     return res.status(200).json({
       events,
       count: events.length,
       totalCount,
-      hasMore: totalCount > events.length
+      hasMore: totalCount > events.length,
     })
   } catch (error: any) {
     console.error('❌ Error fetching events:', error)

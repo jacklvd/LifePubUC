@@ -136,24 +136,47 @@ const TicketUI: React.FC<TicketUIProps> = ({ eventId, userEmail }) => {
   }, [completedSteps, eventId, router, error])
 
   // Map state to props for form field setters with proper TypeScript types
-  const setTicketType = useCallback((value: 'Free' | 'Paid' | 'Donation') =>
-    updateFormField('ticketType', value), [updateFormField])
-  const setTicketName = useCallback((value: string) =>
-    updateFormField('ticketName', value), [updateFormField])
-  const setTicketCapacity = useCallback((value: number) =>
-    updateFormField('ticketCapacity', value), [updateFormField])
-  const setTicketPrice = useCallback((value: number | undefined) =>
-    updateFormField('ticketPrice', value), [updateFormField])
-  const setSaleStartDate = useCallback((value: Date | undefined) =>
-    updateFormField('saleStartDate', value), [updateFormField])
-  const setSaleEndDate = useCallback((value: Date | undefined) =>
-    updateFormField('saleEndDate', value), [updateFormField])
-  const setStartTime = useCallback((value: string) => updateFormField('startTime', value), [updateFormField])
-  const setEndTime = useCallback((value: string) => updateFormField('endTime', value), [updateFormField])
-  const setMinPerOrder = useCallback((value: number) =>
-    updateFormField('minPerOrder', value), [updateFormField])
-  const setMaxPerOrder = useCallback((value: number) =>
-    updateFormField('maxPerOrder', value), [updateFormField])
+  const setTicketType = useCallback(
+    (value: 'Free' | 'Paid' | 'Donation') =>
+      updateFormField('ticketType', value),
+    [updateFormField],
+  )
+  const setTicketName = useCallback(
+    (value: string) => updateFormField('ticketName', value),
+    [updateFormField],
+  )
+  const setTicketCapacity = useCallback(
+    (value: number) => updateFormField('ticketCapacity', value),
+    [updateFormField],
+  )
+  const setTicketPrice = useCallback(
+    (value: number | undefined) => updateFormField('ticketPrice', value),
+    [updateFormField],
+  )
+  const setSaleStartDate = useCallback(
+    (value: Date | undefined) => updateFormField('saleStartDate', value),
+    [updateFormField],
+  )
+  const setSaleEndDate = useCallback(
+    (value: Date | undefined) => updateFormField('saleEndDate', value),
+    [updateFormField],
+  )
+  const setStartTime = useCallback(
+    (value: string) => updateFormField('startTime', value),
+    [updateFormField],
+  )
+  const setEndTime = useCallback(
+    (value: string) => updateFormField('endTime', value),
+    [updateFormField],
+  )
+  const setMinPerOrder = useCallback(
+    (value: number) => updateFormField('minPerOrder', value),
+    [updateFormField],
+  )
+  const setMaxPerOrder = useCallback(
+    (value: number) => updateFormField('maxPerOrder', value),
+    [updateFormField],
+  )
 
   const handleContinueToPublish = () => {
     // Mark tickets step as completed if not already
@@ -172,8 +195,6 @@ const TicketUI: React.FC<TicketUIProps> = ({ eventId, userEmail }) => {
       </div>
     )
   }
-
-
 
   // Calendar open states mapped to activeCalendar
   const startDateCalendarOpen = activeCalendar === 'start'
