@@ -69,11 +69,7 @@ const OrganizationHome: React.FC = () => {
   }, [userEmail])
 
   if (isLoading) {
-    return (
-      <div className="flex-1 justify-center items-center">
-        Loading...
-      </div>
-    )
+    return <div className="flex-1 justify-center items-center">Loading...</div>
   }
 
   return (
