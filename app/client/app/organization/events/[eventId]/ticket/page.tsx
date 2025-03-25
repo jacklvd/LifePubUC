@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // app/organization/events/[eventId]/ticket/page.tsx
 'use client'
 
 import React, { use, useEffect, useState } from 'react'
 import EventFlowLayout from '@/components/event-ui/event-flow-layout'
-import TicketUI from '@/components/ticket-ui'
+import TicketUI from '@/app/organization/events/[eventId]/ticket/components/ticket-ui'
 import EventFallBack from '@/components/event-fallback'
 import { useTicketStore } from '@/store/ticketStore'
 import { getEventById } from '@/lib/actions/event-actions'

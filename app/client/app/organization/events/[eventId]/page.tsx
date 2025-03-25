@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
@@ -60,14 +61,6 @@ const EventDetailPage = () => {
   useEffect(() => {
     fetchEvent()
   }, [fetchEvent])
-
-  const formatDateTime = (date: string, time: string) => {
-    try {
-      return `${format(new Date(date), 'MMMM d, yyyy')} at ${time}`
-    } catch (error) {
-      return `${date} at ${time}`
-    }
-  }
 
   const getStatusBadge = (status: string) => {
     switch (status) {
