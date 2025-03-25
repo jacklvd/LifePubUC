@@ -178,7 +178,7 @@ N/A
 | Quan Pham   | 45 hrs       | 45 hrs         | 90 hrs | UI/UX, Frontend Dev, Docs |
 
 - GitHub commits, meeting notes, and pull requests serve as evidence.
-- Details and supporting evidence are stored in `/docs/hours-summary.md`.
+- [Details and supporting evidence](https://docs.google.com/document/d/1Esl7G1kGDf3dPTsUR9093sgHAvkq4QgYGuKvT4CwO2k/edit?usp=sharing)
 ## Appendix
 - include appropriate references, citations, links to code repositories, and meeting notes.
 - there should be evidence justifying 45 hours of effort for each team member.
