@@ -1,6 +1,10 @@
 import React, { useEffect, useCallback, useMemo } from 'react'
 import { format, addHours, startOfDay, isToday, isPast } from 'date-fns'
-import { Popover, PopoverTrigger, PopoverContent } from '../../../../../components/ui/popover'
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from '../../../../../components/ui/popover'
 import { Calendar } from '../../../../../components/ui/calendar'
 import {
   Select,
@@ -115,7 +119,9 @@ const EventDateTimePicker = ({
 
     // Check if time values need to be initialized
     const shouldInitializeTime =
-      !startHour || !startMinute || !startPeriod ||
+      !startHour ||
+      !startMinute ||
+      !startPeriod ||
       (startHour === '01' && startMinute === '00' && startPeriod === 'AM')
 
     if (shouldInitializeTime) {
@@ -136,7 +142,9 @@ const EventDateTimePicker = ({
       <div className="mb-4">
         <h3 className="text-lg font-medium mb-4">Date and time</h3>
         {errors.date && (
-          <p className="text-red-500 text-sm mt-1 mb-2" role="alert">{errors.date}</p>
+          <p className="text-red-500 text-sm mt-1 mb-2" role="alert">
+            {errors.date}
+          </p>
         )}
         <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
           <PopoverTrigger asChild>
@@ -221,8 +229,12 @@ const EventDateTimePicker = ({
                 <SelectValue placeholder="AM/PM" />
               </SelectTrigger>
               <SelectContent className="bg-white-100">
-                <SelectItem value="AM" className="cursor-pointer">AM</SelectItem>
-                <SelectItem value="PM" className="cursor-pointer">PM</SelectItem>
+                <SelectItem value="AM" className="cursor-pointer">
+                  AM
+                </SelectItem>
+                <SelectItem value="PM" className="cursor-pointer">
+                  PM
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -274,8 +286,12 @@ const EventDateTimePicker = ({
                 <SelectValue placeholder="AM/PM" />
               </SelectTrigger>
               <SelectContent className="bg-white-100">
-                <SelectItem value="AM" className="cursor-pointer">AM</SelectItem>
-                <SelectItem value="PM" className="cursor-pointer">PM</SelectItem>
+                <SelectItem value="AM" className="cursor-pointer">
+                  AM
+                </SelectItem>
+                <SelectItem value="PM" className="cursor-pointer">
+                  PM
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -285,12 +301,16 @@ const EventDateTimePicker = ({
         <div className="grid grid-cols-2 gap-8 mt-1">
           <div>
             {errors.startTime && (
-              <p className="text-red-500 text-sm" role="alert">{errors.startTime}</p>
+              <p className="text-red-500 text-sm" role="alert">
+                {errors.startTime}
+              </p>
             )}
           </div>
           <div>
             {errors.endTime && (
-              <p className="text-red-500 text-sm" role="alert">{errors.endTime}</p>
+              <p className="text-red-500 text-sm" role="alert">
+                {errors.endTime}
+              </p>
             )}
           </div>
         </div>

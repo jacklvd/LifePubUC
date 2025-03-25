@@ -5,22 +5,21 @@ import { Button } from '@/components/ui/button'
 
 interface Props {
   description: string
-  handleChange: (e: React.ChangeEvent<HTMLTextAreaElement>, field: string) => void
+  handleChange: (
+    e: React.ChangeEvent<HTMLTextAreaElement>,
+    field: string,
+  ) => void
   error?: string
 }
 
-const EventInsight = memo(({
-  description,
-  handleChange,
-  error
-}: Props) => {
+const EventInsight = memo(({ description, handleChange, error }: Props) => {
   // Create memoized callback
   const onChangeHandler = useCallback(
     (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      handleChange(e, 'description');
+      handleChange(e, 'description')
     },
-    [handleChange]
-  );
+    [handleChange],
+  )
 
   return (
     <div className="mb-4 sm:mb-6">
@@ -34,7 +33,7 @@ const EventInsight = memo(({
           onChange={onChangeHandler}
           aria-label="Event description"
           aria-invalid={!!error}
-          aria-describedby={error ? "description-error" : undefined}
+          aria-describedby={error ? 'description-error' : undefined}
         />
         {error && (
           <p
@@ -55,8 +54,8 @@ const EventInsight = memo(({
       </div>
     </div>
   )
-});
+})
 
-EventInsight.displayName = 'EventInsight';
+EventInsight.displayName = 'EventInsight'
 
-export default EventInsight;
+export default EventInsight
