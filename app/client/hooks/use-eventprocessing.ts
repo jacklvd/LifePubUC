@@ -1,6 +1,6 @@
 // hooks/use-eventprocessing.ts
 import { useCallback, useMemo, useEffect } from 'react'
-import useEventStore from '@/store/useEventStore'
+import useEventStore from '@/store/eventStore'
 import { useDebounce } from '@/hooks/use-debouce'
 
 export const useEventProcessing = (userEmail?: string | null) => {
