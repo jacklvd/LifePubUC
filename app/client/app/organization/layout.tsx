@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 import Navbar from '@/components/navbar'
 import { auth } from '@/auth'
 import { redirect } from 'next/navigation'
-import OrganizationSideBar from '@/components/organization-sidebar'
+import OrganizationSideBar from '@/app/organization/components/organization-sidebar'
 
 const Layout = async ({ children }: { children: ReactNode }) => {
   const session = await auth()

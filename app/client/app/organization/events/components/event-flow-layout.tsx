@@ -1,7 +1,7 @@
 // components/event-ui/event-flow-layout.tsx
 'use client'
 import { useEventProgress } from '@/context/event-context'
-import LeftSideBar from '@/components/event-ui/event-leftside-bar'
+import LeftSideBar from './event-leftside-bar'
 import React, { useEffect, useState, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 

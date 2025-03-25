@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { useParams } from 'next/navigation'
 import { Icon } from '@/components/icons'
 import { Button } from '@/components/ui/button'
-import EventPreview from '@/components/event-ui/event-preview'
+import EventPreview from '@/app/organization/events/components/preview-ui/event-preview'
 import { getEventById } from '@/lib/actions/event-actions'
 import { toast } from 'sonner'
 

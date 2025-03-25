@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
-import { Badge } from '../ui/badge'
-import { Button } from '../ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { useState, useEffect } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { useRouter, usePathname } from 'next/navigation'
@@ -41,13 +41,12 @@ const StepIndicator = ({
 }) => {
   return (
     <div
-      className={`w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center mr-2 sm:mr-3 ${
-        isCompleted
+      className={`w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center mr-2 sm:mr-3 ${isCompleted
           ? 'bg-blue-500 text-white-100'
           : currentStep === step
             ? 'border-2 border-blue-500 bg-white-100'
             : 'border border-gray-300 bg-white-100'
-      }`}
+        }`}
     >
       {isCompleted ? (
         <Icon name="Check" className="h-2 w-2 sm:h-3 sm:w-3 text-white-100" />
@@ -212,9 +211,8 @@ const LeftSideBar: React.FC<LeftSideBarProps> = ({
             <div className="mt-2 sm:mt-4">
               <Badge
                 variant="outline"
-                className={`rounded-full px-2 sm:px-3 text-xs sm:text-sm border-gray-300 ${
-                  eventStatus === 'on sale' ? 'bg-green-50 text-green-700' : ''
-                }`}
+                className={`rounded-full px-2 sm:px-3 text-xs sm:text-sm border-gray-300 ${eventStatus === 'on sale' ? 'bg-green-50 text-green-700' : ''
+                  }`}
               >
                 {eventStatus === 'on sale' ? 'On Sale' : 'Draft'}
               </Badge>

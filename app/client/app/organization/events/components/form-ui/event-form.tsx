@@ -5,7 +5,7 @@
 
 import React, { useEffect } from 'react'
 import { useEventHooks } from '@/hooks/use-event'
-import { EventFormUI } from '@/components/event-ui/event-form-ui'
+import { EventFormUI } from '@/app/organization/events/components/form-ui/event-form-ui'
 import { useEventProgress } from '@/context/event-context'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
