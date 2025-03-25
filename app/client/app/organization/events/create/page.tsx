@@ -1,7 +1,7 @@
 // app/organization/events/create/page.tsx
 'use client'
-import EventFlowLayout from '@/components/event-ui/event-flow-layout'
-import EventForm from '@/components/event-form'
+import EventFlowLayout from '@/app/organization/events/components/event-flow-layout'
+import EventForm from '@/app/organization/events/components/form-ui/event-form'
 
 export default function CreateEventPage() {
   return (

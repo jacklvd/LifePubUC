@@ -115,30 +115,99 @@ interface EventData {
 interface Ticket {
   id: string
   name: string
-  sold: number
   capacity: number
-  type: 'Free' | 'Paid' | 'Donation'
+  type: TicketType
   price?: number
   saleStart: Date
   saleEnd: Date
   startTime: string
   endTime: string
-  minPerOrder?: number
-  maxPerOrder?: number
+  sold: number
+  minPerOrder: number
+  maxPerOrder: number
 }
 
 interface TicketFormData {
   name: string
   capacity: number
-  type: 'Free' | 'Paid' | 'Donation'
+  type: TicketType
   price?: number
-  saleStart: Date
-  saleEnd: Date
+  saleStart: Date | undefined
+  saleEnd: Date | undefined
   startTime: string
   endTime: string
-  minPerOrder?: number
-  maxPerOrder?: number
+  minPerOrder: number
+  maxPerOrder: number
   updateTotalCapacity?: boolean
+}
+
+interface TicketFormState {
+  ticketType: TicketType
+  ticketName: string
+  ticketCapacity: number
+  ticketPrice: number | undefined
+  saleStartDate: Date | undefined
+  saleEndDate: Date | undefined
+  startTime: string
+  endTime: string
+  minPerOrder: number
+  maxPerOrder: number
+}
+
+interface TicketState {
+  // UI State
+  activeTab: string
+  activeDialog: DialogType
+  activeCalendar: CalendarType
+
+  // Data State
+  eventId: string | null
+  tickets: Ticket[]
+  totalCapacity: number
+  event: Event | null
+  loading: boolean
+  error: string | null
+  currentTicket: Ticket | null
+  timeOptions: string[]
+  isSubmitting: boolean
+
+  // Form State
+  form: TicketFormState
+
+  // Methods
+  initialize: (
+    eventId: string,
+    userEmail?: string,
+    markStepCompleted: (step: EventStep) => void,
+  ) => Promise<void>
+  setActiveTab: (tab: string) => void
+
+  // Dialog & Calendar Controls
+  openAddDialog: () => void
+  openEditDialog: (ticket: Ticket) => void
+  openDeleteDialog: (ticket: Ticket) => void
+  closeAllDialogs: () => void
+  setCalendar: (calendar: CalendarType) => void
+
+  // Form Updates
+  updateFormField: <K extends keyof TicketFormState>(
+    field: K,
+    value: TicketFormState[K],
+  ) => void
+  resetFormForAdd: () => void
+  setFormForEdit: (ticket: Ticket) => void
+
+  // CRUD Operations
+  addTicket: () => Promise<void>
+  updateTicket: () => Promise<void>
+  deleteTicket: () => Promise<void>
+  updateCapacity: () => Promise<void>
+
+  // Form Validation
+  isEndDateDisabled: (date: Date) => boolean
+
+  // Formatters
+  formatTicketDate: (date: Date) => string
 }
 
 interface LocationSuggestion {
