@@ -121,7 +121,6 @@ export const EventFormUI: React.FC<EventFormUIProps> = ({
   // Optional props
   submitButtonText = 'Save and continue',
 }) => {
-
   return (
     <div className="flex h-screen bg-gray-50">
       {/* Main Content */}
