@@ -44,7 +44,6 @@ Foster a Stronger Community: At its core, Life Pub is all about building connect
   - Event cards with RSVP, ticket count, and map location.
   - Marketplace items listed with filter/search, messaging, and pricing.
   - Profile page with customization, message history, and transaction logs.
-- UI screenshots and prototypes available in `/docs/ui-designs`.
 
 ---
 
@@ -64,7 +63,6 @@ Foster a Stronger Community: At its core, Life Pub is all about building connect
   - *Can I change my major/interests later?* → Yes, via profile settings.
   - *How many items can I list?* → No hard cap; monitored for spam.
   - *Are transactions secure?* → Yes, all payments go through **Stripe**.
-- Full manual with screenshots available in `/docs/user-manual`.
 
 ---
 
@@ -84,7 +82,6 @@ Foster a Stronger Community: At its core, Life Pub is all about building connect
 - [Long Vo](https://docs.google.com/document/d/1mVfOXcnEK43ZyxZ4KTXCkwdsOW5tnd6EnP02TQxXTwk/edit?usp=sharing)
 
 ###  Final Self-Assessments (Spring Semester)
-- Linked individually in `/docs/self-assessments`.
 
 
 ### Effort Matrix
