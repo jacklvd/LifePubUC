@@ -77,6 +77,7 @@ interface TicketDialogsProps {
   // Helper functions
   generateTimeOptions: string[]
   isEndDateDisabled?: (date: Date) => boolean
+  isDateAfterEvent?: (date: Date) => boolean
 }
 
 // Use React.memo to prevent unnecessary re-renders
@@ -144,6 +145,7 @@ const TicketDialogs: React.FC<TicketDialogsProps> = memo(
     // Helper functions
     generateTimeOptions,
     isEndDateDisabled,
+    isDateAfterEvent
   }) => {
     // Get submission state directly from the store
     const isSubmitting = useTicketStore((state) => state.isSubmitting)
@@ -189,6 +191,7 @@ const TicketDialogs: React.FC<TicketDialogsProps> = memo(
               endDateCalendarOpen={endDateCalendarOpen}
               setEndDateCalendarOpen={setEndDateCalendarOpen}
               isEndDateDisabled={isEndDateDisabled}
+              isStartDateDisabled={isDateAfterEvent}
               isSubmitting={isSubmitting}
             />
           </DialogContent>

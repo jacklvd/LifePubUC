@@ -215,6 +215,8 @@ interface TicketState {
 
   // Form Validation
   isEndDateDisabled: (date: Date) => boolean
+  isStartDateDisabled: (date: Date) => boolean
+  isDateAfterEvent: (date: Date) => boolean
 
   // Formatters
   formatTicketDate: (date: Date) => string

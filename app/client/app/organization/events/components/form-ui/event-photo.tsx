@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { memo } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/icons'
 import Image from 'next/image'
-import { CldUploadWidget } from 'next-cloudinary'
-import { UPLOAD_PRESET } from '@/constants'
+// import { UPLOAD_PRESET } from '@/constants'
 
 interface Props {
   media?: string
   mediaType: 'image' | 'video'
-  handleCloudinaryUpload: (result: any) => void
+  localFile?: File | null
+  handleFileSelect: (file: File) => void
   handleRemoveMedia: () => void
   errors: Record<string, string>
 }
@@ -18,15 +18,41 @@ const EventPhotoUpload = memo(
   ({
     media,
     mediaType,
-    handleCloudinaryUpload,
+    localFile,
+    handleFileSelect,
     handleRemoveMedia,
     errors,
   }: Props) => {
+    // State to store the local object URL
+    const [localPreviewUrl, setLocalPreviewUrl] = useState<string | undefined>(undefined);
+
+    // Create or update the local preview URL when the file changes
+    useEffect(() => {
+      if (localFile) {
+        const objectUrl = URL.createObjectURL(localFile);
+        setLocalPreviewUrl(objectUrl);
+
+        // Clean up function to revoke the object URL when component unmounts or file changes
+        return () => {
+          URL.revokeObjectURL(objectUrl);
+        };
+      }
+    }, [localFile]);
+
+    // Use local preview URL if available, otherwise use the remote media URL
+    const previewUrl = localPreviewUrl || media;
+    const previewType = localFile ?
+      (localFile.type.startsWith('video/') ? 'video' : 'image') :
+      mediaType;
+
+    // Determine whether to show preview (either from localFile or remote media)
+    const showPreview = !!(previewUrl);
+
     return (
       <div className="mb-4 sm:mb-6">
         <div className="relative rounded-md overflow-hidden border bg-white-100">
           <div className="h-40 sm:h-64 w-full flex items-center justify-center">
-            {!media ? (
+            {!showPreview ? (
               <div className="flex flex-col items-center p-4 text-center">
                 <div className="mb-2 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-white">
                   <Icon
@@ -34,37 +60,27 @@ const EventPhotoUpload = memo(
                     className="h-5 w-5 sm:h-6 sm:w-6 text-blue-500"
                   />
                 </div>
-                <CldUploadWidget
-                  uploadPreset={UPLOAD_PRESET} // Make sure this matches your Cloudinary preset
-                  options={{
-                    maxFiles: 1,
-                    resourceType: 'auto',
-                    clientAllowedFormats: [
-                      'jpg',
-                      'jpeg',
-                      'png',
-                      'gif',
-                      'webp',
-                      'svg',
-                      'mp4',
-                      'mov',
-                    ],
-                    maxFileSize: 10000000, // 10MB
-                    sources: ['local', 'camera'],
+                <input
+                  type="file"
+                  id="fileInput"
+                  className="hidden"
+                  accept="image/*,video/*"
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      handleFileSelect(e.target.files[0])
+                    }
                   }}
-                  onSuccess={handleCloudinaryUpload}
-                >
-                  {({ open }) => (
-                    <Button
-                      variant="outline"
-                      onClick={() => open()}
-                      className="text-xs sm:text-sm"
-                      aria-label="Upload media"
-                    >
-                      Upload an Image or a Video
-                    </Button>
-                  )}
-                </CldUploadWidget>
+                />
+                <label htmlFor="fileInput">
+                  <Button
+                    variant="outline"
+                    className="text-xs sm:text-sm"
+                    aria-label="Upload media"
+                    onClick={() => document.getElementById('fileInput')?.click()}
+                  >
+                    Upload an Image or a Video
+                  </Button>
+                </label>
                 {errors.media && (
                   <p
                     className="text-red-500 text-xs sm:text-sm mt-1"
@@ -76,17 +92,19 @@ const EventPhotoUpload = memo(
               </div>
             ) : (
               <div className="relative w-full h-full">
-                {mediaType === 'image' ? (
+                {previewType === 'image' ? (
                   <div className="relative w-full h-full">
-                    <Image
-                      src={media}
-                      alt="Event media"
-                      className="object-cover"
-                      fill
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      priority
-                      loading="eager"
-                    />
+                    {previewUrl && (
+                      <Image
+                        src={previewUrl}
+                        alt="Event media"
+                        className="object-cover"
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        priority
+                        loading="eager"
+                      />
+                    )}
                   </div>
                 ) : (
                   <video
@@ -95,7 +113,7 @@ const EventPhotoUpload = memo(
                     preload="metadata"
                     aria-label="Event video"
                   >
-                    <source src={media} type="video/mp4" />
+                    {previewUrl && <source src={previewUrl} type="video/mp4" />}
                     Your browser does not support the video tag.
                   </video>
                 )}
