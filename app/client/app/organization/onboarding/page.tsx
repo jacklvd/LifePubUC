@@ -75,7 +75,7 @@ export default function OrganizationOnboarding() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white shadow-sm">
+      {/* <header className="bg-white shadow-sm">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
           <Link href="/" className="text-2xl font-bold text-primary">
             LifePub
@@ -89,7 +89,7 @@ export default function OrganizationOnboarding() {
             </Link>
           </nav>
         </div>
-      </header>
+      </header> */}
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         {/* Progress indicator */}

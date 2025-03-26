@@ -9,8 +9,8 @@ import { format, addHours } from 'date-fns'
 import { toast } from 'sonner'
 import { eventSchema } from '@/lib/validations'
 import { z } from 'zod'
-import { GOOGLE_MAP_KEY } from '@/constants'
 import { createEvent } from '@/lib/actions/event-actions'
+import { CLOUDINARY_NAME, UPLOAD_PRESET, GOOGLE_MAP_KEY } from '@/constants'
 // import { useRouter } from 'next/navigation'
 
 const libraries = ['places'] as any
@@ -39,6 +39,7 @@ export function useEventHooks({ initialData }: EventHookOptions = {}) {
   const [highlights, setHighlights] = useState<EventData['highlights']>({})
   const [faqs, setFaqs] = useState<EventData['faqs']>([])
   const [agendas, setAgendas] = useState<Agenda[]>([])
+  const [localFile, setLocalFile] = useState<File | null>(null)
 
   // Time state with hours and minutes
   const [date, setDate] = useState<Date | undefined>(new Date())
@@ -202,7 +203,10 @@ export function useEventHooks({ initialData }: EventHookOptions = {}) {
         locationInputRef.current &&
         !locationInputRef.current.contains(event.target as Node)
       ) {
-        setShowSuggestions(false)
+        // Add a small delay to allow other click handlers to process first
+        setTimeout(() => {
+          setShowSuggestions(false)
+        }, 150)
       }
     }
 
@@ -266,17 +270,30 @@ export function useEventHooks({ initialData }: EventHookOptions = {}) {
     [],
   )
 
-  const handleCloudinaryUpload = useCallback((result: CloudinaryResult) => {
-    if (result.event === 'success') {
-      const fileUrl = result.info.secure_url
-      const fileType: 'image' | 'video' =
-        result.info.resource_type === 'video' ? 'video' : 'image'
-      toast.success('File uploaded successfully!')
-      setEventData((prev) => ({ ...prev, media: fileUrl, mediaType: fileType }))
-    }
+  // const handleCloudinaryUpload = useCallback((result: CloudinaryResult) => {
+  //   if (result.event === 'success') {
+  //     const fileUrl = result.info.secure_url
+  //     const fileType: 'image' | 'video' =
+  //       result.info.resource_type === 'video' ? 'video' : 'image'
+  //     toast.success('File uploaded successfully!')
+  //     setEventData((prev) => ({ ...prev, media: fileUrl, mediaType: fileType }))
+  //   }
+  // }, [])
+
+  const handleFileSelect = useCallback((file: File) => {
+    // Store the file for later upload
+    setLocalFile(file)
+
+    // Reset any previous media URL in eventData
+    setEventData((prev) => ({
+      ...prev,
+      media: undefined,
+      mediaType: file.type.startsWith('video/') ? 'video' : 'image',
+    }))
   }, [])
 
   const handleRemoveMedia = useCallback(() => {
+    setLocalFile(null)
     setEventData((prev) => ({ ...prev, media: undefined, mediaType: 'image' }))
   }, [])
 
@@ -331,7 +348,7 @@ export function useEventHooks({ initialData }: EventHookOptions = {}) {
     (suggestion: LocationSuggestion) => {
       setLocationName(suggestion.description)
       setEventData((prev) => ({ ...prev, location: suggestion.description }))
-      setShowSuggestions(false)
+      setShowSuggestions(false) // Explicitly hide suggestions after selection
 
       if (isLoaded && window.google) {
         const geocoder = new google.maps.Geocoder()
@@ -473,6 +490,37 @@ export function useEventHooks({ initialData }: EventHookOptions = {}) {
     setLoading(true)
 
     try {
+      // If there's a local file, upload it to Cloudinary first
+      let mediaUrl = eventData.media
+      let mediaType = eventData.mediaType
+
+      if (localFile) {
+        // Check if UPLOAD_PRESET is defined
+        if (!UPLOAD_PRESET) {
+          throw new Error('Cloudinary upload preset is not configured')
+        }
+
+        const formData = new FormData()
+        formData.append('file', localFile)
+        formData.append('upload_preset', UPLOAD_PRESET)
+
+        const cloudinaryResponse = await fetch(
+          `https://api.cloudinary.com/v1_1/${CLOUDINARY_NAME}/auto/upload`,
+          {
+            method: 'POST',
+            body: formData,
+          },
+        )
+
+        if (!cloudinaryResponse.ok) {
+          throw new Error('Failed to upload media to Cloudinary')
+        }
+
+        const cloudinaryData = await cloudinaryResponse.json()
+        mediaUrl = cloudinaryData.secure_url
+        mediaType = cloudinaryData.resource_type === 'video' ? 'video' : 'image'
+      }
+
       const formattedAgenda = agendas.map((agenda) => ({
         id: agenda.id,
         title: agenda.title || 'Untitled Agenda',
@@ -490,10 +538,17 @@ export function useEventHooks({ initialData }: EventHookOptions = {}) {
 
       const eventPayload = {
         ...eventData,
+        media: mediaUrl,
+        mediaType: mediaType,
         agenda: formattedAgenda,
       }
 
       const result = await createEvent(eventPayload)
+      if (result) {
+        toast.success('Event created successfully!')
+        // Clear the local file after successful submission
+        setLocalFile(null)
+      }
       return result
     } catch (error: any) {
       console.error('Error creating event:', error)
@@ -502,7 +557,7 @@ export function useEventHooks({ initialData }: EventHookOptions = {}) {
     } finally {
       setLoading(false)
     }
-  }, [eventData, agendas, validateEventData])
+  }, [eventData, agendas, validateEventData, localFile])
 
   const handleTitleChange = useCallback((title: string) => {
     setEventData((prev) => ({ ...prev, title }))
@@ -536,6 +591,7 @@ export function useEventHooks({ initialData }: EventHookOptions = {}) {
     agendas,
     locationInputRef,
     isLoaded,
+    localFile,
 
     // Setters
     setDate,
@@ -550,7 +606,8 @@ export function useEventHooks({ initialData }: EventHookOptions = {}) {
 
     // Handlers
     handleChange,
-    handleCloudinaryUpload,
+    // handleCloudinaryUpload,
+    handleFileSelect,
     handleRemoveMedia,
     handleLocationChange,
     handleSelectSuggestion,

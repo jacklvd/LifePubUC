@@ -1,6 +1,6 @@
 'use client'
 
-import AuthForm from '@/components/authform'
+import AuthForm from '@/app/(auth)/components/authform'
 import { signUpSchema } from '@/lib/validations'
 import { signUp } from '@/lib/actions/auth-actions'
 

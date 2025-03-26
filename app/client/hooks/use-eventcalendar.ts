@@ -1,6 +1,6 @@
 // hooks/use-eventcalendar.ts
 import { useRef, useCallback, useMemo, useEffect } from 'react'
-import useEventStore from '@/store/useEventStore'
+import useEventStore from '@/store/eventStore'
 
 // This hook manages calendar state and logic, leveraging our Zustand store
 export const useEventCalendar = (events: Event[] = []) => {

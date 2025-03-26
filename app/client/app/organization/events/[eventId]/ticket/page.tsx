@@ -3,9 +3,10 @@
 'use client'
 
 import React, { use, useEffect, useState } from 'react'
-import EventFlowLayout from '@/components/event-ui/event-flow-layout'
-import TicketUI from '@/components/ticket-ui'
+import EventFlowLayout from '@/app/organization/events/components/event-flow-layout'
+import TicketUI from '@/app/organization/events/[eventId]/ticket/components/ticket-ui'
 import EventFallBack from '@/components/event-fallback'
+import { useTicketStore } from '@/store/ticketStore'
 import { getEventById } from '@/lib/actions/event-actions'
 
 interface TicketPageProps {
@@ -18,6 +19,9 @@ export default function TicketManagementPage({ params }: TicketPageProps) {
   const { eventId } = use(params)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
+
+  // Access store error state
+  const storeError = useTicketStore((state) => state.error)
 
   useEffect(() => {
     // Verify the event exists at the page level
@@ -33,8 +37,12 @@ export default function TicketManagementPage({ params }: TicketPageProps) {
         setLoading(false)
       }
     }
+
     checkEvent()
   }, [eventId])
+
+  // If there's an error in either the page check or the store, show fallback
+  const hasError = error || storeError
 
   if (loading) {
     return (
@@ -44,9 +52,10 @@ export default function TicketManagementPage({ params }: TicketPageProps) {
     )
   }
 
-  if (error) {
-    return <EventFallBack error={error} />
+  if (hasError) {
+    return <EventFallBack error={hasError} />
   }
+
   return (
     <EventFlowLayout>
       <div className="flex h-screen bg-gray-50">
