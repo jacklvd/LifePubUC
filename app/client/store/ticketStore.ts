@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // store/ticketStore.ts
 /**
  * Ticket Store using Zustand
@@ -139,7 +140,7 @@ const initialFormState: TicketFormState = {
  */
 
 // Define selector types to ensure type safety
-type TicketStoreSelector<T> = (state: TicketState) => T
+// type TicketStoreSelector<T> = (state: TicketState) => T
 
 // Create the store with suggested usage patterns for performance
 export const useTicketStore = create<TicketState>()(
@@ -285,6 +286,11 @@ export const useTicketStore = create<TicketState>()(
             // Set end date to the event day
             endDate = new Date(event.date)
 
+            // Ensure the end date isn't after the event date
+            if (endDate > new Date(event.date)) {
+              endDate = new Date(event.date)
+            }
+
             // If event has an end time, use it (minus 1 hour)
             const eventEndTime = event.endTime || '11:59 PM'
             if (eventEndTime) {
@@ -298,10 +304,16 @@ export const useTicketStore = create<TicketState>()(
             endDate.setDate(endDate.getDate() + 30) // Default to 30 days later if no event date
           }
 
+          // Ensure the start date isn't after the event date either
+          let startDate = today
+          if (event?.date && startDate > new Date(event.date)) {
+            startDate = new Date(event.date)
+          }
+
           set((state) => {
             state.form = {
               ...initialFormState,
-              saleStartDate: today,
+              saleStartDate: startDate,
               saleEndDate: endDate,
               endTime,
             }
@@ -312,12 +324,24 @@ export const useTicketStore = create<TicketState>()(
           const { event } = get()
 
           // Start with the ticket's current values
+          let saleStartDate = new Date(ticket.saleStart)
+
+          // If we have event data, ensure the sale start date is valid
+          if (event?.date) {
+            const eventDate = new Date(event.date)
+
+            // Ensure sale start date is not after event date
+            if (saleStartDate > eventDate) {
+              saleStartDate = eventDate
+            }
+          }
+
           const formData = {
             ticketType: ticket.type,
             ticketName: ticket.name,
             ticketCapacity: ticket.capacity,
             ticketPrice: ticket.price,
-            saleStartDate: new Date(ticket.saleStart),
+            saleStartDate: saleStartDate,
             saleEndDate: new Date(ticket.saleEnd),
             startTime: ticket.startTime,
             endTime: ticket.endTime,
@@ -681,6 +705,57 @@ export const useTicketStore = create<TicketState>()(
           if (!event?.date) return false
 
           const eventDate = new Date(event.date)
+          return date > eventDate
+        },
+
+        isStartDateDisabled: (date) => {
+          const { event, form } = get()
+
+          // First check: Make sure the date isn't after the event date
+          if (event?.date) {
+            const eventDate = new Date(event.date)
+            if (date > eventDate) {
+              return true // Disable date if it's after the event date
+            }
+          }
+
+          // Second check: Make sure the date isn't after or equal to the day before sale end date (if set)
+          if (form.saleEndDate) {
+            // Create a new date that's one day before the end date
+            const minimumGapDate = new Date(form.saleEndDate)
+            minimumGapDate.setDate(minimumGapDate.getDate() - 1)
+
+            // Compare dates without considering time
+            const dateWithoutTime = new Date(
+              date.getFullYear(),
+              date.getMonth(),
+              date.getDate(),
+            )
+            const minimumGapWithoutTime = new Date(
+              minimumGapDate.getFullYear(),
+              minimumGapDate.getMonth(),
+              minimumGapDate.getDate(),
+            )
+
+            // Disable the date if it's on or after the calculated minimum gap date
+            if (dateWithoutTime >= minimumGapWithoutTime) {
+              return true
+            }
+          }
+
+          // If we passed all checks, this date is selectable
+          return false
+        },
+
+        // Validate date against event date
+        isDateAfterEvent: (date) => {
+          const { event } = get()
+          if (!event?.date) return false
+
+          // Create a new date object from the event date
+          const eventDate = new Date(event.date)
+
+          // Compare the dates
           return date > eventDate
         },
 

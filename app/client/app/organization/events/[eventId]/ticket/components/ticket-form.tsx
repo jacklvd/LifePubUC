@@ -1,4 +1,3 @@
-// components/ui/ticket-ui/ticket-form.tsx
 import React, { memo } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -44,7 +43,8 @@ interface TicketFormProps {
   endDateCalendarOpen: boolean
   setEndDateCalendarOpen: (open: boolean) => void
   isEndDateDisabled?: (date: Date) => boolean
-  isSubmitting?: boolean // New prop for loading state
+  isStartDateDisabled?: (date: Date) => boolean // New prop for start date validation
+  isSubmitting?: boolean
 }
 
 const TicketForm: React.FC<TicketFormProps> = memo(
@@ -59,8 +59,8 @@ const TicketForm: React.FC<TicketFormProps> = memo(
     endTime,
     minPerOrder,
     maxPerOrder,
-    eventDate,
-    maxSaleEndDate,
+    // eventDate,
+    // maxSaleEndDate,
     setTicketType,
     setTicketName,
     setTicketCapacity,
@@ -80,7 +80,8 @@ const TicketForm: React.FC<TicketFormProps> = memo(
     endDateCalendarOpen,
     setEndDateCalendarOpen,
     isEndDateDisabled,
-    isSubmitting = false, // Default to false
+    isStartDateDisabled, // New prop included in the function parameters
+    isSubmitting = false,
   }) => {
     return (
       <>
@@ -161,8 +162,15 @@ const TicketForm: React.FC<TicketFormProps> = memo(
                 setDate={setSaleStartDate}
                 isOpen={startDateCalendarOpen}
                 setIsOpen={setStartDateCalendarOpen}
+                disabledDates={isStartDateDisabled} // Pass the new validation function
                 disabled={isSubmitting}
               />
+              {/* {eventDate && maxSaleEndDate && (
+                <p className="text-xs text-gray-500 mt-1">
+                  Sales must start before sale end date (
+                  {maxSaleEndDate.toLocaleDateString()})
+                </p>
+              )} */}
             </div>
 
             <div>
@@ -194,12 +202,12 @@ const TicketForm: React.FC<TicketFormProps> = memo(
                 disabledDates={isEndDateDisabled}
                 disabled={isSubmitting}
               />
-              {eventDate && maxSaleEndDate && (
+              {/* {eventDate && maxSaleEndDate && (
                 <p className="text-xs text-gray-500 mt-1">
-                  Sales must end by the event date (
+                  Sales must end by/before the event date (
                   {maxSaleEndDate.toLocaleDateString()})
                 </p>
-              )}
+              )} */}
             </div>
 
             <div>

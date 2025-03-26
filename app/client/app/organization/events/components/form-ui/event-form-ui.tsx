@@ -35,6 +35,7 @@ interface EventFormUIProps {
   agendas: Agenda[]
   locationInputRef: React.RefObject<HTMLInputElement>
   isLoaded: boolean
+  localFile: File | null
 
   // Handlers and setters
   setDate: (date: Date | undefined) => void
@@ -49,7 +50,7 @@ interface EventFormUIProps {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     field: keyof EventData,
   ) => void
-  handleCloudinaryUpload: (result: CloudinaryResult) => void
+  // handleCloudinaryUpload: (result: CloudinaryResult) => void
   handleRemoveMedia: () => void
   handleLocationChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   handleSelectSuggestion: (suggestion: LocationSuggestion) => void
@@ -61,6 +62,7 @@ interface EventFormUIProps {
   handleTitleChange: (title: string) => void
   handleSummaryChange: (summary: string) => void
   handleSubmit: () => Promise<void>
+  handleFileSelect: (file: File) => void
   setAgendas: React.Dispatch<React.SetStateAction<Agenda[]>>
 
   // Optional props
@@ -91,6 +93,7 @@ export const EventFormUI: React.FC<EventFormUIProps> = ({
   agendas,
   locationInputRef,
   isLoaded,
+  localFile,
 
   // Setters
   setDate,
@@ -105,7 +108,8 @@ export const EventFormUI: React.FC<EventFormUIProps> = ({
 
   // Handlers
   handleChange,
-  handleCloudinaryUpload,
+  // handleCloudinaryUpload,
+  handleFileSelect,
   handleRemoveMedia,
   handleLocationChange,
   handleSelectSuggestion,
@@ -130,7 +134,8 @@ export const EventFormUI: React.FC<EventFormUIProps> = ({
           <EventPhotoUpload
             media={eventData.media}
             mediaType={eventData.mediaType}
-            handleCloudinaryUpload={handleCloudinaryUpload}
+            localFile={localFile}
+            handleFileSelect={handleFileSelect}
             handleRemoveMedia={handleRemoveMedia}
             errors={errors}
           />
