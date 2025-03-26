@@ -3,9 +3,13 @@ import type { IconNames } from '@/components/icons'
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL
 export const GOOGLE_MAP_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAP_KEY
 export const UPLOAD_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
+export const CLOUDINARY_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
 export const STORAGE_KEY = process.env.NEXT_PUBLIC_STORAGE_KEY
 
 export type ViewType = 'month' | 'week'
+export type TicketType = 'Free' | 'Paid' | 'Donation'
+export type DialogType = 'add' | 'edit' | 'delete' | 'capacity' | null
+export type CalendarType = 'start' | 'end' | null
 
 export const FIELD_NAMES = {
   fullName: 'Full name',
@@ -82,24 +86,24 @@ export const eventSideBarIcons: {
     route: '/organization/events',
     title: 'Events',
   },
-  {
-    name: 'Newspaper',
-    className: 'text-grey-500 hover:bg-grey-100',
-    route: '/organization/orders',
-    title: 'Orders',
-  },
+  // {
+  //   name: 'Newspaper',
+  //   className: 'text-grey-500 hover:bg-grey-100',
+  //   route: '/organization/orders',
+  //   title: 'Orders',
+  // },
   {
     name: 'ChartColumnDecreasing',
     className: 'text-grey-500 hover:bg-grey-100',
     route: '/organization/reports',
     title: 'Reports',
   },
-  {
-    name: 'Settings',
-    className: 'text-grey-500 hover:bg-grey-100',
-    route: '/organization/settings',
-    title: 'Settings',
-  },
+  // {
+  //   name: 'Settings',
+  //   className: 'text-grey-500 hover:bg-grey-100',
+  //   route: '/organization/settings',
+  //   title: 'Settings',
+  // },
   {
     name: 'FilePlus2',
     className: 'text-grey-500 hover:bg-grey-100',

@@ -1,12 +1,9 @@
 import { ReactNode } from 'react'
 import Navbar from '@/components/navbar'
 import { auth } from '@/auth'
-import { redirect,   } from 'next/navigation'
-import { headers } from 'next/headers';
+import { redirect } from 'next/navigation'
+import OrganizationSideBar from '@/app/organization/components/organization-sidebar'
 
-
-import OrganizationSideBar from '@/components/organization-sidebar'
-import { checkStripeOnboardingStatus } from '@/lib/actions/stripe-actions'
 const Layout = async ({ children }: { children: ReactNode }) => {
   const session = await auth()
   // const onboardingData = await checkStripeOnboardingStatus();
@@ -29,7 +26,7 @@ const Layout = async ({ children }: { children: ReactNode }) => {
     <div className="flex-col w-full min-h-full">
       <Navbar />
       <main>
-        <div className="flex h-screen bg-white">
+        <div className="flex h-screen bg-white-100">
           <OrganizationSideBar />
           {children}
         </div>

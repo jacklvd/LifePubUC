@@ -3,12 +3,12 @@
 'use client'
 
 import React, { useEffect, useState, use } from 'react'
-import EventForm from '@/components/event-form'
+import EventForm from '@/app/organization/events/components/form-ui/event-form'
 import { getEventById, updateEvent } from '@/lib/actions/event-actions'
 import { toast } from 'sonner'
 import { Progress } from '@/components/ui/progress' // Assuming you have a loading component
 import { useEventProgress } from '@/context/event-context'
-import EventFlowLayout from '@/components/event-ui/event-flow-layout'
+import EventFlowLayout from '@/app/organization/events/components/event-flow-layout'
 import EventFallBack from '@/components/event-fallback'
 
 interface EditEventPageProps {

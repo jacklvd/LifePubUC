@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect } from 'react'
+import React, { useEffect, Suspense } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -10,16 +10,17 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useRouter } from 'next/navigation'
 import { Icon } from '@/components/icons'
-import EventCalendar from '@/components/event-ui/event-calendar'
-import EventList from '@/components/event-ui/event-list'
+import EventCalendar from '@/app/organization/events/components/event-calendar'
+import EventList from '@/app/organization/events/components/event-list'
 import { toast } from 'sonner'
 import {
   getUserEvents,
   deleteEvent as apiDeleteEvent,
 } from '@/lib/actions/event-actions'
 import { useSession } from 'next-auth/react'
-import useEventStore from '@/store/useEventStore'
+import useEventStore from '@/store/eventStore'
 import useEventProcessing from '@/hooks/use-eventprocessing'
+import Skeleton from 'react-loading-skeleton'
 
 const EventsPage = () => {
   // Get session
@@ -80,7 +81,7 @@ const EventsPage = () => {
   }
 
   return (
-    <div className="container mx-auto max-w-6xl py-6 px-4 sm:py-8">
+    <div className="container mx-auto max-w-6xl py-6 px-4 sm:py-8 mb-10">
       {/* Header */}
       <h1 className="text-3xl sm:text-4xl font-bold text-purple-950 mb-4 sm:mb-6">
         Events
@@ -183,9 +184,13 @@ const EventsPage = () => {
         </div>
       ) : /* Calendar or List View */
       viewMode === 'calendar' ? (
-        <EventCalendar events={filteredEvents} />
+        <Suspense fallback={<Skeleton count={5} height={100} />}>
+          <EventCalendar events={filteredEvents} />
+        </Suspense>
       ) : (
-        <EventList events={filteredEvents} onDelete={handleDeleteEvent} />
+        <Suspense fallback={<Skeleton count={5} height={100} />}>
+          <EventList events={filteredEvents} onDelete={handleDeleteEvent} />
+        </Suspense>
       )}
     </div>
   )
