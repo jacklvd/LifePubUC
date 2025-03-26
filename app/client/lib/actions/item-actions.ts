@@ -134,3 +134,55 @@ export async function deleteItem({ itemId }: { itemId: string }) {
     throw error
   }
 }
+
+export async function getCategories() {
+  const session = await auth()
+
+  if (!session?.user?.id || '') {
+    throw new Error('Authentication required')
+  }
+  
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/items/categories`,
+      {
+        method: 'GET',
+      },
+    )
+
+    if (!response.ok) {
+      throw new Error('Failed to get categories')
+    }
+
+    return await response.json()
+  } catch (error) {
+    console.error('Error creating Item account:', error)
+    throw error
+  }
+}
+
+export async function getConditions() {
+  const session = await auth()
+
+  if (!session?.user?.id || '') {
+    throw new Error('Authentication required')
+  }
+  
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/items/conditions`,
+      {
+        method: 'GET',
+      },
+    )
+
+    if (!response.ok) {
+      throw new Error('Failed to get conditions')
+    }
+
+    return await response.json()
+  } catch (error) {
+    console.error('Error creating Item account:', error)
+    throw error
+  }
+}
