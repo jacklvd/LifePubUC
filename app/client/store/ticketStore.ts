@@ -275,67 +275,67 @@ export const useTicketStore = create<TicketState>()(
             state.form[field] = value
           }),
 
-          resetFormForAdd: () => {
-            const { event } = get()
-            const today = new Date()
-            let endDate = new Date()
-            let endTime = '05:00 PM' // Default end time
-          
-            // Handle event date and time if available
-            if (event?.date) {
-              // Set end date to the event day
+        resetFormForAdd: () => {
+          const { event } = get()
+          const today = new Date()
+          let endDate = new Date()
+          let endTime = '05:00 PM' // Default end time
+
+          // Handle event date and time if available
+          if (event?.date) {
+            // Set end date to the event day
+            endDate = new Date(event.date)
+
+            // Ensure the end date isn't after the event date
+            if (endDate > new Date(event.date)) {
               endDate = new Date(event.date)
-          
-              // Ensure the end date isn't after the event date
-              if (endDate > new Date(event.date)) {
-                endDate = new Date(event.date)
-              }
-          
-              // If event has an end time, use it (minus 1 hour)
-              const eventEndTime = event.endTime || '11:59 PM'
-              if (eventEndTime) {
-                const { hour, minute } = getTimeComponents(eventEndTime)
-          
-                // Set end time to 1 hour before event end time
-                const adjustedHour = hour > 0 ? hour - 1 : 23
-                endTime = formatTime(adjustedHour, minute)
-              }
-            } else {
-              endDate.setDate(endDate.getDate() + 30) // Default to 30 days later if no event date
             }
-          
-            // Ensure the start date isn't after the event date either
-            let startDate = today
-            if (event?.date && startDate > new Date(event.date)) {
-              startDate = new Date(event.date)
+
+            // If event has an end time, use it (minus 1 hour)
+            const eventEndTime = event.endTime || '11:59 PM'
+            if (eventEndTime) {
+              const { hour, minute } = getTimeComponents(eventEndTime)
+
+              // Set end time to 1 hour before event end time
+              const adjustedHour = hour > 0 ? hour - 1 : 23
+              endTime = formatTime(adjustedHour, minute)
             }
-          
-            set((state) => {
-              state.form = {
-                ...initialFormState,
-                saleStartDate: startDate,
-                saleEndDate: endDate,
-                endTime,
-              }
-            })
-          },
+          } else {
+            endDate.setDate(endDate.getDate() + 30) // Default to 30 days later if no event date
+          }
+
+          // Ensure the start date isn't after the event date either
+          let startDate = today
+          if (event?.date && startDate > new Date(event.date)) {
+            startDate = new Date(event.date)
+          }
+
+          set((state) => {
+            state.form = {
+              ...initialFormState,
+              saleStartDate: startDate,
+              saleEndDate: endDate,
+              endTime,
+            }
+          })
+        },
 
         setFormForEdit: (ticket) => {
           const { event } = get()
 
           // Start with the ticket's current values
           let saleStartDate = new Date(ticket.saleStart)
-          
+
           // If we have event data, ensure the sale start date is valid
           if (event?.date) {
             const eventDate = new Date(event.date)
-        
+
             // Ensure sale start date is not after event date
             if (saleStartDate > eventDate) {
               saleStartDate = eventDate
             }
           }
-        
+
           const formData = {
             ticketType: ticket.type,
             ticketName: ticket.name,
@@ -710,7 +710,7 @@ export const useTicketStore = create<TicketState>()(
 
         isStartDateDisabled: (date) => {
           const { event, form } = get()
-          
+
           // First check: Make sure the date isn't after the event date
           if (event?.date) {
             const eventDate = new Date(event.date)
@@ -718,27 +718,31 @@ export const useTicketStore = create<TicketState>()(
               return true // Disable date if it's after the event date
             }
           }
-          
+
           // Second check: Make sure the date isn't after or equal to the day before sale end date (if set)
           if (form.saleEndDate) {
             // Create a new date that's one day before the end date
             const minimumGapDate = new Date(form.saleEndDate)
             minimumGapDate.setDate(minimumGapDate.getDate() - 1)
-            
+
             // Compare dates without considering time
-            const dateWithoutTime = new Date(date.getFullYear(), date.getMonth(), date.getDate())
-            const minimumGapWithoutTime = new Date(
-              minimumGapDate.getFullYear(), 
-              minimumGapDate.getMonth(), 
-              minimumGapDate.getDate()
+            const dateWithoutTime = new Date(
+              date.getFullYear(),
+              date.getMonth(),
+              date.getDate(),
             )
-            
+            const minimumGapWithoutTime = new Date(
+              minimumGapDate.getFullYear(),
+              minimumGapDate.getMonth(),
+              minimumGapDate.getDate(),
+            )
+
             // Disable the date if it's on or after the calculated minimum gap date
             if (dateWithoutTime >= minimumGapWithoutTime) {
               return true
             }
           }
-          
+
           // If we passed all checks, this date is selectable
           return false
         },
@@ -750,7 +754,7 @@ export const useTicketStore = create<TicketState>()(
 
           // Create a new date object from the event date
           const eventDate = new Date(event.date)
-          
+
           // Compare the dates
           return date > eventDate
         },

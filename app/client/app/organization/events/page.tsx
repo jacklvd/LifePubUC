@@ -112,10 +112,11 @@ const EventsPage = () => {
             <Button
               variant={viewMode === 'list' ? 'default' : 'outline'}
               onClick={() => setViewMode('list')}
-              className={`rounded-l-md rounded-r-none px-3 sm:px-4 ${viewMode === 'list'
+              className={`rounded-l-md rounded-r-none px-3 sm:px-4 ${
+                viewMode === 'list'
                   ? 'bg-blue-600 hover:bg-blue-700'
                   : 'border-r-0'
-                }`}
+              }`}
             >
               <Icon name="LayoutList" className="h-4 w-4 sm:mr-2" />
               <span className="hidden sm:inline">List</span>
@@ -123,8 +124,9 @@ const EventsPage = () => {
             <Button
               variant={viewMode === 'calendar' ? 'default' : 'outline'}
               onClick={() => setViewMode('calendar')}
-              className={`rounded-r-md rounded-l-none px-3 sm:px-4 ${viewMode === 'calendar' ? 'bg-blue-600 hover:bg-blue-700' : ''
-                }`}
+              className={`rounded-r-md rounded-l-none px-3 sm:px-4 ${
+                viewMode === 'calendar' ? 'bg-blue-600 hover:bg-blue-700' : ''
+              }`}
             >
               <Icon name="Calendar" className="h-4 w-4 sm:mr-2" />
               <span className="hidden sm:inline">Calendar</span>
@@ -181,15 +183,15 @@ const EventsPage = () => {
           <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
         </div>
       ) : /* Calendar or List View */
-        viewMode === 'calendar' ? (
-          <Suspense fallback={<Skeleton count={5} height={100} />}>
-            <EventCalendar events={filteredEvents} />
-          </Suspense>
-        ) : (
-          <Suspense fallback={<Skeleton count={5} height={100} />}>
-            <EventList events={filteredEvents} onDelete={handleDeleteEvent} />
-          </Suspense>
-        )}
+      viewMode === 'calendar' ? (
+        <Suspense fallback={<Skeleton count={5} height={100} />}>
+          <EventCalendar events={filteredEvents} />
+        </Suspense>
+      ) : (
+        <Suspense fallback={<Skeleton count={5} height={100} />}>
+          <EventList events={filteredEvents} onDelete={handleDeleteEvent} />
+        </Suspense>
+      )}
     </div>
   )
 }

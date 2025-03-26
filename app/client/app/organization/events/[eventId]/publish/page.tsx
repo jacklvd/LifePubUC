@@ -92,7 +92,16 @@ export default function PublishPage({ params }: PublishPageProps) {
     } finally {
       setLoading(false)
     }
-  }, [eventId, email, setEventId, setEventTitle, setEventDate, setActiveStep, completedSteps, markStepCompleted])
+  }, [
+    eventId,
+    email,
+    setEventId,
+    setEventTitle,
+    setEventDate,
+    setActiveStep,
+    completedSteps,
+    markStepCompleted,
+  ])
 
   // Use useRef to track if the component is mounted
   const isMounted = useRef(false)

@@ -62,7 +62,7 @@ interface EventFormUIProps {
   handleTitleChange: (title: string) => void
   handleSummaryChange: (summary: string) => void
   handleSubmit: () => Promise<void>
-  handleFileSelect: (file: File) => void;
+  handleFileSelect: (file: File) => void
   setAgendas: React.Dispatch<React.SetStateAction<Agenda[]>>
 
   // Optional props
