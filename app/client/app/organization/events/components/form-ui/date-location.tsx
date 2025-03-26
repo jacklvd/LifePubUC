@@ -92,7 +92,7 @@ const DateLocationSection: React.FC<Props> = ({
       <div className="relative rounded-md overflow-hidden border bg-white-100 p-4 sm:p-6">
         <div className="flex flex-col md:flex-row md:justify-between md:gap-6">
           {/* Date and Time Section - Full width on mobile, half on desktop */}
-          <div className="md:w-1/2 mb-6 md:mb-0 pr-4">
+          <div className="md:w-1/2 mb-6 md:mb-0">
             <EventDateTimePicker
               date={date}
               setDate={setDate}
@@ -115,7 +115,7 @@ const DateLocationSection: React.FC<Props> = ({
           </div>
 
           {/* Location Section - Full width on mobile, half on desktop */}
-          <div className="w-full md:w-1/2">
+          <div className="w-full md:w-1/2" style={{ zIndex: 50 }}>
             <EventLocationPicker
               locationName={locationName}
               handleLocationChange={handleLocationChange}
@@ -136,6 +136,7 @@ const DateLocationSection: React.FC<Props> = ({
           <div
             className="rounded-md overflow-hidden bg-gray-100 h-48 sm:h-64 mt-4"
             id="location-map"
+            style={{ zIndex: 10 }}
           >
             {isLoaded ? (
               <GoogleMap
@@ -169,6 +170,7 @@ const DateLocationSection: React.FC<Props> = ({
           variant="ghost"
           className="absolute top-2 right-2 sm:top-4 sm:right-4 h-8 w-8 p-0 rounded-full border"
           aria-label="Add more details"
+          style={{ zIndex: 20 }}
         >
           <Icon name="Plus" className="h-4 w-4" />
         </Button>

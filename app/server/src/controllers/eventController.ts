@@ -491,3 +491,107 @@ export const publishEvent = async (req: any, res: any) => {
     })
   }
 }
+
+export const getAllEvents = async (req: any, res: any) => {
+  try {
+    // Extract query parameters
+    const {
+      category,
+      status = 'on sale', // Default to published events
+      limit = 20,
+      sort = 'newest',
+      date,
+      location,
+      search,
+    } = req.query
+
+    // Build query object
+    let query: any = {}
+
+    // Only return published events by default
+    query.status = status
+
+    // Add category filter if provided
+    if (category) {
+      query.category = category
+    }
+
+    // Add location filter if provided
+    if (location) {
+      query.location = { $regex: location, $options: 'i' }
+    }
+
+    // Add date filtering
+    if (date) {
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
+
+      switch (date) {
+        case 'today':
+          const tomorrow = new Date(today)
+          tomorrow.setDate(tomorrow.getDate() + 1)
+          query.date = { $gte: today, $lt: tomorrow }
+          break
+        case 'weekend':
+          // Calculate weekend dates
+          let daysUntilWeekend = 5 - today.getDay() // Friday is 5
+          if (daysUntilWeekend < 0) daysUntilWeekend += 7
+
+          const friday = new Date(today)
+          friday.setDate(today.getDate() + daysUntilWeekend)
+
+          const sunday = new Date(friday)
+          sunday.setDate(friday.getDate() + 2)
+
+          query.date = { $gte: friday, $lt: sunday }
+          break
+        case 'upcoming':
+          query.date = { $gte: today }
+          break
+      }
+    }
+
+    // Add search functionality
+    if (search) {
+      // Search across multiple fields
+      query.$or = [
+        { title: { $regex: search, $options: 'i' } },
+        { summary: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } },
+        { location: { $regex: search, $options: 'i' } },
+      ]
+    }
+
+    // Set sort order based on parameter
+    let sortOrder: any = { date: -1 } // Default to newest first
+    if (sort === 'oldest') {
+      sortOrder = { date: 1 }
+    } else if (sort === 'price-low') {
+      sortOrder = { 'tickets.price': 1 }
+    } else if (sort === 'price-high') {
+      sortOrder = { 'tickets.price': -1 }
+    }
+
+    // Convert limit to number
+    const limitNum = parseInt(limit)
+
+    // Execute query with pagination
+    const events = await Event.find(query).sort(sortOrder).limit(limitNum)
+
+    // Count total matches (without limit)
+    const totalCount = await Event.countDocuments(query)
+
+    return res.status(200).json({
+      events,
+      count: events.length,
+      totalCount,
+      hasMore: totalCount > events.length,
+    })
+  } catch (error: any) {
+    console.error('❌ Error fetching events:', error)
+    return res.status(500).json({
+      message: 'Error fetching events',
+      error: error.message,
+    })
+  }
+}

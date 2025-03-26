@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect } from 'react'
+import React, { useEffect, Suspense } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -20,6 +20,7 @@ import {
 import { useSession } from 'next-auth/react'
 import useEventStore from '@/store/eventStore'
 import useEventProcessing from '@/hooks/use-eventprocessing'
+import Skeleton from 'react-loading-skeleton'
 
 const EventsPage = () => {
   // Get session
@@ -183,9 +184,13 @@ const EventsPage = () => {
         </div>
       ) : /* Calendar or List View */
       viewMode === 'calendar' ? (
-        <EventCalendar events={filteredEvents} />
+        <Suspense fallback={<Skeleton count={5} height={100} />}>
+          <EventCalendar events={filteredEvents} />
+        </Suspense>
       ) : (
-        <EventList events={filteredEvents} onDelete={handleDeleteEvent} />
+        <Suspense fallback={<Skeleton count={5} height={100} />}>
+          <EventList events={filteredEvents} onDelete={handleDeleteEvent} />
+        </Suspense>
       )}
     </div>
   )

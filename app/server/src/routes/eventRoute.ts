@@ -9,7 +9,8 @@ import {
   deleteEventTicket,
   getEventTickets,
   getUserEvents,
-  deleteEvent, // Add the delete function import
+  deleteEvent,
+  getAllEvents,
 } from '../controllers/eventController'
 
 const router = express.Router()
@@ -21,6 +22,7 @@ router.get('/get-event/:eventId', getEventById)
 router.post('/:eventId/publish', publishEvent)
 router.get('/user-events', getUserEvents)
 router.delete('/:eventId/delete', deleteEvent)
+router.get('/all-events', getAllEvents)
 
 // Ticket routes
 router.post('/:eventId/tickets', createEventTicket)

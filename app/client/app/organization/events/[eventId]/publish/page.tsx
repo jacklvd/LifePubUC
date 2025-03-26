@@ -94,12 +94,13 @@ export default function PublishPage({ params }: PublishPageProps) {
     }
   }, [
     eventId,
+    email,
     setEventId,
     setEventTitle,
     setEventDate,
     setActiveStep,
-    markStepCompleted,
     completedSteps,
+    markStepCompleted,
   ])
 
   // Use useRef to track if the component is mounted
@@ -173,6 +174,9 @@ export default function PublishPage({ params }: PublishPageProps) {
         setPublishing(false)
         return
       }
+
+      // add delay time
+      await new Promise((resolve) => setTimeout(resolve, 1000))
 
       // Update event status to published
       await publishEvent(eventId, email)

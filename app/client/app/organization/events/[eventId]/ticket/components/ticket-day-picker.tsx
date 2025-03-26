@@ -49,7 +49,7 @@ const TicketDatePicker = memo(
             </Button>
           </PopoverTrigger>
           <PopoverContent
-            className="w-auto p-0 z-50 pointer-events-auto"
+            className="w-auto p-0 z-50"
             align="start"
             sideOffset={5}
           >
@@ -59,7 +59,6 @@ const TicketDatePicker = memo(
               onSelect={(newDate) => {
                 if (newDate) {
                   setDate(newDate)
-                  // Automatically close the calendar after selection
                   setTimeout(() => setIsOpen(false), 100)
                 }
               }}

@@ -1,4 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+interface GetAllEventsParams {
+  category?: string
+  status?: string
+  limit?: number
+  sort?: 'newest' | 'oldest' | 'price-low' | 'price-high'
+  date?: 'today' | 'weekend' | 'upcoming'
+  location?: string
+  search?: string
+  isOnline?: boolean
+}
 
 interface EventState {
   // UI State
@@ -205,6 +215,8 @@ interface TicketState {
 
   // Form Validation
   isEndDateDisabled: (date: Date) => boolean
+  isStartDateDisabled: (date: Date) => boolean
+  isDateAfterEvent: (date: Date) => boolean
 
   // Formatters
   formatTicketDate: (date: Date) => string

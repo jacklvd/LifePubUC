@@ -1,5 +1,5 @@
 // components/ticket-ui/ticket-dialogs.tsx
-import React, { memo } from 'react'
+import React, { memo, useMemo } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -77,6 +77,7 @@ interface TicketDialogsProps {
   // Helper functions
   generateTimeOptions: string[]
   isEndDateDisabled?: (date: Date) => boolean
+  isDateAfterEvent?: (date: Date) => boolean
 }
 
 // Use React.memo to prevent unnecessary re-renders
@@ -144,13 +145,12 @@ const TicketDialogs: React.FC<TicketDialogsProps> = memo(
     // Helper functions
     generateTimeOptions,
     isEndDateDisabled,
+    isDateAfterEvent,
   }) => {
     // Get submission state directly from the store
     const isSubmitting = useTicketStore((state) => state.isSubmitting)
-
-    return (
-      <>
-        {/* Add Ticket Dialog */}
+    const renderAddDialog = useMemo(
+      () => (
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogContent className="sm:max-w-md md:max-w-lg bg-white-100">
             <DialogHeader>
@@ -191,12 +191,25 @@ const TicketDialogs: React.FC<TicketDialogsProps> = memo(
               endDateCalendarOpen={endDateCalendarOpen}
               setEndDateCalendarOpen={setEndDateCalendarOpen}
               isEndDateDisabled={isEndDateDisabled}
+              isStartDateDisabled={isDateAfterEvent}
               isSubmitting={isSubmitting}
             />
           </DialogContent>
         </Dialog>
+      ),
+      [
+        isAddDialogOpen,
+        setIsAddDialogOpen,
+        ticketType,
+        ticketName,
+        ticketCapacity /* other form props */,
+        ,
+        isSubmitting,
+      ],
+    )
 
-        {/* Edit Ticket Dialog */}
+    const reanderEditDialog = useMemo(
+      () => (
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
           <DialogContent className="sm:max-w-md md:max-w-lg bg-white-100">
             <DialogHeader>
@@ -237,11 +250,45 @@ const TicketDialogs: React.FC<TicketDialogsProps> = memo(
               endDateCalendarOpen={endDateCalendarOpen}
               setEndDateCalendarOpen={setEndDateCalendarOpen}
               isEndDateDisabled={isEndDateDisabled}
-              isSubmitting={isSubmitting}
             />
           </DialogContent>
         </Dialog>
+      ),
+      [
+        isEditDialogOpen,
+        setIsEditDialogOpen,
+        ticketType,
+        ticketName,
+        ticketCapacity /* other form props */,
+        ,
+        isSubmitting,
+      ],
+    )
 
+    return (
+      <>
+        {/* Add Ticket Dialog */}
+        {/* <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+          <DialogContent className="sm:max-w-md md:max-w-lg bg-white-100">
+            <DialogHeader>
+              <DialogTitle>Add Ticket</DialogTitle>
+	@@ -194,10 +295,10 @@ const TicketDialogs: React.FC<TicketDialogsProps> = memo(
+              isSubmitting={isSubmitting}
+            />
+          </DialogContent>
+        </Dialog> */}
+        {renderAddDialog}
+        {/* Edit Ticket Dialog */}
+        {/* <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+          <DialogContent className="sm:max-w-md md:max-w-lg bg-white-100">
+            <DialogHeader>
+              <DialogTitle>Edit Ticket</DialogTitle>
+	@@ -240,7 +341,8 @@ const TicketDialogs: React.FC<TicketDialogsProps> = memo(
+              isSubmitting={isSubmitting}
+            />
+          </DialogContent>
+        </Dialog> */}
+        {reanderEditDialog}
         {/* Delete Ticket Dialog */}
         <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
           <DialogContent className="sm:max-w-md bg-white-100">
