@@ -2,7 +2,6 @@
 
 import React from 'react'
 import ItemCard from './item-card'
-import { useCartStore } from '@/store/cart'
 
 interface ItemGridProps {
   items: Item[]

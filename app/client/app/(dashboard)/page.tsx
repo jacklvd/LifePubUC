@@ -56,7 +56,7 @@ const LandingPage = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
+    <div className="max-w-7xl mx-auto px-4 py-8">
       {/* Carousel */}
       <div className="relative w-full rounded-lg overflow-hidden bg-sky-300 mb-10">
         <div className="relative" style={{ height: '280px' }}>

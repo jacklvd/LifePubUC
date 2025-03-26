@@ -61,7 +61,7 @@ const createStripeAccount = async (req: Request, res: Response) => {
     return
   }
   const user = await User.findById(userId)
-  console.log(user)
+
   if (!user) {
     res.status(400).json({ message: 'User does not exist' })
     return
@@ -142,7 +142,8 @@ const createStripeCheckoutSession = async (
 
     for (const [sellerId, items] of Object.entries(itemsBySeller)) {
       const seller = await User.findById(sellerId)
-
+      
+     
       if (!seller || !seller.stripeConnectAccountId) {
         res.status(400).json({
           message: `Seller ${sellerId} is not properly set up to receive payments`,
@@ -151,7 +152,7 @@ const createStripeCheckoutSession = async (
       }
 
       for (const item of items) {
-        lineItems.push({
+        lineItems.push({         
           price_data: {
             currency: 'usd',
             product_data: {
@@ -185,6 +186,20 @@ const createStripeCheckoutSession = async (
         sellerData: JSON.stringify(Object.keys(itemsBySeller)),
       },
       return_url: `${process.env.FRONTEND_URL}/checkout/return?session_id={CHECKOUT_SESSION_ID}`,
+    })
+
+    await Transaction.create({
+      checkoutSessionId: session.id,
+      buyerId,
+      items: cartItems.map((item: any) => ({
+        itemId: item._id,
+        sellerId: item.seller,
+        title: item.title,
+        quantity: item.quantity,
+        price: item.price.amount,
+        total: item.price.amount * item.quantity
+      })),
+      status: "pending"
     })
 
     // await Order.create({
@@ -322,20 +337,48 @@ const getCheckoutSessionStatusStripe = async (req: Request, res: Response) => {
   }
 
   try {
-    // Pass the raw string without JSON.stringify
     const session = await stripe.checkout.sessions.retrieve(sessionId)
 
     if (session.status === 'complete') {
-      // add to transaction for users
+      const paymentIntent = await stripe.paymentIntents.retrieve(
+        session.payment_intent as string
+      )
+
+
+      const transactions = await Transaction.find({ checkoutSessionId: sessionId });
+      
+      // Update each transaction
+      for (const transaction of transactions) {
+        transaction.status = 'completed';
+        transaction.paymentIntentId = session.payment_intent as string;
+        transaction.completedAt = new Date();
+        await transaction.save();
+      }
+
+      res.status(200).json({
+        message: 'Payment Success',
+        data: {
+          status: session.status,
+          customer_email: session.customer_details?.email || 'No email provided',
+        },
+      })
+    
+
+    }
+    else {
+      await Transaction.find({ checkoutSessionId: sessionId }).deleteMany();
+
+      res.status(200).json({
+        message: 'Payment Failed please try again',
+        data: {
+          status: session.status,
+          customer_email: session.customer_details?.email || 'No email provided',
+        },
+      })
+
     }
 
-    res.status(200).json({
-      message: 'Payment Success',
-      data: {
-        status: session.status,
-        customer_email: session.customer_details?.email || 'No email provided',
-      },
-    })
+   
   } catch (error: any) {
     console.error('Error retrieving checkout session:', error.message)
     res.status(500).json({
