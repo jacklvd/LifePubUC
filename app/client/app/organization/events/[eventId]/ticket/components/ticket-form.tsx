@@ -162,7 +162,7 @@ const TicketForm: React.FC<TicketFormProps> = memo(
                 setDate={setSaleStartDate}
                 isOpen={startDateCalendarOpen}
                 setIsOpen={setStartDateCalendarOpen}
-                disabledDates={isStartDateDisabled} // Pass the new validation function 
+                disabledDates={isStartDateDisabled} // Pass the new validation function
                 disabled={isSubmitting}
               />
               {/* {eventDate && maxSaleEndDate && (

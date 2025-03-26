@@ -83,7 +83,7 @@ const EventLocationPicker = memo(
                 className="absolute left-0 right-0 bg-white-100 border rounded-md shadow-lg max-h-64 overflow-y-auto w-full"
                 style={{
                   zIndex: 1000,
-                  top: "calc(100% - 8px)"
+                  top: 'calc(100% - 8px)',
                 }}
                 role="listbox"
                 aria-label="Location suggestions"

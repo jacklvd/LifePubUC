@@ -24,29 +24,33 @@ const EventPhotoUpload = memo(
     errors,
   }: Props) => {
     // State to store the local object URL
-    const [localPreviewUrl, setLocalPreviewUrl] = useState<string | undefined>(undefined);
+    const [localPreviewUrl, setLocalPreviewUrl] = useState<string | undefined>(
+      undefined,
+    )
 
     // Create or update the local preview URL when the file changes
     useEffect(() => {
       if (localFile) {
-        const objectUrl = URL.createObjectURL(localFile);
-        setLocalPreviewUrl(objectUrl);
+        const objectUrl = URL.createObjectURL(localFile)
+        setLocalPreviewUrl(objectUrl)
 
         // Clean up function to revoke the object URL when component unmounts or file changes
         return () => {
-          URL.revokeObjectURL(objectUrl);
-        };
+          URL.revokeObjectURL(objectUrl)
+        }
       }
-    }, [localFile]);
+    }, [localFile])
 
     // Use local preview URL if available, otherwise use the remote media URL
-    const previewUrl = localPreviewUrl || media;
-    const previewType = localFile ?
-      (localFile.type.startsWith('video/') ? 'video' : 'image') :
-      mediaType;
+    const previewUrl = localPreviewUrl || media
+    const previewType = localFile
+      ? localFile.type.startsWith('video/')
+        ? 'video'
+        : 'image'
+      : mediaType
 
     // Determine whether to show preview (either from localFile or remote media)
-    const showPreview = !!(previewUrl);
+    const showPreview = !!previewUrl
 
     return (
       <div className="mb-4 sm:mb-6">
@@ -76,7 +80,9 @@ const EventPhotoUpload = memo(
                     variant="outline"
                     className="text-xs sm:text-sm"
                     aria-label="Upload media"
-                    onClick={() => document.getElementById('fileInput')?.click()}
+                    onClick={() =>
+                      document.getElementById('fileInput')?.click()
+                    }
                   >
                     Upload an Image or a Video
                   </Button>

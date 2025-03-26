@@ -81,7 +81,9 @@ const TicketUI: React.FC<TicketUIProps> = ({ eventId, userEmail }) => {
   // Utils
   const formatTicketDate = useTicketStore((state) => state.formatTicketDate)
   const isEndDateDisabled = useTicketStore((state) => state.isEndDateDisabled)
-  const isStartDateDisabled = useTicketStore((state) => state.isStartDateDisabled)
+  const isStartDateDisabled = useTicketStore(
+    (state) => state.isStartDateDisabled,
+  )
 
   // Initialize the store when component mounts
   useEffect(() => {

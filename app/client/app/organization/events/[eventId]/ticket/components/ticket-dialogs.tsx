@@ -145,7 +145,7 @@ const TicketDialogs: React.FC<TicketDialogsProps> = memo(
     // Helper functions
     generateTimeOptions,
     isEndDateDisabled,
-    isDateAfterEvent
+    isDateAfterEvent,
   }) => {
     // Get submission state directly from the store
     const isSubmitting = useTicketStore((state) => state.isSubmitting)
