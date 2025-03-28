@@ -11,4 +11,5 @@ export const {
   STRIPE_SECRET_KEY,
   CLOUDINARY_API_KEY,
   CLOUDINARY_API_SECRET,
+  REDIS_URL,
 } = process.env
