@@ -103,8 +103,12 @@ export const verifyEmail = async (emailToken: string | null) => {
       },
     )
 
-    if (response.data.status === 'Success') {
-      return { success: true, message: 'Email verified successfully!' }
+    // Check HTTP status code instead of a property that doesn't exist
+    if (response.status === 200) {
+      return { 
+        success: true, 
+        message: response.data.message || 'Email verified successfully!' 
+      }
     } else {
       return {
         success: false,
