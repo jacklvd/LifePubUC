@@ -26,7 +26,13 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import { FIELD_NAMES, FIELD_TYPES } from '@/constants'
 import { Icon } from '@/components/icons'
 
@@ -106,7 +112,9 @@ const AuthForm = <T extends FieldValues>({
                       <FormControl>
                         <Input
                           required
-                          type={FIELD_TYPES[field.name as keyof typeof FIELD_TYPES]}
+                          type={
+                            FIELD_TYPES[field.name as keyof typeof FIELD_TYPES]
+                          }
                           placeholder={`Enter your ${FIELD_NAMES[field.name as keyof typeof FIELD_NAMES].toLowerCase()}`}
                           {...field}
                           className="bg-slate-700 border-slate-600 text-white focus:ring-primary focus:border-primary"
@@ -142,8 +150,10 @@ const AuthForm = <T extends FieldValues>({
                   <Icon name="Loader2" className="mr-2 h-4 w-4 animate-spin" />
                   {isSignIn ? 'Signing In...' : 'Signing Up...'}
                 </>
+              ) : isSignIn ? (
+                'Sign In'
               ) : (
-                isSignIn ? 'Sign In' : 'Sign Up'
+                'Sign Up'
               )}
             </Button>
           </form>

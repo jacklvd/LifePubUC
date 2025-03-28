@@ -67,7 +67,7 @@ import {
   CheckCircle2,
   XCircle,
   Mail,
-  ArrowRight
+  ArrowRight,
 } from 'lucide-react'
 
 const ICONS = {
@@ -139,7 +139,7 @@ const ICONS = {
   CheckCircle2: CheckCircle2,
   XCircle: XCircle,
   Mail: Mail,
-  ArrowRight: ArrowRight
+  ArrowRight: ArrowRight,
 } as const
 
 export type IconNames = keyof typeof ICONS

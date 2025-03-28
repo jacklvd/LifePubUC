@@ -5,7 +5,13 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import { useEffect, useState, useRef } from 'react'
 import { verifyEmail } from '@/lib/actions/auth-actions'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Icon } from '@/components/icons'
 
@@ -14,7 +20,9 @@ export default function VerifyEmail() {
   const router = useRouter()
   const emailToken = searchParams.get('emailToken')
   const [message, setMessage] = useState('We are verifying your email address')
-  const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading')
+  const [status, setStatus] = useState<'loading' | 'success' | 'error'>(
+    'loading',
+  )
   const [progress, setProgress] = useState(0)
   const [timeLeft, setTimeLeft] = useState(5)
   const redirectTimeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -30,10 +38,14 @@ export default function VerifyEmail() {
         // Check specifically for redirect success
         if (result.success) {
           setStatus('success')
-          setMessage(result.message || 'Your email has been successfully verified!')
+          setMessage(
+            result.message || 'Your email has been successfully verified!',
+          )
         } else {
           setStatus('error')
-          setMessage(result.message || 'There was a problem verifying your email.')
+          setMessage(
+            result.message || 'There was a problem verifying your email.',
+          )
         }
 
         // Start countdown timer
@@ -110,7 +122,12 @@ export default function VerifyEmail() {
   const getStatusIcon = () => {
     switch (status) {
       case 'loading':
-        return <Icon name="Loader2" className="h-16 w-16 text-primary animate-spin" />
+        return (
+          <Icon
+            name="Loader2"
+            className="h-16 w-16 text-primary animate-spin"
+          />
+        )
       case 'success':
         return <Icon name="CheckCircle2" className="h-16 w-16 text-green-500" />
       case 'error':
@@ -156,7 +173,9 @@ export default function VerifyEmail() {
             {status === 'loading' && (
               <div className="space-y-2">
                 <Progress value={progress} className="h-2 bg-slate-700" />
-                <p className="text-sm text-slate-400 text-center">Please wait while we verify your email</p>
+                <p className="text-sm text-slate-400 text-center">
+                  Please wait while we verify your email
+                </p>
               </div>
             )}
 
@@ -183,7 +202,8 @@ export default function VerifyEmail() {
 
         <div className="mt-6 text-center">
           <p className="text-slate-400 text-sm">
-            Thank you for joining LifePub. We&apos;re excited to have you on board!
+            Thank you for joining LifePub. We&apos;re excited to have you on
+            board!
           </p>
         </div>
       </div>
