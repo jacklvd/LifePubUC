@@ -16,78 +16,80 @@ import User from '../models/userSchema'
 
 // Define interface for storage mechanism
 interface StorageMechanism {
-  get(key: string): Promise<string | null>;
-  setex(key: string, seconds: number, value: string): Promise<any>;
-  del(key: string): Promise<any>;
+  get(key: string): Promise<string | null>
+  setex(key: string, seconds: number, value: string): Promise<any>
+  del(key: string): Promise<any>
 }
 
 // Create a memory fallback for development if Redis isn't available
 class MemoryStore implements StorageMechanism {
-  private store: Map<string, string>;
-  private expiryTimes: Map<string, number>;
-  
+  private store: Map<string, string>
+  private expiryTimes: Map<string, number>
+
   constructor() {
-    this.store = new Map<string, string>();
-    this.expiryTimes = new Map<string, number>();
+    this.store = new Map<string, string>()
+    this.expiryTimes = new Map<string, number>()
   }
-  
+
   async get(key: string): Promise<string | null> {
     // Check if key has expired
     if (this.expiryTimes.has(key) && Date.now() > this.expiryTimes.get(key)!) {
-      this.del(key);
-      return null;
+      this.del(key)
+      return null
     }
-    return this.store.get(key) || null;
+    return this.store.get(key) || null
   }
-  
+
   async setex(key: string, seconds: number, value: string): Promise<string> {
-    this.store.set(key, value);
-    this.expiryTimes.set(key, Date.now() + (seconds * 1000));
-    return 'OK';
+    this.store.set(key, value)
+    this.expiryTimes.set(key, Date.now() + seconds * 1000)
+    return 'OK'
   }
-  
+
   async del(key: string): Promise<number> {
-    this.store.delete(key);
-    this.expiryTimes.delete(key);
-    return 1;
+    this.store.delete(key)
+    this.expiryTimes.delete(key)
+    return 1
   }
 }
 
 // Initialize a storage mechanism - either Redis or memory fallback
-let storage: StorageMechanism;
-let isUsingFallback = false;
+let storage: StorageMechanism
+let isUsingFallback = false
 try {
-// Try to initialize Redis
+  // Try to initialize Redis
   const redis = new Redis(REDIS_URL || 'redis://127.0.0.1:6379', {
     retryStrategy(times) {
-      const delay = Math.min(times * 50, 2000);
-      return delay;
+      const delay = Math.min(times * 50, 2000)
+      return delay
     },
-    maxRetriesPerRequest: 3
-  });
+    maxRetriesPerRequest: 3,
+  })
 
-// Handle Redis connection errors
-redis.on('error', (err: Error) => {
-  console.error('Redis connection error:', err);
-  if ((err as any).code === 'ECONNREFUSED' && !isUsingFallback) {
-    console.warn('Redis connection failed, using in-memory storage as fallback');
-    storage = new MemoryStore();
-    isUsingFallback = true;
-  }
-});
+  // Handle Redis connection errors
+  redis.on('error', (err: Error) => {
+    console.error('Redis connection error:', err)
+    if ((err as any).code === 'ECONNREFUSED' && !isUsingFallback) {
+      console.warn(
+        'Redis connection failed, using in-memory storage as fallback',
+      )
+      storage = new MemoryStore()
+      isUsingFallback = true
+    }
+  })
 
-redis.on('connect', () => {
-  console.log('Successfully connected to Redis');
-  storage = redis as unknown as StorageMechanism;
-  isUsingFallback = false;
-});
+  redis.on('connect', () => {
+    console.log('Successfully connected to Redis')
+    storage = redis as unknown as StorageMechanism
+    isUsingFallback = false
+  })
 
-// Initial setting
-storage = redis as unknown as StorageMechanism;
+  // Initial setting
+  storage = redis as unknown as StorageMechanism
 } catch (error) {
-  console.error('Error initializing Redis:', error);
-  storage = new MemoryStore();
-  isUsingFallback = true;
+  console.error('Error initializing Redis:', error)
+  storage = new MemoryStore()
+  isUsingFallback = true
 }
 
 // Set a default expiration time for verification tokens (e.g., 24 hours)
@@ -110,9 +112,9 @@ export const verifyEmail = async (req: any, res: any) => {
 
     // Check if token is provided
     if (!emailToken) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        message: 'Token is required.' 
+        message: 'Token is required.',
       })
     }
 
@@ -120,9 +122,9 @@ export const verifyEmail = async (req: any, res: any) => {
     const userDataJson = await storage.get(`verification:${emailToken}`)
 
     if (!userDataJson) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        message: 'Invalid or expired token.' 
+        message: 'Invalid or expired token.',
       })
     }
 
@@ -144,9 +146,9 @@ export const verifyEmail = async (req: any, res: any) => {
     // Also remove any other tokens for this email
     await storage.del(`email:${userData.email}`)
 
-    res.status(200).json({ 
+    res.status(200).json({
       success: true,
-      message: 'Email verified successfully. You can now sign in.' 
+      message: 'Email verified successfully. You can now sign in.',
     })
   } catch (error: any) {
     console.error('Error verifying email:', error)
@@ -184,11 +186,11 @@ export const signUp = async (req: any, res: any) => {
 
     // Generate a verification token
     const verificationToken = crypto.randomBytes(32).toString('hex')
-    
+
     // Hash the password
     const salt = await bcrypt.genSalt(12)
     const hashedPassword = await bcrypt.hash(password, salt)
-    
+
     // Store user data in storage (Redis or Memory fallback)
     const userData = {
       fullName,
@@ -202,14 +204,14 @@ export const signUp = async (req: any, res: any) => {
     await storage.setex(
       `verification:${verificationToken}`,
       VERIFICATION_EXPIRY,
-      JSON.stringify(userData)
+      JSON.stringify(userData),
     )
-    
+
     // Store a reference from email to token to prevent duplicate verification emails
     await storage.setex(
       `email:${email}`,
       VERIFICATION_EXPIRY,
-      verificationToken
+      verificationToken,
     )
 
     // Send verification email
