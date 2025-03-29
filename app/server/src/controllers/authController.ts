@@ -63,14 +63,14 @@ try {
   const redis = new Redis({
     port: 19001, // Redis port
     host: REDIS_HOST as string, // Redis host
-    username: "default", // needs Redis >= 6
+    username: 'default', // needs Redis >= 6
     password: REDIS_PASSWORD as string, // Redis password
     db: 0, // Defaults to 0
     retryStrategy(times) {
       const delay = Math.min(times * 50, 2000)
       return delay
     },
-    
+
     maxRetriesPerRequest: 3,
   })
 
