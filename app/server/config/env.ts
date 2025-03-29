@@ -12,4 +12,7 @@ export const {
   CLOUDINARY_API_KEY,
   CLOUDINARY_API_SECRET,
   REDIS_URL,
+  REDIS_HOST,
+  REDIS_PORT,
+  REDIS_PASSWORD,
 } = process.env
