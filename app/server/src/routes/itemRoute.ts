@@ -5,6 +5,7 @@ import {
   createItem,
   updateItem,
   searchItems,
+  getSellerItems,
   updateItemStatus,
   createCloudinaryStorage,
 } from '../controllers/itemController'
@@ -15,6 +16,7 @@ const router = express.Router()
 
 // GET routes
 router.get('/search', searchItems)
+router.get('/sellers/:sellerId/items', getSellerItems)
 router.get('/', getItems)
 router.get('/:id', getItemById)
 // POST routes
