@@ -9,7 +9,7 @@ import {
   startOfMonth,
   eachMonthOfInterval,
   parseISO,
-  isSameMonth
+  isSameMonth,
 } from 'date-fns'
 import dynamic from 'next/dynamic'
 import {
@@ -62,10 +62,13 @@ const RevenueBySource = dynamic(() => import('./components/revenue-source'), {
   ssr: false,
 })
 
-const MonthlyComparison = dynamic(() => import('./components/monthly-comparison'), {
-  loading: () => <LoadingChart />,
-  ssr: false,
-})
+const MonthlyComparison = dynamic(
+  () => import('./components/monthly-comparison'),
+  {
+    loading: () => <LoadingChart />,
+    ssr: false,
+  },
+)
 
 interface ItemData {
   _id: string
@@ -165,7 +168,10 @@ const generateMonthlyData = (months: number) => {
   return result
 }
 
-const calculatePercentageChange = (currentValue: number, previousValue: number): number => {
+const calculatePercentageChange = (
+  currentValue: number,
+  previousValue: number,
+): number => {
   if (previousValue === 0) return currentValue > 0 ? 100 : 0
   return Math.round(((currentValue - previousValue) / previousValue) * 100)
 }
@@ -176,7 +182,7 @@ const getCurrentAndPreviousMonthData = (items: ItemData[]) => {
   const previousMonthItems: ItemData[] = []
   const now = new Date()
 
-  items.forEach(item => {
+  items.forEach((item) => {
     try {
       const itemDate = parseISO(item.createdAt)
       if (isSameMonth(itemDate, now)) {
@@ -215,7 +221,7 @@ const ReportsPage: React.FC = () => {
         // Fetch events and items in parallel
         const [fetchedEvents, fetchedItems] = await Promise.all([
           getUserEvents(userEmail),
-          getItemsForSeller() // Fetch all items for the seller
+          getItemsForSeller(), // Fetch all items for the seller
         ])
 
         setEvents(fetchedEvents)
@@ -225,22 +231,31 @@ const ReportsPage: React.FC = () => {
           setItems(fetchedItems.data)
 
           // Process items to match the format needed for charts
-          const processed = fetchedItems.data.map((item: { status: string; title: any; price: { amount: any }; images: string | any[]; category: any }) => {
-            // Determine if item is sold
-            const isSold = item.status === 'sold'
+          const processed = fetchedItems.data.map(
+            (item: {
+              status: string
+              title: any
+              price: { amount: any }
+              images: string | any[]
+              category: any
+            }) => {
+              // Determine if item is sold
+              const isSold = item.status === 'sold'
 
-            return {
-              title: item.title,
-              price: item.price.amount,
-              sold: isSold ? 1 : 0, // Count as 1 if sold, 0 if not
-              imageUrl: item.images && item.images.length > 0
-                ? item.images[0]
-                : '/api/placeholder/400/220',
-              stock: isSold ? 0 : 1, // Simple inventory indication
-              totalRevenue: isSold ? item.price.amount : 0,
-              category: item.category || 'Other' // Use category from DB or default to "Other"
-            }
-          });
+              return {
+                title: item.title,
+                price: item.price.amount,
+                sold: isSold ? 1 : 0, // Count as 1 if sold, 0 if not
+                imageUrl:
+                  item.images && item.images.length > 0
+                    ? item.images[0]
+                    : '/api/placeholder/400/220',
+                stock: isSold ? 0 : 1, // Simple inventory indication
+                totalRevenue: isSold ? item.price.amount : 0,
+                category: item.category || 'Other', // Use category from DB or default to "Other"
+              }
+            },
+          )
 
           setProcessedItems(processed)
         }
@@ -284,78 +299,103 @@ const ReportsPage: React.FC = () => {
   // Calculate revenue data from real items
   const totalItemsSold = processedItems.reduce(
     (sum, product) => sum + product.sold,
-    0
+    0,
   )
   const totalRevenue = processedItems.reduce(
     (sum, product) => sum + product.totalRevenue,
-    0
+    0,
   )
 
   // Calculate revenue statistics
-  const { currentMonthItems, previousMonthItems } = getCurrentAndPreviousMonthData(items)
+  const { currentMonthItems, previousMonthItems } =
+    getCurrentAndPreviousMonthData(items)
 
-  const currentMonthSold = currentMonthItems.filter(item => item.status === 'sold').length
-  const previousMonthSold = previousMonthItems.filter(item => item.status === 'sold').length
-  const soldPercentChange = calculatePercentageChange(currentMonthSold, previousMonthSold)
+  const currentMonthSold = currentMonthItems.filter(
+    (item) => item.status === 'sold',
+  ).length
+  const previousMonthSold = previousMonthItems.filter(
+    (item) => item.status === 'sold',
+  ).length
+  const soldPercentChange = calculatePercentageChange(
+    currentMonthSold,
+    previousMonthSold,
+  )
 
   const currentMonthRevenue = currentMonthItems
-    .filter(item => item.status === 'sold')
+    .filter((item) => item.status === 'sold')
     .reduce((sum, item) => sum + item.price.amount, 0)
 
   const previousMonthRevenue = previousMonthItems
-    .filter(item => item.status === 'sold')
+    .filter((item) => item.status === 'sold')
     .reduce((sum, item) => sum + item.price.amount, 0)
 
-  const revenuePercentChange = calculatePercentageChange(currentMonthRevenue, previousMonthRevenue)
+  const revenuePercentChange = calculatePercentageChange(
+    currentMonthRevenue,
+    previousMonthRevenue,
+  )
 
   // Event related percentage changes (similar calculation)
-  const currentMonthEvents = events.filter(event => {
+  const currentMonthEvents = events.filter((event) => {
     try {
       // Handle both createdAt and date properties that could be string or Date
       const createdAtDate =
         // If createdAt exists and is a string, parse it
-        typeof event.createdAt === 'string' ? parseISO(event.createdAt) :
-          // If createdAt exists and is a Date, use it directly
-          event.createdAt instanceof Date ? event.createdAt :
-            // If date exists and is a string, parse it
-            typeof event.date === 'string' ? parseISO(event.date) :
-              // If date exists and is a Date, use it directly
-              event.date instanceof Date ? event.date :
-                // Fallback to current date if neither is valid
-                new Date();
+        typeof event.createdAt === 'string'
+          ? parseISO(event.createdAt)
+          : // If createdAt exists and is a Date, use it directly
+            event.createdAt instanceof Date
+            ? event.createdAt
+            : // If date exists and is a string, parse it
+              typeof event.date === 'string'
+              ? parseISO(event.date)
+              : // If date exists and is a Date, use it directly
+                event.date instanceof Date
+                ? event.date
+                : // Fallback to current date if neither is valid
+                  new Date()
 
-      return isSameMonth(createdAtDate, new Date());
+      return isSameMonth(createdAtDate, new Date())
     } catch {
-      return false;
+      return false
     }
-  }).length;
+  }).length
 
-  const previousMonthEvents = events.filter(event => {
+  const previousMonthEvents = events.filter((event) => {
     try {
       // Handle both createdAt and date properties that could be string or Date
       const createdAtDate =
         // If createdAt exists and is a string, parse it
-        typeof event.createdAt === 'string' ? parseISO(event.createdAt) :
-          // If createdAt exists and is a Date, use it directly
-          event.createdAt instanceof Date ? event.createdAt :
-            // If date exists and is a string, parse it
-            typeof event.date === 'string' ? parseISO(event.date) :
-              // If date exists and is a Date, use it directly
-              event.date instanceof Date ? event.date :
-                // Fallback to current date if neither is valid
-                new Date();
+        typeof event.createdAt === 'string'
+          ? parseISO(event.createdAt)
+          : // If createdAt exists and is a Date, use it directly
+            event.createdAt instanceof Date
+            ? event.createdAt
+            : // If date exists and is a string, parse it
+              typeof event.date === 'string'
+              ? parseISO(event.date)
+              : // If date exists and is a Date, use it directly
+                event.date instanceof Date
+                ? event.date
+                : // Fallback to current date if neither is valid
+                  new Date()
 
-      return isSameMonth(createdAtDate, subMonths(new Date(), 1));
+      return isSameMonth(createdAtDate, subMonths(new Date(), 1))
     } catch {
-      return false;
+      return false
     }
-  }).length;
+  }).length
 
-  const eventsPercentChange = calculatePercentageChange(currentMonthEvents, previousMonthEvents)
+  const eventsPercentChange = calculatePercentageChange(
+    currentMonthEvents,
+    previousMonthEvents,
+  )
 
   // For upcoming events, calculate change from previous period
   // NOW THIS IS DEFINED AFTER upcomingEvents IS DECLARED
-  const upcomingEventsPercentChange = calculatePercentageChange(upcomingEvents, upcomingEvents > 0 ? upcomingEvents - 1 : 0)
+  const upcomingEventsPercentChange = calculatePercentageChange(
+    upcomingEvents,
+    upcomingEvents > 0 ? upcomingEvents - 1 : 0,
+  )
 
   // Only render the active tab content
   const renderTabContent = () => {
@@ -527,7 +567,11 @@ const ReportsPage: React.FC = () => {
                 <CardDescription>Total revenue over time</CardDescription>
               </CardHeader>
               <CardContent>
-                <RevenueOverview data={chartData} items={items} isLoading={false} />
+                <RevenueOverview
+                  data={chartData}
+                  items={items}
+                  isLoading={false}
+                />
               </CardContent>
             </Card>
 
@@ -652,7 +696,9 @@ const ReportsPage: React.FC = () => {
                     ) : (
                       <div className="text-red-500 flex items-center">
                         <Icon name="TrendingDown" className="h-4 w-4 mr-1" />
-                        <span>{Math.abs(upcomingEventsPercentChange)}% decrease</span>
+                        <span>
+                          {Math.abs(upcomingEventsPercentChange)}% decrease
+                        </span>
                       </div>
                     )}
                     <span className="text-gray-500 ml-2">from last month</span>

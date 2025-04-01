@@ -364,12 +364,12 @@ export const getSellerItems = async (
       sort = '-createdAt',
       page = 1,
       limit = 10,
-      q
+      q,
     } = req.query as unknown as ItemQueryParams
-    
+
     // Build query
     const query: any = { seller: sellerId }
-    
+
     if (category) query.category = category
     if (condition) query.condition = condition
     if (status) query.status = status
@@ -379,16 +379,16 @@ export const getSellerItems = async (
       if (maxPrice) query['price.amount'].$lte = maxPrice
     }
     if (q) query.$text = { $search: q as string }
-    
+
     const skip = (Number(page) - 1) * Number(limit)
-    
+
     const items = await Item.find(query)
       .sort(sort)
       .skip(skip)
       .limit(Number(limit))
-    
+
     const total = await Item.countDocuments(query)
-    
+
     res.status(200).json({
       message: 'Seller items retrieved successfully',
       data: items,

@@ -89,8 +89,8 @@ export async function getItemsForSeller({
         pages: 0,
         limit,
       },
-      error: "Authentication required",
-      requiresOnboarding: false
+      error: 'Authentication required',
+      requiresOnboarding: false,
     }
   }
 
@@ -112,9 +112,9 @@ export async function getItemsForSeller({
 
     if (!response.ok) {
       const errorData = await response.text()
-      
+
       // Check if the error is related to Stripe onboarding
-      if (errorData.includes("Stripe Connect onboarding")) {
+      if (errorData.includes('Stripe Connect onboarding')) {
         return {
           data: [],
           pagination: {
@@ -123,11 +123,11 @@ export async function getItemsForSeller({
             pages: 0,
             limit,
           },
-          error: "Seller has not completed Stripe Connect onboarding",
-          requiresOnboarding: true
+          error: 'Seller has not completed Stripe Connect onboarding',
+          requiresOnboarding: true,
         }
       }
-      
+
       // Other errors
       return {
         data: [],
@@ -138,7 +138,7 @@ export async function getItemsForSeller({
           limit,
         },
         error: errorData || 'Failed to fetch seller items',
-        requiresOnboarding: false
+        requiresOnboarding: false,
       }
     }
 
@@ -146,7 +146,7 @@ export async function getItemsForSeller({
     return {
       ...result,
       error: null,
-      requiresOnboarding: false
+      requiresOnboarding: false,
     }
   } catch (error) {
     console.error('Error fetching seller items:', error)
@@ -159,7 +159,7 @@ export async function getItemsForSeller({
         limit,
       },
       error: error instanceof Error ? error.message : 'Unknown error occurred',
-      requiresOnboarding: false
+      requiresOnboarding: false,
     }
   }
 }

@@ -565,10 +565,11 @@ const ItemManagementDashboard = () => {
                     <button
                       key={page}
                       onClick={() => setCurrentPage(page)}
-                      className={`w-8 h-8 mx-1 rounded ${page === currentPage
-                        ? 'bg-orange-500 text-white'
-                        : 'border border-gray-300 hover:bg-gray-50'
-                        }`}
+                      className={`w-8 h-8 mx-1 rounded ${
+                        page === currentPage
+                          ? 'bg-orange-500 text-white'
+                          : 'border border-gray-300 hover:bg-gray-50'
+                      }`}
                     >
                       {page}
                     </button>
