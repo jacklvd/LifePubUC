@@ -13,7 +13,7 @@ const LayoutPage = async ({ children }: { children: React.ReactNode }) => {
     <div className="flex-col w-full min-h-full">
       <Navbar />
       <main>{children}</main>
-      <Footer/>
+      <Footer />
     </div>
   )
 }

@@ -115,7 +115,7 @@ const createStripeCheckoutSession = async (
   res: Response,
 ): Promise<void> => {
   const { cartItems, buyerId } = req.body
-  
+
   const buyer = await User.findById(buyerId)
 
   if (!buyer) {
@@ -141,8 +141,7 @@ const createStripeCheckoutSession = async (
 
     for (const [sellerId, items] of Object.entries(itemsBySeller)) {
       const seller = await User.findById(sellerId)
-      
-     
+
       if (!seller || !seller.stripeConnectAccountId) {
         res.status(400).json({
           message: `Seller ${sellerId} is not properly set up to receive payments`,
@@ -151,7 +150,7 @@ const createStripeCheckoutSession = async (
       }
 
       for (const item of items) {
-        lineItems.push({         
+        lineItems.push({
           price_data: {
             currency: 'usd',
             product_data: {
@@ -200,7 +199,7 @@ const createStripeCheckoutSession = async (
         total: item.price.amount * item.quantity,
         type: 'item',
       })),
-      status: "pending"
+      status: 'pending',
     })
 
     // await Order.create({
@@ -342,44 +341,41 @@ const getCheckoutSessionStatusStripe = async (req: Request, res: Response) => {
 
     if (session.status === 'complete') {
       const paymentIntent = await stripe.paymentIntents.retrieve(
-        session.payment_intent as string
+        session.payment_intent as string,
       )
 
+      const transactions = await Transaction.find({
+        checkoutSessionId: sessionId,
+      })
 
-      const transactions = await Transaction.find({ checkoutSessionId: sessionId });
-      
       // Update each transaction
       for (const transaction of transactions) {
-        transaction.status = 'completed';
-        transaction.paymentIntentId = session.payment_intent as string;
-        transaction.completedAt = new Date();
-        await transaction.save();
+        transaction.status = 'completed'
+        transaction.paymentIntentId = session.payment_intent as string
+        transaction.completedAt = new Date()
+        await transaction.save()
       }
 
       res.status(200).json({
         message: 'Payment Success',
         data: {
           status: session.status,
-          customer_email: session.customer_details?.email || 'No email provided',
+          customer_email:
+            session.customer_details?.email || 'No email provided',
         },
       })
-    
-
-    }
-    else {
-      await Transaction.find({ checkoutSessionId: sessionId }).deleteMany();
+    } else {
+      await Transaction.find({ checkoutSessionId: sessionId }).deleteMany()
 
       res.status(200).json({
         message: 'Payment Failed please try again',
         data: {
           status: session.status,
-          customer_email: session.customer_details?.email || 'No email provided',
+          customer_email:
+            session.customer_details?.email || 'No email provided',
         },
       })
-
     }
-
-   
   } catch (error: any) {
     console.error('Error retrieving checkout session:', error.message)
     res.status(500).json({

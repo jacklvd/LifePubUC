@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import Item, {  ITEM_CATEGORIES, ITEM_CONDITION} from '../models/itemSchema'
+import Item, { ITEM_CATEGORIES, ITEM_CONDITION } from '../models/itemSchema'
 import User from '../models/userSchema'
 import { v2 as cloudinary } from 'cloudinary'
 
@@ -349,27 +349,29 @@ export const getCloudinarySignature = async (
 }
 
 export const getAllCategories = async (req: Request, res: Response) => {
-
-  const categories = ITEM_CATEGORIES; // Access the constant directly
+  const categories = ITEM_CATEGORIES // Access the constant directly
 
   try {
-    res.status(200).json({ message: "success", data: categories });
-    return;
+    res.status(200).json({ message: 'success', data: categories })
+    return
   } catch (error) {
-    console.error('Error fetching categories:', error);
-    res.status(500).json({ message: "error", error: 'Failed to fetch categories' });
+    console.error('Error fetching categories:', error)
+    res
+      .status(500)
+      .json({ message: 'error', error: 'Failed to fetch categories' })
   }
 }
 
 export const getAllConditions = async (req: Request, res: Response) => {
-
-  const conditions = ITEM_CONDITION; // Access the constant directly
+  const conditions = ITEM_CONDITION // Access the constant directly
 
   try {
-    res.status(200).json({ message: "success", data: conditions });
-    return;
+    res.status(200).json({ message: 'success', data: conditions })
+    return
   } catch (error) {
-    console.error('Error fetching categories:', error);
-    res.status(500).json({ message: "error", error: 'Failed to fetch categories' });
+    console.error('Error fetching categories:', error)
+    res
+      .status(500)
+      .json({ message: 'error', error: 'Failed to fetch categories' })
   }
 }
