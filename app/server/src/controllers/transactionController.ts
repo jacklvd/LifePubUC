@@ -35,7 +35,6 @@ export const getSalesSummaryByType = async (req: Request, res: Response) => {
       },
     ])
 
-
     // Get sales breakdown by type for this seller
     const salesByType = await Transaction.aggregate([
       { $match: { status: 'completed' } },
