@@ -63,7 +63,7 @@ export const navbarIcons: {
   {
     name: 'LayoutGrid',
     className: 'h-6 w-6',
-    title: 'Categories',
+    title: 'Shop',
     route: '/categories',
   },
 ]

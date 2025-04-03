@@ -221,7 +221,6 @@ const CategoryPage = () => {
                 <ItemsGrid
                   items={paginatedItems}
                   onAddToCart={addItem}
-                  onItemSelect={() => {}}
                 />
 
                 <Pagination
