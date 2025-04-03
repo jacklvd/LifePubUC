@@ -1,4 +1,3 @@
-// models/transactionSchema.ts
 import mongoose from 'mongoose';
 
 const TransactionItemSchema = new mongoose.Schema({
@@ -28,6 +27,11 @@ const TransactionItemSchema = new mongoose.Schema({
   total: {
     type: Number,
     required: true
+  },
+  type: {
+    type: String,
+    enum: ['event', 'item'],
+    required: true
   }
 });
 
@@ -37,7 +41,8 @@ const TransactionSchema = new mongoose.Schema({
     required: true,   },
   paymentIntentId: {
     type: String,
-    sparse: true
+    sparse: true,
+    unique: true
   },
   buyerId: {
     type: mongoose.Schema.Types.ObjectId,

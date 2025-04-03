@@ -115,8 +115,7 @@ const createStripeCheckoutSession = async (
   res: Response,
 ): Promise<void> => {
   const { cartItems, buyerId } = req.body
-  console.log('Here: ', buyerId)
-
+  
   const buyer = await User.findById(buyerId)
 
   if (!buyer) {
@@ -190,6 +189,7 @@ const createStripeCheckoutSession = async (
 
     await Transaction.create({
       checkoutSessionId: session.id,
+      paymentIntentId: session.payment_intent,
       buyerId,
       items: cartItems.map((item: any) => ({
         itemId: item._id,
@@ -197,7 +197,8 @@ const createStripeCheckoutSession = async (
         title: item.title,
         quantity: item.quantity,
         price: item.price.amount,
-        total: item.price.amount * item.quantity
+        total: item.price.amount * item.quantity,
+        type: 'item',
       })),
       status: "pending"
     })
