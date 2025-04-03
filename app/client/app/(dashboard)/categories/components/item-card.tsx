@@ -51,7 +51,9 @@ const ItemCard = ({ item, addItem }: ItemCardProps) => {
     return badges[status as keyof typeof badges] || 'bg-gray-500'
   }
 
-  const handleCartClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const handleCartClick = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
     e.stopPropagation()
     setIsInCart(!isInCart)
 
