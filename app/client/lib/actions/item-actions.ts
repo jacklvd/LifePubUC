@@ -141,7 +141,7 @@ export async function getCategories() {
   if (!session?.user?.id || '') {
     throw new Error('Authentication required')
   }
-  
+
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/items/categories`,
@@ -167,7 +167,7 @@ export async function getConditions() {
   if (!session?.user?.id || '') {
     throw new Error('Authentication required')
   }
-  
+
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/items/conditions`,

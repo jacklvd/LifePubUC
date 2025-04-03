@@ -1,6 +1,6 @@
-"use server"
+'use server'
 
-import { auth } from "@/auth"
+import { auth } from '@/auth'
 
 export async function getTransactionsTotalSales() {
   try {
@@ -9,27 +9,26 @@ export async function getTransactionsTotalSales() {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/transactions/${session?.user?.id}/total-sale`,
       {
-        method: 'GET'
-      }
+        method: 'GET',
+      },
     )
-    
-    const responseData = await response.json();
-    
+
+    const responseData = await response.json()
+
     if (!response.ok) {
       console.error('API error:', response.status)
       return {
         success: false,
         error: `API error: ${response.status}`,
-        message: responseData.message 
+        message: responseData.message,
       }
     }
 
-
-    const { data } = responseData;
-    console.log(data);
+    const { data } = responseData
+    console.log(data)
 
     return {
-      success: true,  
+      success: true,
       data: data,
     }
   } catch (error) {

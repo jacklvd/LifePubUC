@@ -3,11 +3,14 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Icon } from '@/components/icons'
 
 interface StatsOverviewProps {
-  events?: Event[],
+  events?: Event[]
   salesSummary: any
 }
 
-const StatsOverview: React.FC<StatsOverviewProps> = ({ events = [], salesSummary }) => {
+const StatsOverview: React.FC<StatsOverviewProps> = ({
+  events = [],
+  salesSummary,
+}) => {
   // Count total events
   const totalEvents = events.length
 
@@ -72,7 +75,9 @@ const StatsOverview: React.FC<StatsOverviewProps> = ({ events = [], salesSummary
           <div className="flex justify-between items-center">
             <div>
               <p className="text-sm text-gray-600">Total Sales</p>
-              <h3 className="text-2xl font-bold text-gray-800">${salesSummary?.totalRevenue}</h3>
+              <h3 className="text-2xl font-bold text-gray-800">
+                ${salesSummary?.totalRevenue}
+              </h3>
             </div>
             <div className="bg-green-100 p-2 rounded-full">
               <Icon name="TrendingUp" className="h-6 w-6 text-green-600" />

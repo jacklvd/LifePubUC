@@ -35,7 +35,7 @@ export const getSalesSummaryByType = async (
         }}
       ]);
 
-      console.log(totalSalesRevenue);
+      // console.log(totalSalesRevenue);
       
       // Get sales breakdown by type for this seller
       const salesByType = await Transaction.aggregate([
