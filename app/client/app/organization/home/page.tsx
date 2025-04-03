@@ -12,6 +12,7 @@ import {
   IndustryStats,
 } from './components'
 import Skeleton from 'react-loading-skeleton'
+import { getTransactionsTotalSales } from '@/lib/actions/transaction-actions'
 
 interface ProductData {
   title: string
@@ -21,7 +22,6 @@ interface ProductData {
   stock: number
 }
 
-// Mock data for products
 const recentProducts: ProductData[] = [
   {
     title: 'Event Logo T-Shirt',
@@ -44,6 +44,7 @@ const OrganizationHome: React.FC = () => {
   const [recentEvents, setRecentEvents] = useState<Event[]>([])
   const [allEvents, setAllEvents] = useState<Event[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [salesSummary, setSalesSummary] = useState<any>({})
   const username = session?.user?.name || 'User'
   const userEmail = session?.user?.email || ''
 
@@ -52,11 +53,14 @@ const OrganizationHome: React.FC = () => {
       if (userEmail) {
         try {
           setIsLoading(true)
-          // Fetch just a few recent events for this page
+
           const events = await getUserEvents(userEmail)
-          // Only use the first 2 events for display on homepage
+          const saleSummary = await getTransactionsTotalSales()
+
+          setSalesSummary(saleSummary.data)
+
           setRecentEvents(events.slice(0, 2))
-          // Set all events for later use
+
           setAllEvents(events)
         } catch (error) {
           console.error('Error fetching events:', error)
@@ -89,7 +93,7 @@ const OrganizationHome: React.FC = () => {
           <WelcomeHeader username={username} />
 
           {/* Stats Overview */}
-          <StatsOverview events={allEvents} />
+          <StatsOverview events={allEvents} salesSummary={salesSummary} />
 
           {/* Action Buttons */}
           <ActionButtons />

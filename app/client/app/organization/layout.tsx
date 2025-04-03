@@ -6,8 +6,19 @@ import OrganizationSideBar from '@/app/organization/components/organization-side
 
 const Layout = async ({ children }: { children: ReactNode }) => {
   const session = await auth()
+  // const onboardingData = await checkStripeOnboardingStatus();
+
+  // const headersList = headers();
+  // const domain = headersList.get('host') || "";
+  // const fullUrl = headersList.get('referer') || "";
+
+  // if (pathname !== "/organization/onboarding" && !onboardingData.isOnboarded)
+  //   redirect("/organization/onboarding")
 
   if (!session) redirect('/sign-in')
+
+  // if (!onboardingData.isOnboarded) redirect("/onboarding");
+
   return (
     <div className="flex-col w-full min-h-full">
       <Navbar />

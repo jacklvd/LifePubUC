@@ -218,11 +218,7 @@ const CategoryPage = () => {
               </div>
             ) : 1 > 0 ? (
               <>
-                <ItemsGrid
-                  items={paginatedItems}
-                  onAddToCart={addItem}
-                  onItemSelect={() => {}}
-                />
+                <ItemsGrid items={paginatedItems} onAddToCart={addItem} />
 
                 <Pagination
                   currentPage={currentPage}

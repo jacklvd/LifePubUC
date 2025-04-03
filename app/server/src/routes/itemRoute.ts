@@ -7,6 +7,8 @@ import {
   searchItems,
   updateItemStatus,
   createCloudinaryStorage,
+  getAllCategories,
+  getAllConditions,
 } from '../controllers/itemController'
 
 const upload = createCloudinaryStorage()
@@ -16,6 +18,8 @@ const router = express.Router()
 // GET routes
 router.get('/search', searchItems)
 router.get('/', getItems)
+router.get('/categories', getAllCategories)
+router.get('/conditions', getAllConditions)
 router.get('/:id', getItemById)
 // POST routes
 router.post('/', upload.array('images', 10), createItem)
