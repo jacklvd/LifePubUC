@@ -44,7 +44,7 @@ const OrganizationHome: React.FC = () => {
   const [recentEvents, setRecentEvents] = useState<Event[]>([])
   const [allEvents, setAllEvents] = useState<Event[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(true)
-  const [salesSummary, setSalesSummary] = useState<any>({});
+  const [salesSummary, setSalesSummary] = useState<any>({})
   const username = session?.user?.name || 'User'
   const userEmail = session?.user?.email || ''
 
@@ -55,13 +55,12 @@ const OrganizationHome: React.FC = () => {
           setIsLoading(true)
 
           const events = await getUserEvents(userEmail)
-          const saleSummary = await getTransactionsTotalSales();
-          
-          setSalesSummary(saleSummary.data); 
+          const saleSummary = await getTransactionsTotalSales()
 
+          setSalesSummary(saleSummary.data)
 
           setRecentEvents(events.slice(0, 2))
-          
+
           setAllEvents(events)
         } catch (error) {
           console.error('Error fetching events:', error)
@@ -70,8 +69,6 @@ const OrganizationHome: React.FC = () => {
         }
       }
     }
-
-    
 
     fetchEvents()
   }, [userEmail])

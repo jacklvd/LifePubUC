@@ -12,14 +12,11 @@ const Layout = async ({ children }: { children: ReactNode }) => {
   // const domain = headersList.get('host') || "";
   // const fullUrl = headersList.get('referer') || "";
 
-  
-
-
   // if (pathname !== "/organization/onboarding" && !onboardingData.isOnboarded)
   //   redirect("/organization/onboarding")
-  
-    if (!session) redirect('/sign-in');
-  
+
+  if (!session) redirect('/sign-in')
+
   // if (!onboardingData.isOnboarded) redirect("/onboarding");
 
   return (

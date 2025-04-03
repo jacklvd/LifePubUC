@@ -8,7 +8,7 @@ import {
   updateItemStatus,
   createCloudinaryStorage,
   getAllCategories,
-  getAllConditions
+  getAllConditions,
 } from '../controllers/itemController'
 
 const upload = createCloudinaryStorage()
