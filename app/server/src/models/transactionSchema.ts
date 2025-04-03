@@ -1,69 +1,70 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
 
 const TransactionItemSchema = new mongoose.Schema({
   itemId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Item',
-    required: true
+    required: true,
   },
   sellerId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true
+    required: true,
   },
   title: {
     type: String,
-    required: true
+    required: true,
   },
   quantity: {
     type: Number,
     required: true,
-    min: 1
+    min: 1,
   },
   price: {
     type: Number,
-    required: true
+    required: true,
   },
   total: {
     type: Number,
-    required: true
+    required: true,
   },
   type: {
     type: String,
     enum: ['event', 'item'],
-    required: true
-  }
-});
+    required: true,
+  },
+})
 
 const TransactionSchema = new mongoose.Schema({
   checkoutSessionId: {
     type: String,
-    required: true,   },
+    required: true,
+  },
   paymentIntentId: {
     type: String,
     sparse: true,
-    unique: true
+    unique: true,
   },
   buyerId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true
+    required: true,
   },
   items: [TransactionItemSchema],
   status: {
     type: String,
     enum: ['pending', 'completed', 'failed', 'refunded'],
-    default: 'pending'
+    default: 'pending',
   },
   createdAt: {
     type: Date,
-    default: Date.now
+    default: Date.now,
   },
   completedAt: {
-    type: Date
-  }
-});
+    type: Date,
+  },
+})
 
-const Transaction = mongoose.model('Transaction', TransactionSchema);
+const Transaction = mongoose.model('Transaction', TransactionSchema)
 
-export default Transaction;
+export default Transaction

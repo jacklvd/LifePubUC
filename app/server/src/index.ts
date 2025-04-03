@@ -14,7 +14,7 @@ import eventRoute from './routes/eventRoute'
 import paymentRoute from './routes/paymentRoute'
 import userRoute from './routes/userRoute'
 import sellerRoute from './routes/sellerRoute'
-import transactionRoute  from './routes/transactionRoute'
+import transactionRoute from './routes/transactionRoute'
 
 /* CONFIGURATIONS */
 dotenv.config()
@@ -62,7 +62,6 @@ apiRouter.use('/user', userRoute)
 apiRouter.use('/sellers', sellerRoute)
 apiRouter.use('/events', eventRoute)
 apiRouter.use('/transactions', transactionRoute)
-
 
 app.use('/api', apiRouter)
 

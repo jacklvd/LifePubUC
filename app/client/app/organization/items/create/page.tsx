@@ -3,11 +3,20 @@ import { useState, ChangeEvent, FormEvent, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { createItem, getCategories, getConditions } from '@/lib/actions/item-actions'
+import {
+  createItem,
+  getCategories,
+  getConditions,
+} from '@/lib/actions/item-actions'
 
 const PhotoSection = dynamic(() => import('./components/photo-section'))
-const ItemDetailSection = dynamic(() => import('./components/item-detail-section'), { ssr: false})
-const PricingSection = dynamic(() => import('./components/pricing-section'), {ssr: false })
+const ItemDetailSection = dynamic(
+  () => import('./components/item-detail-section'),
+  { ssr: false },
+)
+const PricingSection = dynamic(() => import('./components/pricing-section'), {
+  ssr: false,
+})
 
 interface FormData {
   title: string
@@ -66,27 +75,24 @@ const CreateItemPage = () => {
 
   useEffect(() => {
     const fetchCategories = async () => {
-      const response = await getCategories();
+      const response = await getCategories()
 
-      const { data } = response; 
+      const { data } = response
 
-      setCategories(data); 
+      setCategories(data)
     }
 
     const fetchConditions = async () => {
-      const response = await getConditions();
+      const response = await getConditions()
 
-      const { data } = response; 
+      const { data } = response
 
-      setConditions (data); 
+      setConditions(data)
     }
 
-    fetchCategories();
-    fetchConditions();    
+    fetchCategories()
+    fetchConditions()
   }, [])
-
-
-  
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,

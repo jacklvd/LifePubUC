@@ -9,7 +9,7 @@ export const validateSellerMiddleware = async (
   try {
     const { sellerId } = req.params
 
-    console.log(sellerId);
+    console.log(sellerId)
 
     if (!sellerId) {
       res.status(400).json({ message: 'Seller ID is required', data: {} })
@@ -17,7 +17,7 @@ export const validateSellerMiddleware = async (
     }
 
     const seller = await User.findById(sellerId)
-    console.log(seller);
+    console.log(seller)
 
     if (!seller) {
       res.status(400).json({ message: 'Seller does not exist', data: {} })
