@@ -114,6 +114,9 @@ This diagram highlights the **modular components** of the application:
 
 This diagram illustrates the architecture of the **Campus Connect app**, breaking it down into the following layers:
 
+<img width="1674" alt="image" src="https://github.com/user-attachments/assets/744fa9ad-ff6d-4841-98c5-0e3194bd4cd3" />
+
+
 1. **Frontend Layer**:
 
    - Includes the core functionalities such as:
