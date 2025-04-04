@@ -16,7 +16,7 @@ import { toast } from 'sonner'
 import { getEventById, publishEvent } from '@/lib/actions/event-actions'
 import { useEventProgress } from '@/context/event-context'
 import EventFlowLayout from '@/app/organization/events/components/event-flow-layout'
-import { formatDate } from '@/lib/date-formatter'
+import { formatDate } from '@/lib/utils'
 import EventFallBack from '@/components/event-fallback'
 import EventPreview from '@/app/organization/events/components/preview-ui/event-preview'
 
@@ -70,7 +70,7 @@ export default function PublishPage({ params }: PublishPageProps) {
       // Update progress context
       setEventId(eventId)
       setEventTitle(eventData?.title)
-      setEventDate(formatDate(eventData?.date, 'display'))
+      setEventDate(formatDate(eventData?.date?.toString(), 'display'))
       setActiveStep('publish')
 
       // Check if previous steps are completed
@@ -80,7 +80,7 @@ export default function PublishPage({ params }: PublishPageProps) {
 
       if (
         !completedSteps.includes('tickets') &&
-        eventData?.tickets?.length > 0
+        (eventData?.tickets ?? []).length > 0
       ) {
         markStepCompleted('tickets')
       }

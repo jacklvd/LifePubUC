@@ -4,97 +4,102 @@ import { FC } from 'react'
 const Footer: FC = () => {
   return (
     <footer className="w-full">
-      {/* Newsletter section */}
-      <div className="bg-blue-100 py-6 text-center">
-        <p className="text-base mb-4">
-          Yes! Send me exclusive offers, unique gift ideas, and personalized
-          tips for shopping and selling on LifePub.
-        </p>
-        <Link
-          href="#"
-          className="inline-block border-2 border-gray-800 rounded-full px-5 py-2 text-base hover:bg-gray-100 transition-colors"
-        >
-          Subscribe
-        </Link>
-      </div>
-
       {/* Renewable energy section */}
-      <div className="bg-blue-600 py-5 text-center text-white">
-        <div className="inline-flex items-center">
-          <span className="mr-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-          </span>
-          <Link href="#" className="underline">
-            LifePub is powered by 100% renewable electricity.
-          </Link>
+      <div className="bg-gradient-to-r from-blue-200 to-blue-300 py-4 text-center text-white shadow-md">
+        <div className="container mx-auto px-5">
+          <div className="inline-flex items-center transition-transform hover:scale-105">
+            <span className="mr-2">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </span>
+            <Link href="#" className="text-white font-medium hover:underline">
+              LifePub is powered by 100% renewable electricity.
+            </Link>
+          </div>
         </div>
       </div>
 
       {/* Main footer */}
-      <div className="bg-blue-900 text-white py-10">
+      <div className="bg-blue-400 text-white py-12 shadow-inner">
         <div className="container mx-auto px-5 flex flex-col md:flex-row">
           {/* Logo and app download */}
-          <div className="w-full md:w-1/4 mb-8 md:mb-0">
+          <div className="w-full md:w-1/4 mb-10 md:mb-0 flex flex-col items-start">
+            <div className="text-2xl font-bold mb-6">LifePub</div>
             <Link
               href="#"
-              className="inline-block bg-blue-600 text-white px-5 py-3 rounded-full font-bold hover:bg-blue-700 transition-colors"
+              className="inline-block bg-blue-600 text-white px-5 py-3 rounded-lg font-bold hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
             >
-              Download the LifePub App
+              <div className="flex items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5 mr-2"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
+                  />
+                </svg>
+                Download our App
+              </div>
             </Link>
           </div>
 
           {/* Footer links */}
-          <div className="w-full md:w-3/4 flex flex-wrap md:flex-nowrap">
+          <div className="w-full md:w-3/4 flex flex-wrap md:flex-nowrap gap-8">
             {/* Shop column */}
             <div className="w-1/2 md:w-1/4 mb-6 md:mb-0">
-              <h3 className="text-lg font-bold mb-4">Shop</h3>
-              <ul>
-                <li className="mb-3">
-                  <Link href="#" className="hover:underline">
-                    Gift cards
+              <h3 className="text-lg font-bold mb-4 border-b border-blue-700 pb-2">Shop</h3>
+              <ul className="space-y-3">
+                <li>
+                  <Link href="#" className="hover:text-blue-300 transition-colors flex items-center">
+                    <span className="mr-1">→</span> Gift cards
                   </Link>
                 </li>
-                <li className="mb-3">
-                  <Link href="#" className="hover:underline">
-                    LifePub Registry
+                <li>
+                  <Link href="#" className="hover:text-blue-300 transition-colors flex items-center">
+                    <span className="mr-1">→</span> LifePub Registry
                   </Link>
                 </li>
-                <li className="mb-3">
-                  <Link href="#" className="hover:underline">
-                    Sitemap
+                <li>
+                  <Link href="#" className="hover:text-blue-300 transition-colors flex items-center">
+                    <span className="mr-1">→</span> Sitemap
                   </Link>
                 </li>
-                <li className="mb-3">
-                  <Link href="#" className="hover:underline">
-                    LifePub blog
+                <li>
+                  <Link href="#" className="hover:text-blue-300 transition-colors flex items-center">
+                    <span className="mr-1">→</span> LifePub blog
                   </Link>
                 </li>
-                <li className="mb-3">
-                  <Link href="#" className="hover:underline">
-                    LifePub United Kingdom
+                <li>
+                  <Link href="#" className="hover:text-blue-300 transition-colors flex items-center">
+                    <span className="mr-1">→</span> United Kingdom
                   </Link>
                 </li>
-                <li className="mb-3">
-                  <Link href="#" className="hover:underline">
-                    LifePub Germany
+                <li>
+                  <Link href="#" className="hover:text-blue-300 transition-colors flex items-center">
+                    <span className="mr-1">→</span> Germany
                   </Link>
                 </li>
-                <li className="mb-3">
-                  <Link href="#" className="hover:underline">
-                    LifePub Canada
+                <li>
+                  <Link href="#" className="hover:text-blue-300 transition-colors flex items-center">
+                    <span className="mr-1">→</span> Canada
                   </Link>
                 </li>
               </ul>
@@ -102,26 +107,26 @@ const Footer: FC = () => {
 
             {/* Sell column */}
             <div className="w-1/2 md:w-1/4 mb-6 md:mb-0">
-              <h3 className="text-lg font-bold mb-4">Sell</h3>
-              <ul>
-                <li className="mb-3">
-                  <Link href="#" className="hover:underline">
-                    Sell on LifePub
+              <h3 className="text-lg font-bold mb-4 border-b border-blue-700 pb-2">Sell</h3>
+              <ul className="space-y-3">
+                <li>
+                  <Link href="#" className="hover:text-blue-300 transition-colors flex items-center">
+                    <span className="mr-1">→</span> Sell on LifePub
                   </Link>
                 </li>
-                <li className="mb-3">
-                  <Link href="#" className="hover:underline">
-                    Teams
+                <li>
+                  <Link href="#" className="hover:text-blue-300 transition-colors flex items-center">
+                    <span className="mr-1">→</span> Teams
                   </Link>
                 </li>
-                <li className="mb-3">
-                  <Link href="#" className="hover:underline">
-                    Forums
+                <li>
+                  <Link href="#" className="hover:text-blue-300 transition-colors flex items-center">
+                    <span className="mr-1">→</span> Forums
                   </Link>
                 </li>
-                <li className="mb-3">
-                  <Link href="#" className="hover:underline">
-                    Affiliates & Creators
+                <li>
+                  <Link href="#" className="hover:text-blue-300 transition-colors flex items-center">
+                    <span className="mr-1">→</span> Affiliates & Creators
                   </Link>
                 </li>
               </ul>
@@ -129,36 +134,36 @@ const Footer: FC = () => {
 
             {/* About column */}
             <div className="w-1/2 md:w-1/4 mb-6 md:mb-0">
-              <h3 className="text-lg font-bold mb-4">About</h3>
-              <ul>
-                <li className="mb-3">
-                  <Link href="#" className="hover:underline">
-                    LifePub, Inc.
+              <h3 className="text-lg font-bold mb-4 border-b border-blue-700 pb-2">About</h3>
+              <ul className="space-y-3">
+                <li>
+                  <Link href="#" className="hover:text-blue-300 transition-colors flex items-center">
+                    <span className="mr-1">→</span> LifePub, Inc.
                   </Link>
                 </li>
-                <li className="mb-3">
-                  <Link href="#" className="hover:underline">
-                    Policies
+                <li>
+                  <Link href="#" className="hover:text-blue-300 transition-colors flex items-center">
+                    <span className="mr-1">→</span> Policies
                   </Link>
                 </li>
-                <li className="mb-3">
-                  <Link href="#" className="hover:underline">
-                    Investors
+                <li>
+                  <Link href="#" className="hover:text-blue-300 transition-colors flex items-center">
+                    <span className="mr-1">→</span> Investors
                   </Link>
                 </li>
-                <li className="mb-3">
-                  <Link href="#" className="hover:underline">
-                    Careers
+                <li>
+                  <Link href="#" className="hover:text-blue-300 transition-colors flex items-center">
+                    <span className="mr-1">→</span> Careers
                   </Link>
                 </li>
-                <li className="mb-3">
-                  <Link href="#" className="hover:underline">
-                    Press
+                <li>
+                  <Link href="#" className="hover:text-blue-300 transition-colors flex items-center">
+                    <span className="mr-1">→</span> Press
                   </Link>
                 </li>
-                <li className="mb-3">
-                  <Link href="#" className="hover:underline">
-                    Impact
+                <li>
+                  <Link href="#" className="hover:text-blue-300 transition-colors flex items-center">
+                    <span className="mr-1">→</span> Impact
                   </Link>
                 </li>
               </ul>
@@ -166,22 +171,25 @@ const Footer: FC = () => {
 
             {/* Help column */}
             <div className="w-1/2 md:w-1/4">
-              <h3 className="text-lg font-bold mb-4">Help</h3>
-              <ul>
-                <li className="mb-3">
-                  <Link href="#" className="hover:underline">
-                    Help Center
+              <h3 className="text-lg font-bold mb-4 border-b border-blue-700 pb-2">Help</h3>
+              <ul className="space-y-3">
+                <li>
+                  <Link href="#" className="hover:text-blue-300 transition-colors flex items-center">
+                    <span className="mr-1">→</span> Help Center
                   </Link>
                 </li>
-                <li className="mb-3">
-                  <Link href="#" className="hover:underline">
-                    Privacy settings
+                <li>
+                  <Link href="#" className="hover:text-blue-300 transition-colors flex items-center">
+                    <span className="mr-1">→</span> Privacy settings
                   </Link>
                 </li>
               </ul>
-              <div className="flex gap-4 mt-4">
+
+              {/* Social media */}
+              <h4 className="text-base font-semibold mt-6 mb-3">Follow us</h4>
+              <div className="flex gap-3">
                 <Link href="#" aria-label="Instagram">
-                  <div className="bg-white w-8 h-8 rounded-full flex items-center justify-center text-blue-900">
+                  <div className="bg-white w-9 h-9 rounded-full flex items-center justify-center text-blue-900 hover:bg-blue-100 transition-colors duration-300 hover:shadow-md">
                     <svg
                       className="h-5 w-5"
                       fill="currentColor"
@@ -193,7 +201,7 @@ const Footer: FC = () => {
                   </div>
                 </Link>
                 <Link href="#" aria-label="Facebook">
-                  <div className="bg-white w-8 h-8 rounded-full flex items-center justify-center text-blue-900">
+                  <div className="bg-white w-9 h-9 rounded-full flex items-center justify-center text-blue-900 hover:bg-blue-100 transition-colors duration-300 hover:shadow-md">
                     <svg
                       className="h-5 w-5"
                       fill="currentColor"
@@ -204,7 +212,7 @@ const Footer: FC = () => {
                   </div>
                 </Link>
                 <Link href="#" aria-label="Pinterest">
-                  <div className="bg-white w-8 h-8 rounded-full flex items-center justify-center text-blue-900">
+                  <div className="bg-white w-9 h-9 rounded-full flex items-center justify-center text-blue-900 hover:bg-blue-100 transition-colors duration-300 hover:shadow-md">
                     <svg
                       className="h-5 w-5"
                       fill="currentColor"
@@ -215,7 +223,7 @@ const Footer: FC = () => {
                   </div>
                 </Link>
                 <Link href="#" aria-label="YouTube">
-                  <div className="bg-white w-8 h-8 rounded-full flex items-center justify-center text-blue-900">
+                  <div className="bg-white w-9 h-9 rounded-full flex items-center justify-center text-blue-900 hover:bg-blue-100 transition-colors duration-300 hover:shadow-md">
                     <svg
                       className="h-5 w-5"
                       fill="currentColor"
@@ -232,32 +240,38 @@ const Footer: FC = () => {
       </div>
 
       {/* Bottom footer */}
-      <div className="bg-blue-950 text-white py-4">
-        <div className="container mx-auto px-5 flex flex-col md:flex-row justify-between items-center">
-          <div className="flex items-center mb-4 md:mb-0">
-            <div className="w-5 h-4 bg-gray-200 rounded mr-2"></div>
-            <span className="text-sm">
-              United States | English (US) | $ (USD)
-            </span>
-          </div>
+      <div className="bg-blue-500 text-white py-5">
+        <div className="container mx-auto px-5">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="flex items-center mb-4 md:mb-0">
+              <div className="flex items-center gap-2 bg-blue-600 px-3 py-1.5 rounded-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span className="text-sm">
+                  United States | English (US) | $ (USD)
+                </span>
+              </div>
+            </div>
 
-          <div className="flex flex-wrap justify-center md:justify-end text-sm">
-            <span className="mr-4">© 2025 LifePub, Inc.</span>
-            <Link href="#" className="mx-2 hover:underline">
-              Terms of Use
-            </Link>
-            <Link href="#" className="mx-2 hover:underline">
-              Privacy
-            </Link>
-            <Link href="#" className="mx-2 hover:underline">
-              Interest-based ads
-            </Link>
-            <Link href="#" className="mx-2 hover:underline">
-              Local Shops
-            </Link>
-            <Link href="#" className="mx-2 hover:underline">
-              Regions
-            </Link>
+            <div className="flex flex-wrap justify-center md:justify-end text-sm space-x-4">
+              <span className="text-white-100">© 2025 LifePub, Inc.</span>
+              <Link href="#" className="hover:text-blue-300 transition-colors">
+                Terms of Use
+              </Link>
+              <Link href="#" className="hover:text-blue-300 transition-colors">
+                Privacy
+              </Link>
+              <Link href="#" className="hover:text-blue-300 transition-colors">
+                Interest-based ads
+              </Link>
+              <Link href="#" className="hover:text-blue-300 transition-colors">
+                Local Shops
+              </Link>
+              <Link href="#" className="hover:text-blue-300 transition-colors">
+                Regions
+              </Link>
+            </div>
           </div>
         </div>
       </div>

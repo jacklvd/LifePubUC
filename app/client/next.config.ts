@@ -5,18 +5,6 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
-    domains: [
-      'images.unsplash.com',
-      'images.pexels.com',
-      'example.com',
-      'i5.walmartimages.com',
-      'm.media-amazon.com',
-      'as2.ftcdn.net',
-      'cdnp.sanmar.com',
-      'www.flinnsci.com',
-      'i.pinimg.com',
-      'picsum.photos',
-    ],
     remotePatterns: [
       {
         protocol: 'https',
@@ -110,6 +98,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'upcdn.io',
       },
+      {
+        protocol: 'https',
+        hostname: 'picsum.photos',
+      }
     ],
   },
 }

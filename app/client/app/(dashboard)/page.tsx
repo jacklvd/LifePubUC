@@ -1,176 +1,237 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { eventsTemp, landingPageIcons, eventTabs } from '@/constants'
-// import SearchBar from './components/search-bar'
-import FeaturedCarousel from './components/carousel'
-import CategoryIcons from './components/category-icons'
-import LocationSelector from './components/locations'
-import EventTabs from './components/event-tabs'
+import { getAllEvents, getEventsByTimeframe } from '@/lib/actions/event-actions'
+import { toast } from 'sonner'
 import EventGrid from './components/event-grid'
-import PopularCategories from './components/popular'
 import UpcomingTimeline from './components/upcoming'
 import Newsletter from './components/newletter'
 import CreatorCTA from './components/creatorcta'
-import { getAllEvents } from '@/lib/actions/event-actions'
-
 import ShopMakerCommunities from '@/components/shop-maker'
+import EventCarousel from './components/carousel'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+} from '@/components/ui/select'
+import { Calendar } from 'lucide-react'
 
 const LandingPage = () => {
-  // Updated state with proper types
+  // State with proper types
   const [events, setEvents] = useState<Event[]>([])
   const [loading, setLoading] = useState<boolean>(true)
-  const [activeTab, setActiveTab] = useState<number>(1) // "For you" tab active by default
-  const [activeCategory, setActiveCategory] = useState<number | null>(null)
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [hasMoreEvents, setHasMoreEvents] = useState<boolean>(false)
-  const [location, setLocation] = useState<string>('Cincinnati')
-  const [sortOption, setSortOption] = useState<string>('newest')
+  const [dateFilter, setDateFilter] = useState<'all' | 'today' | 'this-week' | 'this-month' | 'upcoming'>('all')
   const [savedEvents, setSavedEvents] = useState<string[]>([])
+  const [page, setPage] = useState<number>(1)
+  const [upcomingEvents, setUpcomingEvents] = useState<{
+    today: Event[];
+    tomorrow: Event[];
+    weekend: Event[];
+    nextWeek: Event[];
+  }>({
+    today: [],
+    tomorrow: [],
+    weekend: [],
+    nextWeek: []
+  })
 
-  // Fetch events based on active tab and filters
+  // Date filter options - simplified to 4 options plus default
+  const dateFilterOptions = [
+    { value: 'all', label: 'All Events' },
+    { value: 'today', label: 'Today' },
+    { value: 'this-week', label: 'This Week' },
+    { value: 'this-month', label: 'This Month' },
+    { value: 'upcoming', label: 'Future Events' },
+  ]
+
+  // Fetch events based on date filter
   useEffect(() => {
-    fetchEvents()
-  }, [activeTab, activeCategory, location, sortOption])
+    fetchEvents();
+  }, [dateFilter]);
+
+  // Fetch upcoming events for different timeframes
+  useEffect(() => {
+    fetchUpcomingEvents();
+  }, []);
+
+  // Function to fetch upcoming events for different timeframes
+  const fetchUpcomingEvents = async (): Promise<void> => {
+    try {
+      // Reset state
+      setUpcomingEvents({
+        today: [],
+        tomorrow: [],
+        weekend: [],
+        nextWeek: []
+      });
+
+      // Fetch events for each timeframe
+      const [todayEvents, tomorrowEvents, weekendEvents, nextWeekEvents] = await Promise.all([
+        getEventsByTimeframe('today', 4),
+        getEventsByTimeframe('tomorrow', 4),
+        getEventsByTimeframe('weekend', 4),
+        getEventsByTimeframe('next-week', 4)
+      ]);
+
+      // Update state with fetched events
+      setUpcomingEvents({
+        today: todayEvents || [],
+        tomorrow: tomorrowEvents || [],
+        weekend: weekendEvents || [],
+        nextWeek: nextWeekEvents || []
+      });
+    } catch (error) {
+      console.error('Error fetching upcoming events:', error);
+      toast.error("Couldn't fetch upcoming events. Please try again later.");
+    }
+  };
 
   // Function to fetch events from API
   const fetchEvents = async (): Promise<void> => {
-    setLoading(true)
+    setLoading(true);
     try {
-      // Create params object that matches GetAllEventsParams
+      // Reset page when filters change
+      setPage(1);
+
+      // Create params object
       const params: GetAllEventsParams = {
-        limit: 8,
-        sort: sortOption as 'newest' | 'oldest' | 'price-low' | 'price-high',
-        location: location,
+        limit: dateFilter === 'all' ? 10 : 12
       }
 
-      if (activeCategory !== null) {
-        params.category = landingPageIcons[activeCategory].title.toLowerCase()
+      // Add date filter if not "all"
+      if (dateFilter !== 'all') {
+        params.dateFilter = dateFilter;
       }
 
-      // Handle different tabs
-      if (eventTabs[activeTab] === 'Today') {
-        params.date = 'today'
-      } else if (eventTabs[activeTab] === 'This weekend') {
-        params.date = 'weekend'
-      } else if (eventTabs[activeTab] === 'For you') {
-        // For "For you" tab, you might want to add a special parameter
-        params.status = 'on sale' // Adjust according to your API
+      if (searchQuery) {
+        params.search = searchQuery;
       }
 
       // Use getAllEvents for all queries
-      const fetchedEvents = await getAllEvents(params)
-      setEvents(fetchedEvents)
-      setHasMoreEvents(fetchedEvents.length >= 8)
-      setLoading(false)
+      const fetchedEvents = await getAllEvents(params);
 
-      // For demo purposes only - using mock data
-      // Comment this out when you have real API integration
-      setTimeout(() => {
-        // Type assertion to ensure temp data matches your Event type
-        const tempEventsTyped = eventsTemp as unknown as Event[]
-        setEvents(tempEventsTyped)
-        setHasMoreEvents(true)
-        setLoading(false)
-      }, 800)
+      // Update state with fetched events
+      setEvents(fetchedEvents || []);
+      setHasMoreEvents((fetchedEvents?.length || 0) >= (dateFilter === 'all' ? 10 : 12));
+      setLoading(false);
     } catch (error) {
-      console.error('Error fetching events:', error)
-      // Type assertion for fallback
-      const tempEventsTyped = eventsTemp as unknown as Event[]
-      setEvents(tempEventsTyped)
-      setLoading(false)
+      console.error('Error fetching events:', error);
+      setEvents([]);
+      setLoading(false);
+      toast.error("Couldn't fetch events. Please try again later.")
     }
   }
 
   const handleLoadMore = async (): Promise<void> => {
-    setLoading(true)
+    setLoading(true);
     try {
-      // For real implementation, pass an offset/page parameter
+      const nextPage = page + 1;
+
+      // Create params object
       const params: GetAllEventsParams = {
-        limit: 8,
-        sort: sortOption as 'newest' | 'oldest' | 'price-low' | 'price-high',
-        location: location,
+        limit: dateFilter === 'all' ? 10 : 12,
+        page: nextPage
       }
 
-      if (activeCategory !== null) {
-        params.category = landingPageIcons[activeCategory].title.toLowerCase()
+      // Add date filter if not "all"
+      if (dateFilter !== 'all') {
+        params.dateFilter = dateFilter;
       }
 
-      // You would also add an offset/page parameter here
-      const moreEvents = await getAllEvents(params)
-      setEvents([...events, ...moreEvents])
-      setLoading(false)
+      if (searchQuery) {
+        params.search = searchQuery;
+      }
 
-      // For demo, add more mock events
-      setTimeout(() => {
-        const tempEventsTyped = eventsTemp as unknown as Event[]
-        setEvents([...events, ...tempEventsTyped])
-        setLoading(false)
-      }, 800)
+      const moreEvents = await getAllEvents(params);
+
+      if (moreEvents && moreEvents.length > 0) {
+        setEvents(prevEvents => [...prevEvents, ...moreEvents]);
+        setPage(nextPage);
+        setHasMoreEvents(moreEvents.length >= (dateFilter === 'all' ? 10 : 12));
+      } else {
+        setHasMoreEvents(false);
+      }
+
+      setLoading(false);
     } catch (error) {
-      console.error('Error loading more events:', error)
-      setLoading(false)
+      console.error('Error loading more events:', error);
+      setLoading(false);
+      toast.error("Couldn't load more events. Please try again later.");
     }
   }
 
   const toggleSaveEvent = (eventId: string): void => {
-    if (savedEvents.includes(eventId)) {
-      setSavedEvents(savedEvents.filter((id) => id !== eventId))
-    } else {
-      setSavedEvents([...savedEvents, eventId])
-    }
-    // In a real app, you would also sync this with the backend/database
+    setSavedEvents(prev => {
+      if (prev.includes(eventId)) {
+        return prev.filter((id) => id !== eventId);
+      } else {
+        return [...prev, eventId];
+      }
+    });
   }
+
+  // Handle search
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    fetchEvents();
+  };
+
+  // Handle date filter change
+  const handleDateFilterChange = (value: string) => {
+    setDateFilter(value as 'all' | 'today' | 'this-week' | 'this-month' | 'upcoming');
+  };
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
-      <FeaturedCarousel />
+      <EventCarousel />
 
-      <CategoryIcons
-        icons={landingPageIcons}
-        activeCategory={activeCategory}
-        setActiveCategory={setActiveCategory}
-      />
+      {/* Date Filter Selector */}
+      <div className="flex items-center mb-8">
+        <h2 className="text-base md:text-lg font-medium">Browse events by date</h2>
+        <div className="ml-2 relative min-w-[200px]">
+          <Select value={dateFilter} onValueChange={handleDateFilterChange}>
+            <SelectTrigger className="w-full">
+              <div className="flex items-center">
+                <Calendar className="h-4 w-4 mr-2 text-gray-500" />
+                <span>
+                  {dateFilterOptions.find(option => option.value === dateFilter)?.label || 'All Events'}
+                </span>
+              </div>
+            </SelectTrigger>
+            <SelectContent className="bg-white-100">
+              {dateFilterOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
 
-      <LocationSelector
-        location={location}
-        setLocation={setLocation}
-        locations={[
-          'Cincinnati',
-          'New York',
-          'Los Angeles',
-          'Chicago',
-          'Miami',
-        ]}
-      />
-
-      <EventTabs
-        tabs={eventTabs}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-      />
-
+      {/* Event Grid */}
       <EventGrid
         events={events}
         loading={loading}
-        activeTab={activeTab}
-        activeCategory={activeCategory}
-        setActiveCategory={setActiveCategory}
+        activeTab={0}
+        activeCategory={null}
+        setActiveCategory={() => { }}
         savedEvents={savedEvents}
         toggleSaveEvent={toggleSaveEvent}
         fetchEvents={fetchEvents}
         hasMoreEvents={hasMoreEvents}
         handleLoadMore={handleLoadMore}
         searchQuery={searchQuery}
+        onSearch={handleSearch}
       />
 
-      <PopularCategories
-        setActiveCategory={setActiveCategory}
-        setActiveTab={setActiveTab}
+      {/* Upcoming Events Timeline */}
+      <UpcomingTimeline
+        upcomingEvents={upcomingEvents}
       />
-
-      <UpcomingTimeline location={location} />
 
       <CreatorCTA />
 
