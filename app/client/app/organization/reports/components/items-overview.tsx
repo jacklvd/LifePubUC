@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useMemo } from 'react'
 import {
   PieChart,
@@ -33,25 +34,25 @@ const COLORS = [
 
 const ItemsOverview: React.FC<ItemsOverviewProps> = ({ products }) => {
   const categoryData = useMemo(() => {
-    const categories: Record<string, number> = {}
+    const categories: Record<string, { count: number; revenue: number }> = {}
 
     // Group products by category and sum their sales
     products.forEach((product) => {
-      const { category, sold } = product
-      if (categories[category]) {
-        categories[category] += sold
-      } else {
-        categories[category] = sold
+      const { category, sold, totalRevenue } = product
+      if (!categories[category]) {
+        categories[category] = { count: 0, revenue: 0 }
       }
+      categories[category].count++
+      categories[category].revenue += totalRevenue
     })
 
     // Convert to array format for chart
-    return Object.entries(categories).map(([name, value]) => ({
+    return Object.entries(categories).map(([name, { count, revenue }]) => ({
       name,
-      value,
+      value: count,
+      revenue,
     }))
   }, [products])
-
   // Handle case with no products
   if (products.length === 0) {
     return (
@@ -84,7 +85,15 @@ const ItemsOverview: React.FC<ItemsOverviewProps> = ({ products }) => {
               />
             ))}
           </Pie>
-          <Tooltip formatter={(value) => [`${value} items sold`, 'Sales']} />
+          <Tooltip
+            formatter={(value, name, props) => {
+              // Format based on what data we're showing
+              if (name === 'value') {
+                return [`${value} items`, 'Count']
+              }
+              return [`$${props.payload.revenue.toFixed(2)}`, 'Revenue']
+            }}
+          />
           <Legend />
         </PieChart>
       </ResponsiveContainer>

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 import React, { useEffect, useRef } from 'react'
-import { formatDate } from '@/lib/date-formatter'
+import { formatDate } from '@/lib/utils'
 import { formatTime } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/icons'

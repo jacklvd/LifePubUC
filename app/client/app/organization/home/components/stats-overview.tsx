@@ -4,12 +4,14 @@ import { Icon } from '@/components/icons'
 
 interface StatsOverviewProps {
   events?: Event[]
-  salesSummary: any
+  productCount?: number
+  totalSales?: number
 }
 
 const StatsOverview: React.FC<StatsOverviewProps> = ({
   events = [],
-  salesSummary,
+  productCount = 0,
+  totalSales = 0,
 }) => {
   // Count total events
   const totalEvents = events.length
@@ -61,7 +63,9 @@ const StatsOverview: React.FC<StatsOverviewProps> = ({
           <div className="flex justify-between items-center">
             <div>
               <p className="text-sm text-gray-600">Products</p>
-              <h3 className="text-2xl font-bold text-gray-800">12</h3>
+              <h3 className="text-2xl font-bold text-gray-800">
+                {productCount}
+              </h3>
             </div>
             <div className="bg-amber-100 p-2 rounded-full">
               <Icon name="ShoppingCart" className="h-6 w-6 text-amber-600" />
@@ -76,7 +80,7 @@ const StatsOverview: React.FC<StatsOverviewProps> = ({
             <div>
               <p className="text-sm text-gray-600">Total Sales</p>
               <h3 className="text-2xl font-bold text-gray-800">
-                ${salesSummary?.totalRevenue}
+                ${totalSales.toFixed(2)}
               </h3>
             </div>
             <div className="bg-green-100 p-2 rounded-full">
