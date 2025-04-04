@@ -66,24 +66,36 @@ export async function getItemById({
 export async function getItemsForSeller({
   status,
   page = 1,
-  limit = 10,
+  limit = 100, // Increased limit to get more items for reports
   sort = '-createdAt',
   q,
+  includeAll = false, // New parameter to get all items regardless of status
 }: {
   status?: string
   page?: number
   limit?: number
   sort?: string
   q?: string
+  includeAll?: boolean
 } = {}) {
   const session = await auth()
 
   if (!session?.user?.id) {
-    throw new Error('Authentication required')
+    return {
+      data: [],
+      pagination: {
+        total: 0,
+        page,
+        pages: 0,
+        limit,
+      },
+      error: "Authentication required",
+      requiresOnboarding: false
+    }
   }
 
   const queryParams = new URLSearchParams()
-  if (status) queryParams.append('status', status)
+  if (status && !includeAll) queryParams.append('status', status)
   if (page) queryParams.append('page', page.toString())
   if (limit) queryParams.append('limit', limit.toString())
   if (sort) queryParams.append('sort', sort)
@@ -99,13 +111,52 @@ export async function getItemsForSeller({
 
     if (!response.ok) {
       const errorData = await response.text()
-      throw new Error(errorData || 'Failed to fetch seller items')
+      // Check if the error is related to Stripe onboarding
+      if (errorData.includes("Stripe Connect onboarding")) {
+        return {
+          data: [],
+          pagination: {
+            total: 0,
+            page,
+            pages: 0,
+            limit,
+          },
+          error: "Seller has not completed Stripe Connect onboarding",
+          requiresOnboarding: true
+        }
+      }
+      return {
+        data: [],
+        pagination: {
+          total: 0,
+          page,
+          pages: 0,
+          limit,
+        },
+        error: errorData || 'Failed to fetch seller items',
+        requiresOnboarding: false
+      }
     }
 
-    return await response.json()
+    const result = await response.json()
+    return {
+      ...result,
+      error: null,
+      requiresOnboarding: false
+    }
   } catch (error) {
     console.error('Error fetching seller items:', error)
-    throw error
+    return {
+      data: [],
+      pagination: {
+        total: 0,
+        page,
+        pages: 0,
+        limit,
+      },
+      error: error instanceof Error ? error.message : 'Unknown error occurred',
+      requiresOnboarding: false
+    }
   }
 }
 

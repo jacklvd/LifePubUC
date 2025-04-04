@@ -1,15 +1,39 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-interface GetAllEventsParams {
-  category?: string
-  status?: string
-  limit?: number
-  sort?: 'newest' | 'oldest' | 'price-low' | 'price-high'
-  date?: 'today' | 'weekend' | 'upcoming'
-  location?: string
-  search?: string
-  isOnline?: boolean
+//types/types.d.ts
+interface ProcessedItemData {
+  title: string
+  price: number
+  sold: number
+  imageUrl: string
+  stock: number
+  totalRevenue: number
+  category: string
 }
 
+interface ProductData {
+  _id: string
+  title: string
+  price: {
+    amount: number
+  }
+  status: string
+  category: string
+  images: string[]
+  views: number
+  stock?: number
+  createdAt: string
+}
+
+interface GetAllEventsParams {
+  category?: string;
+  status?: string;
+  limit?: number;
+  page?: number;
+  sort?: 'newest' | 'oldest' | 'price-low' | 'price-high';
+  dateFilter?: 'today' | 'this-week' | 'this-month' | 'upcoming';
+  search?: string;
+  isOnline?: boolean;
+}
 interface EventState {
   // UI State
   events: Event[]

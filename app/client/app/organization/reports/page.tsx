@@ -3,7 +3,14 @@
 
 import React, { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
-import { format, subMonths, startOfMonth, eachMonthOfInterval } from 'date-fns'
+import {
+  format,
+  subMonths,
+  startOfMonth,
+  eachMonthOfInterval,
+  parseISO,
+  isSameMonth
+} from 'date-fns'
 import dynamic from 'next/dynamic'
 import {
   Card,
@@ -21,6 +28,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { getUserEvents } from '@/lib/actions/event-actions'
+import { getItemsForSeller } from '@/lib/actions/item-actions'
 import { Icon } from '@/components/icons'
 
 // Lazy load chart components
@@ -45,6 +53,16 @@ const ItemsOverview = dynamic(() => import('./components/items-overview'), {
 })
 
 const RevenueOverview = dynamic(() => import('./components/revenue'), {
+  loading: () => <LoadingChart />,
+  ssr: false,
+})
+
+const RevenueBySource = dynamic(() => import('./components/revenue-source'), {
+  loading: () => <LoadingChart />,
+  ssr: false,
+})
+
+const MonthlyComparison = dynamic(() => import('./components/monthly-comparison'), {
   loading: () => <LoadingChart />,
   ssr: false,
 })
@@ -76,46 +94,6 @@ const LoadingSummaryCard: React.FC = () => (
     </CardContent>
   </Card>
 )
-
-// Mock data for products
-const mockProducts = [
-  {
-    title: 'Event Logo T-Shirt',
-    price: 24.99,
-    sold: 37,
-    imageUrl: '/api/placeholder/400/220',
-    stock: 120,
-    totalRevenue: 924.63,
-    category: 'Apparel',
-  },
-  {
-    title: 'VIP Experience Package',
-    price: 99.99,
-    sold: 12,
-    imageUrl: '/api/placeholder/400/220',
-    stock: 25,
-    totalRevenue: 1199.88,
-    category: 'Experience',
-  },
-  {
-    title: 'Commemorative Poster',
-    price: 19.99,
-    sold: 28,
-    imageUrl: '/api/placeholder/400/220',
-    stock: 72,
-    totalRevenue: 559.72,
-    category: 'Merchandise',
-  },
-  {
-    title: 'Digital Album Download',
-    price: 12.99,
-    sold: 65,
-    imageUrl: '/api/placeholder/400/220',
-    stock: Infinity,
-    totalRevenue: 844.35,
-    category: 'Digital',
-  },
-]
 
 // Interface for time period options
 interface TimeRange {
@@ -164,33 +142,94 @@ const generateMonthlyData = (months: number) => {
   return result
 }
 
+const calculatePercentageChange = (currentValue: number, previousValue: number): number => {
+  if (previousValue === 0) return currentValue > 0 ? 100 : 0
+  return Math.round(((currentValue - previousValue) / previousValue) * 100)
+}
+
+// Get current month and previous month items
+const getCurrentAndPreviousMonthData = (items: ProductData[]) => {
+  const currentMonthItems: ProductData[] = []
+  const previousMonthItems: ProductData[] = []
+  const now = new Date()
+
+  items.forEach(item => {
+    try {
+      const itemDate = parseISO(item.createdAt)
+      if (isSameMonth(itemDate, now)) {
+        currentMonthItems.push(item)
+      } else if (isSameMonth(itemDate, subMonths(now, 1))) {
+        previousMonthItems.push(item)
+      }
+    } catch (error) {
+      console.error('Error parsing date:', error)
+    }
+  })
+
+  return { currentMonthItems, previousMonthItems }
+}
+
 const ReportsPage: React.FC = () => {
   const { data: session } = useSession()
   const [events, setEvents] = useState<Event[]>([])
+  const [items, setItems] = useState<ProductData[]>([])
+  const [processedItems, setProcessedItems] = useState<ProcessedItemData[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [timeRange, setTimeRange] = useState<string>('6m')
   const [chartData, setChartData] = useState<any[]>([])
   const [activeTab, setActiveTab] = useState<string>('events')
   const userEmail = session?.user?.email || ''
+  const userId = session?.user?.id || ''
 
   // Fetch events only when needed
   useEffect(() => {
-    const fetchEvents = async () => {
-      if (!userEmail) return
+    const fetchData = async () => {
+      if (!userEmail || !userId) return
 
       try {
         setIsLoading(true)
-        const fetchedEvents = await getUserEvents(userEmail)
+
+        // Fetch events and items in parallel
+        const [fetchedEvents, fetchedItems] = await Promise.all([
+          getUserEvents(userEmail),
+          getItemsForSeller() // Fetch all items for the seller
+        ])
+
         setEvents(fetchedEvents)
+
+        // Process the items data
+        if (fetchedItems && fetchedItems.data) {
+          setItems(fetchedItems.data)
+
+          // Process items to match the format needed for charts
+          const processed = fetchedItems.data.map((item: { status: string; title: any; price: { amount: any }; images: string | any[]; category: any }) => {
+            // Determine if item is sold
+            const isSold = item.status === 'sold'
+
+            return {
+              title: item.title,
+              price: item.price.amount,
+              sold: isSold ? 1 : 0, // Count as 1 if sold, 0 if not
+              imageUrl: item.images && item.images.length > 0
+                ? item.images[0]
+                : '/api/placeholder/400/220',
+              stock: isSold ? 0 : 1, // Simple inventory indication
+              totalRevenue: isSold ? item.price.amount : 0,
+              category: item.category || 'Other' // Use category from DB or default to "Other"
+            }
+          });
+
+          setProcessedItems(processed)
+        }
       } catch (error) {
-        console.error('Error fetching events:', error)
+        console.error('Error fetching data:', error)
       } finally {
         setIsLoading(false)
       }
     }
 
-    fetchEvents()
-  }, [userEmail])
+    fetchData()
+  }, [userEmail, userId])
 
   // Generate chart data only when time range changes
   useEffect(() => {
@@ -219,16 +258,80 @@ const ReportsPage: React.FC = () => {
   const draftEvents = events.filter((event) => event.status === 'draft').length
   const liveEvents = events.filter((event) => event.status === 'on sale').length
 
-  // Calculate revenue data from mock products
-  // const totalProducts = mockProducts.length
-  const totalProductsSold = mockProducts.reduce(
+  const totalItemsSold = processedItems.reduce(
     (sum, product) => sum + product.sold,
-    0,
+    0
   )
-  const totalRevenue = mockProducts.reduce(
+  const totalRevenue = processedItems.reduce(
     (sum, product) => sum + product.totalRevenue,
-    0,
+    0
   )
+
+  // Calculate revenue statistics
+  const { currentMonthItems, previousMonthItems } = getCurrentAndPreviousMonthData(items)
+
+  const currentMonthSold = currentMonthItems.filter(item => item.status === 'sold').length
+  const previousMonthSold = previousMonthItems.filter(item => item.status === 'sold').length
+  const soldPercentChange = calculatePercentageChange(currentMonthSold, previousMonthSold)
+
+  const currentMonthRevenue = currentMonthItems
+    .filter(item => item.status === 'sold')
+    .reduce((sum, item) => sum + item.price.amount, 0)
+
+  const previousMonthRevenue = previousMonthItems
+    .filter(item => item.status === 'sold')
+    .reduce((sum, item) => sum + item.price.amount, 0)
+
+  const revenuePercentChange = calculatePercentageChange(currentMonthRevenue, previousMonthRevenue)
+
+  // Event related percentage changes (similar calculation)
+  const currentMonthEvents = events.filter(event => {
+    try {
+      // Handle both createdAt and date properties that could be string or Date
+      const createdAtDate =
+        // If createdAt exists and is a string, parse it
+        typeof event.createdAt === 'string' ? parseISO(event.createdAt) :
+          // If createdAt exists and is a Date, use it directly
+          event.createdAt instanceof Date ? event.createdAt :
+            // If date exists and is a string, parse it
+            typeof event.date === 'string' ? parseISO(event.date) :
+              // If date exists and is a Date, use it directly
+              event.date instanceof Date ? event.date :
+                // Fallback to current date if neither is valid
+                new Date();
+
+      return isSameMonth(createdAtDate, new Date());
+    } catch {
+      return false;
+    }
+  }).length;
+
+  const previousMonthEvents = events.filter(event => {
+    try {
+      // Handle both createdAt and date properties that could be string or Date
+      const createdAtDate =
+        // If createdAt exists and is a string, parse it
+        typeof event.createdAt === 'string' ? parseISO(event.createdAt) :
+          // If createdAt exists and is a Date, use it directly
+          event.createdAt instanceof Date ? event.createdAt :
+            // If date exists and is a string, parse it
+            typeof event.date === 'string' ? parseISO(event.date) :
+              // If date exists and is a Date, use it directly
+              event.date instanceof Date ? event.date :
+                // Fallback to current date if neither is valid
+                new Date();
+
+      return isSameMonth(createdAtDate, subMonths(new Date(), 1));
+    } catch {
+      return false;
+    }
+  }).length;
+
+  const eventsPercentChange = calculatePercentageChange(currentMonthEvents, previousMonthEvents)
+
+  // For upcoming events, calculate change from previous period
+  // NOW THIS IS DEFINED AFTER upcomingEvents IS DECLARED
+  const upcomingEventsPercentChange = calculatePercentageChange(upcomingEvents, upcomingEvents > 0 ? upcomingEvents - 1 : 0)
 
   // Only render the active tab content
   const renderTabContent = () => {
@@ -328,7 +431,7 @@ const ReportsPage: React.FC = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <ItemsOverview products={mockProducts} />
+                <ItemsOverview products={processedItems} />
               </CardContent>
             </Card>
 
@@ -361,32 +464,27 @@ const ReportsPage: React.FC = () => {
                           Revenue
                         </th>
                         <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          In Stock
+                          View
                         </th>
                       </tr>
                     </thead>
                     <tbody className="bg-white-100 divide-y divide-gray-200">
-                      {mockProducts.map((product, index) => (
-                        <tr key={index}>
+                      {items.map((item) => (
+                        <tr key={item._id}>
                           <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
-                            {product.title}
+                            {item.title}
                           </td>
                           <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                            {product.category}
+                            {item.category}
                           </td>
                           <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                            ${product.price.toFixed(2)}
+                            ${item.price.amount.toFixed(2)}
                           </td>
                           <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                            {product.sold}
+                            {item.status}
                           </td>
                           <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                            ${product.totalRevenue.toFixed(2)}
-                          </td>
-                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                            {product.stock === Infinity
-                              ? 'Unlimited'
-                              : product.stock}
+                            {item.views}
                           </td>
                         </tr>
                       ))}
@@ -408,7 +506,7 @@ const ReportsPage: React.FC = () => {
                 <CardDescription>Total revenue over time</CardDescription>
               </CardHeader>
               <CardContent>
-                <RevenueOverview data={chartData} isLoading={false} />
+                <RevenueOverview data={chartData} items={items} isLoading={false} />
               </CardContent>
             </Card>
 
@@ -421,8 +519,8 @@ const ReportsPage: React.FC = () => {
                     Breakdown of revenue sources
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="h-80 flex items-center justify-center bg-gray-50 rounded-md">
-                  <p className="text-gray-500">Revenue Breakdown Chart</p>
+                <CardContent>
+                  <RevenueBySource items={items} />
                 </CardContent>
               </Card>
 
@@ -433,8 +531,8 @@ const ReportsPage: React.FC = () => {
                     Revenue comparison to previous periods
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="h-80 flex items-center justify-center bg-gray-50 rounded-md">
-                  <p className="text-gray-500">Monthly Comparison Chart</p>
+                <CardContent>
+                  <MonthlyComparison data={chartData} items={items} />
                 </CardContent>
               </Card>
             </div>
@@ -495,10 +593,17 @@ const ReportsPage: React.FC = () => {
                     </div>
                   </div>
                   <div className="mt-4 flex items-center text-sm">
-                    <div className="text-green-500 flex items-center">
-                      <Icon name="TrendingUp" className="h-4 w-4 mr-1" />
-                      <span>12% increase</span>
-                    </div>
+                    {eventsPercentChange >= 0 ? (
+                      <div className="text-green-500 flex items-center">
+                        <Icon name="TrendingUp" className="h-4 w-4 mr-1" />
+                        <span>{eventsPercentChange}% increase</span>
+                      </div>
+                    ) : (
+                      <div className="text-red-500 flex items-center">
+                        <Icon name="TrendingDown" className="h-4 w-4 mr-1" />
+                        <span>{Math.abs(eventsPercentChange)}% decrease</span>
+                      </div>
+                    )}
                     <span className="text-gray-500 ml-2">from last month</span>
                   </div>
                 </CardContent>
@@ -518,10 +623,17 @@ const ReportsPage: React.FC = () => {
                     </div>
                   </div>
                   <div className="mt-4 flex items-center text-sm">
-                    <div className="text-green-500 flex items-center">
-                      <Icon name="TrendingUp" className="h-4 w-4 mr-1" />
-                      <span>5% increase</span>
-                    </div>
+                    {upcomingEventsPercentChange >= 0 ? (
+                      <div className="text-green-500 flex items-center">
+                        <Icon name="TrendingUp" className="h-4 w-4 mr-1" />
+                        <span>{upcomingEventsPercentChange}% increase</span>
+                      </div>
+                    ) : (
+                      <div className="text-red-500 flex items-center">
+                        <Icon name="TrendingDown" className="h-4 w-4 mr-1" />
+                        <span>{Math.abs(upcomingEventsPercentChange)}% decrease</span>
+                      </div>
+                    )}
                     <span className="text-gray-500 ml-2">from last month</span>
                   </div>
                 </CardContent>
@@ -534,7 +646,7 @@ const ReportsPage: React.FC = () => {
                       <p className="text-sm font-medium text-gray-500">
                         Products Sold
                       </p>
-                      <p className="text-3xl font-bold">{totalProductsSold}</p>
+                      <p className="text-3xl font-bold">{totalItemsSold}</p>
                     </div>
                     <div className="p-2 bg-amber-100 rounded-full">
                       <Icon
@@ -544,10 +656,17 @@ const ReportsPage: React.FC = () => {
                     </div>
                   </div>
                   <div className="mt-4 flex items-center text-sm">
-                    <div className="text-green-500 flex items-center">
-                      <Icon name="TrendingUp" className="h-4 w-4 mr-1" />
-                      <span>18% increase</span>
-                    </div>
+                    {soldPercentChange >= 0 ? (
+                      <div className="text-green-500 flex items-center">
+                        <Icon name="TrendingUp" className="h-4 w-4 mr-1" />
+                        <span>{soldPercentChange}% increase</span>
+                      </div>
+                    ) : (
+                      <div className="text-red-500 flex items-center">
+                        <Icon name="TrendingDown" className="h-4 w-4 mr-1" />
+                        <span>{Math.abs(soldPercentChange)}% decrease</span>
+                      </div>
+                    )}
                     <span className="text-gray-500 ml-2">from last month</span>
                   </div>
                 </CardContent>
@@ -572,10 +691,17 @@ const ReportsPage: React.FC = () => {
                     </div>
                   </div>
                   <div className="mt-4 flex items-center text-sm">
-                    <div className="text-green-500 flex items-center">
-                      <Icon name="TrendingUp" className="h-4 w-4 mr-1" />
-                      <span>24% increase</span>
-                    </div>
+                    {revenuePercentChange >= 0 ? (
+                      <div className="text-green-500 flex items-center">
+                        <Icon name="TrendingUp" className="h-4 w-4 mr-1" />
+                        <span>{revenuePercentChange}% increase</span>
+                      </div>
+                    ) : (
+                      <div className="text-red-500 flex items-center">
+                        <Icon name="TrendingDown" className="h-4 w-4 mr-1" />
+                        <span>{Math.abs(revenuePercentChange)}% decrease</span>
+                      </div>
+                    )}
                     <span className="text-gray-500 ml-2">from last month</span>
                   </div>
                 </CardContent>
