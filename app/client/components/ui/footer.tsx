@@ -65,40 +65,63 @@ const Footer: FC = () => {
           <div className="w-full md:w-3/4 flex flex-wrap md:flex-nowrap gap-8">
             {/* Shop column */}
             <div className="w-1/2 md:w-1/4 mb-6 md:mb-0">
-              <h3 className="text-lg font-bold mb-4 border-b border-blue-700 pb-2">Shop</h3>
+              <h3 className="text-lg font-bold mb-4 border-b border-blue-700 pb-2">
+                Shop
+              </h3>
               <ul className="space-y-3">
                 <li>
-                  <Link href="#" className="hover:text-blue-300 transition-colors flex items-center">
+                  <Link
+                    href="#"
+                    className="hover:text-blue-300 transition-colors flex items-center"
+                  >
                     <span className="mr-1">→</span> Gift cards
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="hover:text-blue-300 transition-colors flex items-center">
+                  <Link
+                    href="#"
+                    className="hover:text-blue-300 transition-colors flex items-center"
+                  >
                     <span className="mr-1">→</span> LifePub Registry
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="hover:text-blue-300 transition-colors flex items-center">
+                  <Link
+                    href="#"
+                    className="hover:text-blue-300 transition-colors flex items-center"
+                  >
                     <span className="mr-1">→</span> Sitemap
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="hover:text-blue-300 transition-colors flex items-center">
+                  <Link
+                    href="#"
+                    className="hover:text-blue-300 transition-colors flex items-center"
+                  >
                     <span className="mr-1">→</span> LifePub blog
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="hover:text-blue-300 transition-colors flex items-center">
+                  <Link
+                    href="#"
+                    className="hover:text-blue-300 transition-colors flex items-center"
+                  >
                     <span className="mr-1">→</span> United Kingdom
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="hover:text-blue-300 transition-colors flex items-center">
+                  <Link
+                    href="#"
+                    className="hover:text-blue-300 transition-colors flex items-center"
+                  >
                     <span className="mr-1">→</span> Germany
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="hover:text-blue-300 transition-colors flex items-center">
+                  <Link
+                    href="#"
+                    className="hover:text-blue-300 transition-colors flex items-center"
+                  >
                     <span className="mr-1">→</span> Canada
                   </Link>
                 </li>
@@ -107,25 +130,39 @@ const Footer: FC = () => {
 
             {/* Sell column */}
             <div className="w-1/2 md:w-1/4 mb-6 md:mb-0">
-              <h3 className="text-lg font-bold mb-4 border-b border-blue-700 pb-2">Sell</h3>
+              <h3 className="text-lg font-bold mb-4 border-b border-blue-700 pb-2">
+                Sell
+              </h3>
               <ul className="space-y-3">
                 <li>
-                  <Link href="#" className="hover:text-blue-300 transition-colors flex items-center">
+                  <Link
+                    href="#"
+                    className="hover:text-blue-300 transition-colors flex items-center"
+                  >
                     <span className="mr-1">→</span> Sell on LifePub
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="hover:text-blue-300 transition-colors flex items-center">
+                  <Link
+                    href="#"
+                    className="hover:text-blue-300 transition-colors flex items-center"
+                  >
                     <span className="mr-1">→</span> Teams
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="hover:text-blue-300 transition-colors flex items-center">
+                  <Link
+                    href="#"
+                    className="hover:text-blue-300 transition-colors flex items-center"
+                  >
                     <span className="mr-1">→</span> Forums
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="hover:text-blue-300 transition-colors flex items-center">
+                  <Link
+                    href="#"
+                    className="hover:text-blue-300 transition-colors flex items-center"
+                  >
                     <span className="mr-1">→</span> Affiliates & Creators
                   </Link>
                 </li>
@@ -134,35 +171,55 @@ const Footer: FC = () => {
 
             {/* About column */}
             <div className="w-1/2 md:w-1/4 mb-6 md:mb-0">
-              <h3 className="text-lg font-bold mb-4 border-b border-blue-700 pb-2">About</h3>
+              <h3 className="text-lg font-bold mb-4 border-b border-blue-700 pb-2">
+                About
+              </h3>
               <ul className="space-y-3">
                 <li>
-                  <Link href="#" className="hover:text-blue-300 transition-colors flex items-center">
+                  <Link
+                    href="#"
+                    className="hover:text-blue-300 transition-colors flex items-center"
+                  >
                     <span className="mr-1">→</span> LifePub, Inc.
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="hover:text-blue-300 transition-colors flex items-center">
+                  <Link
+                    href="#"
+                    className="hover:text-blue-300 transition-colors flex items-center"
+                  >
                     <span className="mr-1">→</span> Policies
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="hover:text-blue-300 transition-colors flex items-center">
+                  <Link
+                    href="#"
+                    className="hover:text-blue-300 transition-colors flex items-center"
+                  >
                     <span className="mr-1">→</span> Investors
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="hover:text-blue-300 transition-colors flex items-center">
+                  <Link
+                    href="#"
+                    className="hover:text-blue-300 transition-colors flex items-center"
+                  >
                     <span className="mr-1">→</span> Careers
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="hover:text-blue-300 transition-colors flex items-center">
+                  <Link
+                    href="#"
+                    className="hover:text-blue-300 transition-colors flex items-center"
+                  >
                     <span className="mr-1">→</span> Press
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="hover:text-blue-300 transition-colors flex items-center">
+                  <Link
+                    href="#"
+                    className="hover:text-blue-300 transition-colors flex items-center"
+                  >
                     <span className="mr-1">→</span> Impact
                   </Link>
                 </li>
@@ -171,15 +228,23 @@ const Footer: FC = () => {
 
             {/* Help column */}
             <div className="w-1/2 md:w-1/4">
-              <h3 className="text-lg font-bold mb-4 border-b border-blue-700 pb-2">Help</h3>
+              <h3 className="text-lg font-bold mb-4 border-b border-blue-700 pb-2">
+                Help
+              </h3>
               <ul className="space-y-3">
                 <li>
-                  <Link href="#" className="hover:text-blue-300 transition-colors flex items-center">
+                  <Link
+                    href="#"
+                    className="hover:text-blue-300 transition-colors flex items-center"
+                  >
                     <span className="mr-1">→</span> Help Center
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="hover:text-blue-300 transition-colors flex items-center">
+                  <Link
+                    href="#"
+                    className="hover:text-blue-300 transition-colors flex items-center"
+                  >
                     <span className="mr-1">→</span> Privacy settings
                   </Link>
                 </li>
@@ -245,8 +310,19 @@ const Footer: FC = () => {
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center mb-4 md:mb-0">
               <div className="flex items-center gap-2 bg-blue-600 px-3 py-1.5 rounded-lg">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
                 </svg>
                 <span className="text-sm">
                   United States | English (US) | $ (USD)

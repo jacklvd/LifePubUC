@@ -7,105 +7,109 @@ import { Button } from '@/components/ui/button'
 import { extractCity } from '@/lib/utils'
 
 interface EventSmallCardProps {
-  event: Event;
-  isSaved?: boolean;
-  onToggleSave?: (id: string) => void;
+  event: Event
+  isSaved?: boolean
+  onToggleSave?: (id: string) => void
 }
 
 const EventSmallCard: React.FC<EventSmallCardProps> = ({
   event,
   isSaved = false,
-  onToggleSave
+  onToggleSave,
 }) => {
   // Format the time display
   const formatTime = (time: string | undefined) => {
-    if (!time) return '';
+    if (!time) return ''
 
     // If time is already in AM/PM format, return as is
     if (time.includes('AM') || time.includes('PM')) {
-      return time;
+      return time
     }
 
     // Try to format 24h time to 12h time
     try {
-      const [hours, minutes] = time.split(':').map(num => parseInt(num, 10));
+      const [hours, minutes] = time.split(':').map((num) => parseInt(num, 10))
 
       if (isNaN(hours) || isNaN(minutes)) {
-        return time;
+        return time
       }
 
-      const period = hours >= 12 ? 'PM' : 'AM';
-      const formattedHours = hours % 12 || 12; // Convert 0 to 12 for 12 AM
+      const period = hours >= 12 ? 'PM' : 'AM'
+      const formattedHours = hours % 12 || 12 // Convert 0 to 12 for 12 AM
 
-      return `${formattedHours}:${minutes.toString().padStart(2, '0')} ${period}`;
+      return `${formattedHours}:${minutes.toString().padStart(2, '0')} ${period}`
     } catch (error: any) {
-      console.error('Error formatting time:', error);
-      return time;
+      console.error('Error formatting time:', error)
+      return time
     }
-  };
+  }
 
   // Extract location city only
   const getLocationCity = (location: string | undefined) => {
-    if (!location) return '';
+    if (!location) return ''
 
     // Check if we have access to venue mapping
-    const venueMapping = typeof window !== 'undefined' ? (window as any).venueToStandardLocation : null;
+    const venueMapping =
+      typeof window !== 'undefined'
+        ? (window as any).venueToStandardLocation
+        : null
     if (venueMapping && venueMapping[location]) {
       // Use the mapped city instead of the venue name
-      return extractCity(venueMapping[location]);
+      return extractCity(venueMapping[location])
     }
 
     // Handle venues directly
-    const city = extractCity(location);
+    const city = extractCity(location)
 
     // Check if this is likely a venue rather than a city
-    const isVenue = /^\d+/.test(city) ||
+    const isVenue =
+      /^\d+/.test(city) ||
       city.includes('Museum') ||
       city.includes('Hotel') ||
       city.includes('Center') ||
       city.includes('Plaza') ||
       city.includes('Bar') ||
-      city.includes('Restaurant');
+      city.includes('Restaurant')
 
     if (isVenue) {
       // Try to extract the actual city from known venues
       if (venueToCity[city]) {
-        return venueToCity[city];
+        return venueToCity[city]
       }
 
       // If we can't map it, just return the venue name
-      return city;
+      return city
     }
 
-    return city;
-  };
+    return city
+  }
 
   // Map of known venues to their cities
   const venueToCity: Record<string, string> = {
     'Museum of Science': 'Boston',
     'New England Aquarium': 'Boston',
     'Hilton Boston Park Plaza': 'Boston',
-    'Let\'s Go Racing': 'Boston',
+    "Let's Go Racing": 'Boston',
     '3206 Colerain Avenue': 'Cincinnati',
     'Far Out Ice Cream Express': 'Portland',
     'Hopewell Bar & Kitchen': 'Allston',
     'IUE-CWA Local 201': 'Lynn',
     // Add more mappings as needed
-  };
+  }
 
   // Safely handle event properties
-  const { eventId, title, media, startTime, location } = event || {};
-  const cityName = location ? getLocationCity(location) : '';
+  const { eventId, title, media, startTime, location } = event || {}
+  const cityName = location ? getLocationCity(location) : ''
 
   // Handle save toggle
   const handleSaveClick = (e: React.MouseEvent) => {
-    e.preventDefault(); // Prevent navigation
-    e.stopPropagation(); // Prevent event bubbling
+    e.preventDefault() // Prevent navigation
+    e.stopPropagation() // Prevent event bubbling
 
     if (onToggleSave && eventId) {
-      onToggleSave(eventId);
+      onToggleSave(eventId)
     }
-  };
+  }
 
   return (
     <div className="min-w-[200px] max-w-[200px] group">
@@ -128,8 +132,10 @@ const EventSmallCard: React.FC<EventSmallCardProps> = ({
             >
               <Heart
                 className={cn(
-                  "h-3 w-3 transition-colors",
-                  isSaved ? "fill-red-500 text-red-500" : "text-gray-600 hover:text-red-500"
+                  'h-3 w-3 transition-colors',
+                  isSaved
+                    ? 'fill-red-500 text-red-500'
+                    : 'text-gray-600 hover:text-red-500',
                 )}
               />
             </Button>
@@ -147,9 +153,7 @@ const EventSmallCard: React.FC<EventSmallCardProps> = ({
       </div>
 
       {cityName && (
-        <div className="text-xs text-gray-500 truncate">
-          {cityName}
-        </div>
+        <div className="text-xs text-gray-500 truncate">{cityName}</div>
       )}
     </div>
   )

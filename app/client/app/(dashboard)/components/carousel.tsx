@@ -26,7 +26,7 @@ const EventCarousel: React.FC = () => {
       imageUrl: '/api/placeholder/1200/400',
       buttonText: 'Get Tickets',
       buttonLink: '/events/music-festival',
-      color: 'from-purple-700 to-blue-500'
+      color: 'from-purple-700 to-blue-500',
     },
     {
       id: '2',
@@ -35,7 +35,7 @@ const EventCarousel: React.FC = () => {
       imageUrl: '/api/placeholder/1200/400',
       buttonText: 'Learn More',
       buttonLink: '/events/food-expo',
-      color: 'from-red-600 to-orange-400'
+      color: 'from-red-600 to-orange-400',
     },
     {
       id: '3',
@@ -44,8 +44,8 @@ const EventCarousel: React.FC = () => {
       imageUrl: '/api/placeholder/1200/400',
       buttonText: 'Register Now',
       buttonLink: '/events/tech-conference',
-      color: 'from-blue-600 to-teal-400'
-    }
+      color: 'from-blue-600 to-teal-400',
+    },
   ]
 
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -56,14 +56,14 @@ const EventCarousel: React.FC = () => {
   // Function to go to next slide
   const nextSlide = useCallback(() => {
     setCurrentIndex((prevIndex) =>
-      prevIndex === slides.length - 1 ? 0 : prevIndex + 1
+      prevIndex === slides.length - 1 ? 0 : prevIndex + 1,
     )
   }, [slides.length])
 
   // Function to go to previous slide
   const prevSlide = useCallback(() => {
     setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? slides.length - 1 : prevIndex - 1
+      prevIndex === 0 ? slides.length - 1 : prevIndex - 1,
     )
   }, [slides.length])
 
@@ -137,14 +137,20 @@ const EventCarousel: React.FC = () => {
                 priority={index === 0}
               /> */}
               {/* Gradient overlay */}
-              <div className={`absolute inset-0 bg-gradient-to-r ${slide.color} opacity-70`}></div>
+              <div
+                className={`absolute inset-0 bg-gradient-to-r ${slide.color} opacity-70`}
+              ></div>
             </div>
 
             {/* Content */}
             <div className="absolute inset-0 flex flex-col justify-center px-8 md:px-16 text-white-100">
               <div className="max-w-lg">
-                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-2 drop-shadow-md">{slide.title}</h2>
-                <p className="text-lg md:text-xl mb-6 drop-shadow-md">{slide.subtitle}</p>
+                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-2 drop-shadow-md">
+                  {slide.title}
+                </h2>
+                <p className="text-lg md:text-xl mb-6 drop-shadow-md">
+                  {slide.subtitle}
+                </p>
                 {/* <Button
                   className="bg-white text-gray-900 hover:bg-gray-100 font-medium px-6 py-2 rounded-full"
                   asChild

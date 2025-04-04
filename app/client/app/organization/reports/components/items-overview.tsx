@@ -34,7 +34,7 @@ const COLORS = [
 
 const ItemsOverview: React.FC<ItemsOverviewProps> = ({ products }) => {
   const categoryData = useMemo(() => {
-    const categories: Record<string, { count: number, revenue: number }> = {}
+    const categories: Record<string, { count: number; revenue: number }> = {}
 
     // Group products by category and sum their sales
     products.forEach((product) => {
@@ -50,7 +50,7 @@ const ItemsOverview: React.FC<ItemsOverviewProps> = ({ products }) => {
     return Object.entries(categories).map(([name, { count, revenue }]) => ({
       name,
       value: count,
-      revenue
+      revenue,
     }))
   }, [products])
   // Handle case with no products

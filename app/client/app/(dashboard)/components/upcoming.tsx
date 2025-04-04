@@ -5,29 +5,43 @@ import EventSmallCard from './smaller-card'
 
 interface UpcomingTimelineProps {
   upcomingEvents: {
-    today: Event[];
-    tomorrow: Event[];
-    weekend: Event[];
-    nextWeek: Event[];
+    today: Event[]
+    tomorrow: Event[]
+    weekend: Event[]
+    nextWeek: Event[]
   }
 }
 
 const UpcomingTimeline: React.FC<UpcomingTimelineProps> = ({
-  upcomingEvents
+  upcomingEvents,
 }) => {
   // Define timeframes with display name, data, and URL parameter
   const timeframes = [
     { name: 'Today', events: upcomingEvents.today || [], param: 'today' },
-    { name: 'Tomorrow', events: upcomingEvents.tomorrow || [], param: 'tomorrow' },
-    { name: 'This Weekend', events: upcomingEvents.weekend || [], param: 'weekend' },
-    { name: 'Next Week', events: upcomingEvents.nextWeek || [], param: 'next-week' },
+    {
+      name: 'Tomorrow',
+      events: upcomingEvents.tomorrow || [],
+      param: 'tomorrow',
+    },
+    {
+      name: 'This Weekend',
+      events: upcomingEvents.weekend || [],
+      param: 'weekend',
+    },
+    {
+      name: 'Next Week',
+      events: upcomingEvents.nextWeek || [],
+      param: 'next-week',
+    },
   ]
 
   // Check if any of the timeframes have events
-  const hasAnyEvents = timeframes.some(timeframe => timeframe.events.length > 0);
+  const hasAnyEvents = timeframes.some(
+    (timeframe) => timeframe.events.length > 0,
+  )
 
   if (!hasAnyEvents) {
-    return null; // Don't render the component if there are no events
+    return null // Don't render the component if there are no events
   }
 
   return (
@@ -52,7 +66,10 @@ const UpcomingTimeline: React.FC<UpcomingTimelineProps> = ({
               {timeframe.events && timeframe.events.length > 0 ? (
                 <div className="flex overflow-x-auto gap-4 pb-2 scrollbar-hide">
                   {timeframe.events.map((event, eventIndex) => (
-                    <div key={eventIndex} className="min-w-[200px] max-w-[200px] flex-shrink-0">
+                    <div
+                      key={eventIndex}
+                      className="min-w-[200px] max-w-[200px] flex-shrink-0"
+                    >
                       <Link href={`/events/${event.eventId}`}>
                         <EventSmallCard event={event} />
                       </Link>

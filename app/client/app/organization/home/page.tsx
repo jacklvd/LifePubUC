@@ -42,7 +42,7 @@ const OrganizationHome: React.FC = () => {
           // Fetch events and products in parallel
           const [eventsResponse, productsResponse] = await Promise.all([
             getUserEvents(userEmail),
-            getItemsForSeller({ limit: 3, sort: '-createdAt' })
+            getItemsForSeller({ limit: 3, sort: '-createdAt' }),
           ])
           const saleSummary = await getTransactionsTotalSales()
           setSalesSummary(saleSummary)
@@ -54,7 +54,9 @@ const OrganizationHome: React.FC = () => {
           // Check if there's an onboarding error
           if (productsResponse.requiresOnboarding) {
             setNeedsOnboarding(true)
-            setError("Please complete Stripe Connect onboarding to sell products")
+            setError(
+              'Please complete Stripe Connect onboarding to sell products',
+            )
           } else if (productsResponse.error) {
             setError(productsResponse.error)
           }
@@ -65,12 +67,18 @@ const OrganizationHome: React.FC = () => {
 
             // Calculate product stats
             const allProducts = productsResponse.data
-            const soldProducts = allProducts.filter((p: { status: string }) => p.status === 'sold')
-            const totalSales = soldProducts.reduce((sum: any, product: { price: { amount: any } }) => sum + product.price.amount, 0)
+            const soldProducts = allProducts.filter(
+              (p: { status: string }) => p.status === 'sold',
+            )
+            const totalSales = soldProducts.reduce(
+              (sum: any, product: { price: { amount: any } }) =>
+                sum + product.price.amount,
+              0,
+            )
 
             setProductStats({
               count: allProducts.length,
-              totalSales: totalSales
+              totalSales: totalSales,
             })
           }
         } catch (error: any) {
@@ -105,7 +113,10 @@ const OrganizationHome: React.FC = () => {
           {needsOnboarding && (
             <Alert className="bg-amber-50 border-amber-200 mb-6">
               <AlertDescription className="text-amber-800 flex items-center justify-between">
-                <span>To sell products, you need to complete Stripe Connect onboarding.</span>
+                <span>
+                  To sell products, you need to complete Stripe Connect
+                  onboarding.
+                </span>
                 <Button
                   onClick={() => router.push('/organization/onboarding')}
                   className="bg-amber-600 hover:bg-amber-700 text-white"
@@ -146,9 +157,12 @@ const OrganizationHome: React.FC = () => {
             <ProductsSection initialProducts={recentProducts} />
           ) : (
             <div className="mb-8 p-6 border border-dashed border-amber-300 rounded-lg bg-amber-50">
-              <h2 className="text-xl font-semibold text-amber-800 mb-3">Products Unavailable</h2>
+              <h2 className="text-xl font-semibold text-amber-800 mb-3">
+                Products Unavailable
+              </h2>
               <p className="text-amber-700 mb-4">
-                You need to complete Stripe Connect onboarding before you can sell products.
+                You need to complete Stripe Connect onboarding before you can
+                sell products.
               </p>
               <Button
                 onClick={() => router.push('/organization/onboarding')}

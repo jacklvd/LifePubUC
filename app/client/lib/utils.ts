@@ -275,64 +275,68 @@ export const extractCity = (location: string): string => {
 export const normalizeLocation = (location: string): string => {
   const city = extractCity(location)
   const state = extractState(location)
-  
+
   // Check if this is likely a specific venue rather than a city
   // Common venue indicators: numbers (for addresses), place names that aren't cities
-  const isLikelyVenue = /^\d+/.test(city) || 
-                        city.includes('Museum') || 
-                        city.includes('Hotel') || 
-                        city.includes('Center') ||
-                        city.includes('Plaza') ||
-                        city.includes('Bar') ||
-                        city.includes('Restaurant');
-                        
+  const isLikelyVenue =
+    /^\d+/.test(city) ||
+    city.includes('Museum') ||
+    city.includes('Hotel') ||
+    city.includes('Center') ||
+    city.includes('Plaza') ||
+    city.includes('Bar') ||
+    city.includes('Restaurant')
+
   // If it's a venue but we have state info, we should try to get the actual city
   if (isLikelyVenue && state) {
     // For now, we'll just use the state with a placeholder
     // In a real implementation, you might use geocoding or a database lookup
-    return `Unknown City, ${state}`;
+    return `Unknown City, ${state}`
   }
-  
+
   if (!state) {
-    return city;
+    return city
   }
-  
-  return `${city}, ${state}`;
+
+  return `${city}, ${state}`
 }
 
 /**
  * Determines if a venue location matches a selected city/state filter
  * This helps with more flexible matching for location filtering
  */
-export function matchesLocation(eventLocation: string, filterLocation: string): boolean {
-  if (!eventLocation || !filterLocation) return false;
-  
+export function matchesLocation(
+  eventLocation: string,
+  filterLocation: string,
+): boolean {
+  if (!eventLocation || !filterLocation) return false
+
   // Extract components from both locations
-  const eventCity = extractCity(eventLocation);
-  const eventState = extractState(eventLocation);
-  const filterCity = extractCity(filterLocation);
-  const filterState = extractState(filterLocation);
-  
+  const eventCity = extractCity(eventLocation)
+  const eventState = extractState(eventLocation)
+  const filterCity = extractCity(filterLocation)
+  const filterState = extractState(filterLocation)
+
   // Match by state only if filterCity is empty
   if (!filterCity && filterState && eventState) {
-    return eventState.toLowerCase() === filterState.toLowerCase();
+    return eventState.toLowerCase() === filterState.toLowerCase()
   }
-  
+
   // Match by both city and state
   if (filterCity && filterState) {
     // Check if city and state both match (case insensitive)
     return (
-      eventCity.toLowerCase().includes(filterCity.toLowerCase()) && 
+      eventCity.toLowerCase().includes(filterCity.toLowerCase()) &&
       eventState.toLowerCase() === filterState.toLowerCase()
-    );
+    )
   }
-  
+
   // If we only have a city to filter by
   if (filterCity && !filterState) {
-    return eventCity.toLowerCase().includes(filterCity.toLowerCase());
+    return eventCity.toLowerCase().includes(filterCity.toLowerCase())
   }
-  
-  return false;
+
+  return false
 }
 
 /**

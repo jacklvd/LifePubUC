@@ -18,9 +18,8 @@ interface ProductsSectionProps {
 const ProductCard: React.FC<{ product: ProductData }> = ({ product }) => {
   // Convert DB item to display format
   // const slug = product.title.toLowerCase().replace(/\s+/g, '-')
-  const imageUrl = product.images?.length > 0
-    ? product.images[0]
-    : '/api/placeholder/400/220'
+  const imageUrl =
+    product.images?.length > 0 ? product.images[0] : '/api/placeholder/400/220'
   return (
     <Card className="overflow-hidden border-gray-200 hover:shadow-md transition-shadow">
       <CardContent className="p-0">
@@ -48,18 +47,12 @@ const ProductCard: React.FC<{ product: ProductData }> = ({ product }) => {
             </div>
           </div>
           <div className="flex justify-between mt-4">
-            <Link
-              href={`/organization/items/edit/${product._id}`}
-              passHref
-            >
+            <Link href={`/organization/items/edit/${product._id}`} passHref>
               <Button variant="outline" size="sm">
                 Edit
               </Button>
             </Link>
-            <Link
-              href={`/organization/items/${product._id}`}
-              passHref
-            >
+            <Link href={`/organization/items/${product._id}`} passHref>
               <Button variant="ghost" size="sm">
                 View Details
               </Button>
@@ -114,9 +107,13 @@ const EmptyState: React.FC = () => (
 )
 
 // Main Component
-const ProductsSection: React.FC<ProductsSectionProps> = ({ initialProducts = [] }) => {
+const ProductsSection: React.FC<ProductsSectionProps> = ({
+  initialProducts = [],
+}) => {
   const [products, setProducts] = useState<ProductData[]>(initialProducts)
-  const [isLoading, setIsLoading] = useState<boolean>(initialProducts.length === 0)
+  const [isLoading, setIsLoading] = useState<boolean>(
+    initialProducts.length === 0,
+  )
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -128,7 +125,10 @@ const ProductsSection: React.FC<ProductsSectionProps> = ({ initialProducts = [] 
       try {
         setIsLoading(true)
         // Fetch products from your API
-        const response = await getItemsForSeller({ limit: 3, status: 'available' })
+        const response = await getItemsForSeller({
+          limit: 3,
+          status: 'available',
+        })
         if (response?.data) {
           setProducts(response.data)
         }
