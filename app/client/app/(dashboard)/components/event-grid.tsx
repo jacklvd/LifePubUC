@@ -51,12 +51,13 @@ const EventGrid: React.FC<EventGridProps> = ({
   return (
     <div className="mb-12">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-        <h2 className="text-xl md:text-2xl font-semibold">
-          Discover Events
-        </h2>
+        <h2 className="text-xl md:text-2xl font-semibold">Discover Events</h2>
 
         {/* Search bar */}
-        <form onSubmit={handleSearchSubmit} className="mt-3 md:mt-0 w-full md:w-auto">
+        <form
+          onSubmit={handleSearchSubmit}
+          className="mt-3 md:mt-0 w-full md:w-auto"
+        >
           <div className="relative">
             <Input
               type="text"
@@ -83,7 +84,10 @@ const EventGrid: React.FC<EventGridProps> = ({
         {loading ? (
           // Skeleton loading state
           Array.from({ length: 12 }).map((_, index) => (
-            <div key={index} className="border rounded-lg overflow-hidden h-full">
+            <div
+              key={index}
+              className="border rounded-lg overflow-hidden h-full"
+            >
               <Skeleton className="w-full h-40" />
               <div className="p-4">
                 <Skeleton className="h-4 w-3/4 mb-2" />
@@ -111,7 +115,7 @@ const EventGrid: React.FC<EventGridProps> = ({
             <p className="text-gray-500 mb-4">
               {searchQuery
                 ? `No events match "${searchQuery}"`
-                : "Try adjusting your search or location"}
+                : 'Try adjusting your search or location'}
             </p>
             {searchQuery && (
               <Button

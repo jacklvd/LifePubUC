@@ -10,8 +10,9 @@ const CreatorCTA: React.FC = () => {
         <div className="mb-6 md:mb-0">
           <h2 className="text-2xl font-bold mb-2">Host your own event</h2>
           <p className="text-blue-100 max-w-xl">
-            Ready to bring people together? Create and promote your event on our platform.
-            Whether it&apos;s a workshop, performance, or gathering, we&apos;ll help you succeed.
+            Ready to bring people together? Create and promote your event on our
+            platform. Whether it&apos;s a workshop, performance, or gathering,
+            we&apos;ll help you succeed.
           </p>
         </div>
 

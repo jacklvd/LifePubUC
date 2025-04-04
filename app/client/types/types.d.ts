@@ -25,14 +25,14 @@ interface ProductData {
 }
 
 interface GetAllEventsParams {
-  category?: string;
-  status?: string;
-  limit?: number;
-  page?: number;
-  sort?: 'newest' | 'oldest' | 'price-low' | 'price-high';
-  dateFilter?: 'today' | 'this-week' | 'this-month' | 'upcoming';
-  search?: string;
-  isOnline?: boolean;
+  category?: string
+  status?: string
+  limit?: number
+  page?: number
+  sort?: 'newest' | 'oldest' | 'price-low' | 'price-high'
+  dateFilter?: 'today' | 'this-week' | 'this-month' | 'upcoming'
+  search?: string
+  isOnline?: boolean
 }
 interface EventState {
   // UI State

@@ -11,7 +11,11 @@ interface EventCardProps {
   onToggleSave: (id: string) => void
 }
 
-const EventCard: React.FC<EventCardProps> = ({ event, isSaved, onToggleSave }) => {
+const EventCard: React.FC<EventCardProps> = ({
+  event,
+  isSaved,
+  onToggleSave,
+}) => {
   // Format date to display in readable format
   const formatDate = (dateString: string | Date): string => {
     if (!dateString) return 'TBD'
@@ -36,7 +40,7 @@ const EventCard: React.FC<EventCardProps> = ({ event, isSaved, onToggleSave }) =
     }
 
     try {
-      const [hours, minutes] = time.split(':').map(num => parseInt(num, 10))
+      const [hours, minutes] = time.split(':').map((num) => parseInt(num, 10))
 
       if (isNaN(hours) || isNaN(minutes)) {
         return time
@@ -59,14 +63,18 @@ const EventCard: React.FC<EventCardProps> = ({ event, isSaved, onToggleSave }) =
     }
 
     // Filter out free tickets
-    const paidTickets = event.tickets.filter(ticket => ticket.price && ticket.price > 0)
+    const paidTickets = event.tickets.filter(
+      (ticket) => ticket.price && ticket.price > 0,
+    )
 
     if (paidTickets.length === 0) {
       return 'Free'
     }
 
     // Find the lowest price
-    const lowestPrice = Math.min(...paidTickets.map(ticket => ticket.price || 0))
+    const lowestPrice = Math.min(
+      ...paidTickets.map((ticket) => ticket.price || 0),
+    )
 
     return `${lowestPrice.toFixed(2)}`
   }
@@ -102,8 +110,10 @@ const EventCard: React.FC<EventCardProps> = ({ event, isSaved, onToggleSave }) =
         >
           <Heart
             className={cn(
-              "h-4 w-4 transition-colors",
-              isSaved ? "fill-red-500 text-red-500" : "text-gray-600 hover:text-red-500"
+              'h-4 w-4 transition-colors',
+              isSaved
+                ? 'fill-red-500 text-red-500'
+                : 'text-gray-600 hover:text-red-500',
             )}
           />
         </Button>
@@ -112,7 +122,9 @@ const EventCard: React.FC<EventCardProps> = ({ event, isSaved, onToggleSave }) =
       {/* Event details */}
       <div className="p-4 flex-grow flex flex-col">
         {/* Title */}
-        <h3 className="font-semibold text-lg mb-2 line-clamp-2">{event.title}</h3>
+        <h3 className="font-semibold text-lg mb-2 line-clamp-2">
+          {event.title}
+        </h3>
 
         {/* Date */}
         <div className="flex items-center text-sm text-gray-600 mb-1">

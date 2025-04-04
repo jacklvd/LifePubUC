@@ -26,7 +26,7 @@ interface RevenueOverviewProps {
 const RevenueOverview: React.FC<RevenueOverviewProps> = ({
   data,
   isLoading,
-  items = []
+  items = [],
 }) => {
   // Process real items data if available
   const revenueData = useMemo(() => {
@@ -38,12 +38,12 @@ const RevenueOverview: React.FC<RevenueOverviewProps> = ({
     // Group items by month and calculate revenue
     const months: Record<string, number> = {}
 
-    items.forEach(item => {
+    items.forEach((item) => {
       if (item.status === 'sold') {
         const date = new Date(item.createdAt)
         const monthKey = date.toLocaleDateString('en-US', {
           year: 'numeric',
-          month: 'short'
+          month: 'short',
         })
 
         if (!months[monthKey]) {
@@ -58,7 +58,7 @@ const RevenueOverview: React.FC<RevenueOverviewProps> = ({
     return Object.entries(months)
       .map(([month, revenue]) => ({
         month,
-        revenue
+        revenue,
       }))
       .sort((a, b) => {
         // Sort by date

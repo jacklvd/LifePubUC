@@ -392,7 +392,7 @@ export const getSellerItems = async (
       sort = '-createdAt',
       page = 1,
       limit = 10,
-      q
+      q,
     } = req.query as unknown as ItemQueryParams
 
     // Build query
