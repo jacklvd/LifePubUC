@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { useState, useEffect } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { useRouter, usePathname } from 'next/navigation'
-import { formatDate } from '@/lib/date-formatter'
+import { formatDate } from '@/lib/utils'
 import {
   Sheet,
   SheetContent,

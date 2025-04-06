@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from 'react'
+import React, { useMemo } from 'react'
 import {
   AreaChart,
   Area,
@@ -14,12 +14,60 @@ import { Skeleton } from '@/components/ui/skeleton'
 interface RevenueOverviewProps {
   data: any[]
   isLoading: boolean
+  // Can add optional real items data to process
+  items?: Array<{
+    _id: string
+    status: string
+    price: { amount: number }
+    createdAt: string
+  }>
 }
 
 const RevenueOverview: React.FC<RevenueOverviewProps> = ({
   data,
   isLoading,
+  items = [],
 }) => {
+  // Process real items data if available
+  const revenueData = useMemo(() => {
+    if (items.length === 0) {
+      // If no real items data is provided, use the synthetic data
+      return data
+    }
+
+    // Group items by month and calculate revenue
+    const months: Record<string, number> = {}
+
+    items.forEach((item) => {
+      if (item.status === 'sold') {
+        const date = new Date(item.createdAt)
+        const monthKey = date.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'short',
+        })
+
+        if (!months[monthKey]) {
+          months[monthKey] = 0
+        }
+
+        months[monthKey] += item.price.amount
+      }
+    })
+
+    // Convert to array for chart
+    return Object.entries(months)
+      .map(([month, revenue]) => ({
+        month,
+        revenue,
+      }))
+      .sort((a, b) => {
+        // Sort by date
+        const dateA = new Date(a.month)
+        const dateB = new Date(b.month)
+        return dateA.getTime() - dateB.getTime()
+      })
+  }, [data, items])
+
   if (isLoading) {
     return <Skeleton className="w-full h-80" />
   }
@@ -28,7 +76,7 @@ const RevenueOverview: React.FC<RevenueOverviewProps> = ({
     <div className="h-80">
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart
-          data={data}
+          data={revenueData}
           margin={{
             top: 10,
             right: 30,
