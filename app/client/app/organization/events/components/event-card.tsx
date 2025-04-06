@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import { formatDate } from '@/lib/date-formatter'
+import { formatDate } from '@/lib/utils'
 import { formatTime } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/icons'
