@@ -10,7 +10,7 @@ import React, {
   useRef,
 } from 'react'
 import { useParams } from 'next/navigation'
-import { EventStep } from '@/components/event-ui/event-leftside-bar'
+import { EventStep } from '@/app/organization/events/components/event-leftside-bar'
 import { STORAGE_KEY as sk } from '@/constants'
 
 // Define types for context and progress data

@@ -3,11 +3,16 @@ import CategoryCard from './category-card'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/icons'
 
+interface CategoriesSections {
+  categories: { title: string, url: string}[],
+  selectedCategory: string | null,
+  onCategorySelect: (category: string) => void
+}
 const CategoriesSection = ({
   categories,
   selectedCategory,
   onCategorySelect,
-}) => {
+}: CategoriesSections) => {
   return (
     <div className="flex flex-col justify-center items-center gap-3 py-8 bg-white">
       <h1 className="text-4xl font-bold">Categories</h1>

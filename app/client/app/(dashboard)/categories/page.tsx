@@ -26,9 +26,9 @@ const CategoryPage = () => {
     limitedEdition: false,
   })
   // Pagination
-  const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage, setItemsPerPage] = useState(12)
-  const [totalPages, setTotalPages] = useState(1)
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const [itemsPerPage, setItemsPerPage] = useState<number>(12)
+  const [totalPages, setTotalPages] = useState<number>(1)
   const [paginatedItems, setPaginatedItems] = useState<Item[]>([])
 
   const addItem = useCartStore((state) => state.addItem)
@@ -221,7 +221,6 @@ const CategoryPage = () => {
                 <ItemsGrid
                   items={paginatedItems}
                   onAddToCart={addItem}
-                  onItemSelect={() => {}}
                 />
 
                 <Pagination

@@ -1,14 +1,14 @@
 'use client'
-import React from 'react'
-import { usePathname, useRouter } from 'next/navigation'
+import React, {ReactNode} from 'react'
+import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 
-export default function ProfileLayout({ children }) {
+export default function ProfileLayout({ children }: {children: ReactNode}) {
   const pathname = usePathname()
-  const router = useRouter()
+  // const router = useRouter()
 
   // Function to check if path is active
-  const isActive = (path) => {
+  const isActive = (path: string) => {
     return pathname === path || pathname.startsWith(`${path}/`)
   }
 

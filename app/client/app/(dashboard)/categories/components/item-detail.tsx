@@ -8,8 +8,8 @@ import { useCartStore } from '@/store/cart'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
-import StarRating from '@/components/star-rating'
-import ItemsGrid from './items-grid'
+// import StarRating from '@/components/star-rating'
+// import ItemsGrid from './items-grid'
 import { getItemById } from '@/lib/actions/item-actions'
 
 const ItemDetailPage = () => {
@@ -20,7 +20,7 @@ const ItemDetailPage = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const [selectedImageIndex, setSelectedImageIndex] = useState<number>(0)
   const [quantity, setQuantity] = useState(1)
-  const [relatedItems, setRelatedItems] = useState<Item[]>([])
+  // const [relatedItems, setRelatedItems] = useState<Item[]>([])
   const [activeTab, setActiveTab] = useState<string>('description')
 
   const addItem = useCartStore((state) => state.addItem)
@@ -59,7 +59,7 @@ const ItemDetailPage = () => {
 
   const handleAddToCart = () => {
     if (item) {
-      addItem({ ...item, quantity })
+      addItem({ ...item })
     }
   }
 
@@ -127,7 +127,7 @@ const ItemDetailPage = () => {
         <span className="text-red-500 mb-4">⚠️</span>
         <h2 className="text-2xl font-bold mb-2">Item Not Found</h2>
         <p className="text-gray-600 mb-4">
-          The item you're looking for doesn't exist or has been removed.
+          The item you&apos;re looking for doesn&apos;t exist or has been removed.
         </p>
         <Button onClick={() => router.push('/category')}>Return to Shop</Button>
       </div>
@@ -290,7 +290,7 @@ const ItemDetailPage = () => {
             </h1>
 
             {/* Seller info (when populated) */}
-            {item.sellerInfo && (
+            {/* {item.sellerInfo && (
               <div className="flex items-center mt-2 text-sm text-gray-600">
                 <span>Sold by </span>
                 <a
@@ -300,7 +300,7 @@ const ItemDetailPage = () => {
                   {item.sellerInfo.fullName || item.sellerInfo.username}
                 </a>
               </div>
-            )}
+            )} */}
 
             {/* Views */}
             <div className="mt-1 text-sm text-gray-500">
@@ -387,7 +387,7 @@ const ItemDetailPage = () => {
                 </p>
               </div>
             </div>
-            {item.rating > 0 && (
+            {/* {item.rating > 0 && (
               <div className="flex items-start space-x-2">
                 <div className="mt-0.5">
                   <StarRating rating={item.rating} size="sm" />
@@ -398,7 +398,7 @@ const ItemDetailPage = () => {
                   </p>
                 </div>
               </div>
-            )}
+            )} */}
           </div>
 
           {/* Purchase Options */}
@@ -638,7 +638,7 @@ const ItemDetailPage = () => {
                 </div>
               </div>
 
-              {item.sellerInfo && (
+              {/* {item.sellerInfo && (
                 <div className="space-y-4">
                   <h3 className="text-lg font-medium">Seller Information</h3>
                   <div className="flex items-start space-x-4">
@@ -664,14 +664,14 @@ const ItemDetailPage = () => {
                     </div>
                   </div>
                 </div>
-              )}
+              )} */}
             </div>
           </TabsContent>
         </Tabs>
       </div>
 
       {/* Related Items */}
-      {relatedItems.length > 0 && (
+      {/* {relatedItems.length > 0 && (
         <div className="mb-16">
           <h2 className="text-2xl font-bold mb-6">You may also like</h2>
           <ItemsGrid
@@ -680,7 +680,7 @@ const ItemDetailPage = () => {
             onItemSelect={(itemId) => router.push(`/item/${itemId}`)}
           />
         </div>
-      )}
+      )} */}
     </div>
   )
 }
