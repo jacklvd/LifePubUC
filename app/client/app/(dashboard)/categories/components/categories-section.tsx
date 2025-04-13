@@ -4,8 +4,8 @@ import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/icons'
 
 interface CategoriesSections {
-  categories: { title: string, url: string}[],
-  selectedCategory: string | null,
+  categories: { title: string; url: string }[]
+  selectedCategory: string | null
   onCategorySelect: (category: string) => void
 }
 const CategoriesSection = ({

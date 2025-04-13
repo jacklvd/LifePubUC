@@ -11,12 +11,12 @@ import {
 } from '@/components/ui/select'
 
 interface SortAndFilterBarProps {
-  showFilters: boolean, 
-  setShowFilters: React.Dispatch<React.SetStateAction<boolean>>,
-  selectedCategory: string | null,
-  onClearCategory: () => void, 
-  itemCount: number,
-  sortOption: string,
+  showFilters: boolean
+  setShowFilters: React.Dispatch<React.SetStateAction<boolean>>
+  selectedCategory: string | null
+  onClearCategory: () => void
+  itemCount: number
+  sortOption: string
   onSortChange: (value: string) => void
 }
 

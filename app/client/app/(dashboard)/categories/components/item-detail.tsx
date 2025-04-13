@@ -127,7 +127,8 @@ const ItemDetailPage = () => {
         <span className="text-red-500 mb-4">⚠️</span>
         <h2 className="text-2xl font-bold mb-2">Item Not Found</h2>
         <p className="text-gray-600 mb-4">
-          The item you&apos;re looking for doesn&apos;t exist or has been removed.
+          The item you&apos;re looking for doesn&apos;t exist or has been
+          removed.
         </p>
         <Button onClick={() => router.push('/category')}>Return to Shop</Button>
       </div>

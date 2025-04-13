@@ -471,8 +471,7 @@ const ItemManagementDashboard = () => {
                       {item.category || ''}
                     </span>
                     <span>
-                      Added{' '}
-                      {format(new Date(item?.createdAt), 'MMM d, yyyy')}
+                      Added {format(new Date(item?.createdAt), 'MMM d, yyyy')}
                     </span>
                   </div>
 

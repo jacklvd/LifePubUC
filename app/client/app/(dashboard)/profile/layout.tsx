@@ -1,9 +1,9 @@
 'use client'
-import React, {ReactNode} from 'react'
+import React, { ReactNode } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 
-export default function ProfileLayout({ children }: {children: ReactNode}) {
+export default function ProfileLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname()
   // const router = useRouter()
 

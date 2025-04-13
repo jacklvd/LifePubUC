@@ -12,57 +12,55 @@ import {
 
 // Card Information Types
 interface Card {
-  id: string;
-  brand: string;
-  last4: string;
-  expMonth: number;
-  expYear: number;
+  id: string
+  brand: string
+  last4: string
+  expMonth: number
+  expYear: number
 }
 
 interface PaymentMethod {
-  id: string;
+  id: string
   card: {
-    brand: string;
-    last4: string;
-    exp_month: number;
-    exp_year: number;
-  };
+    brand: string
+    last4: string
+    exp_month: number
+    exp_year: number
+  }
   billing_details: {
-    name: string;
-  };
+    name: string
+  }
 }
 
 interface CardFormProps {
-  onCardSaved: (paymentMethod: PaymentMethod) => void;
+  onCardSaved: (paymentMethod: PaymentMethod) => void
 }
 
-
-
 interface CardError {
-  message: string;
+  message: string
 }
 
 interface CardElementChangeEvent {
-  error?: CardError | null;
-  complete: boolean;
+  error?: CardError | null
+  complete: boolean
 }
 
 interface CardStyleOptions {
   style: {
     base: {
-      color: string;
-      fontFamily: string;
-      fontSmoothing: string;
-      fontSize: string;
+      color: string
+      fontFamily: string
+      fontSmoothing: string
+      fontSize: string
       '::placeholder': {
-        color: string;
-      };
-    };
+        color: string
+      }
+    }
     invalid: {
-      color: string;
-      iconColor: string;
-    };
-  };
+      color: string
+      iconColor: string
+    }
+  }
 }
 
 const stripePromise = loadStripe(

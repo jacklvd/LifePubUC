@@ -9,12 +9,12 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 
-interface PaginationProps  {
-  currentPage: number,
-  totalPages: number,
-  onPageChange: (page: number) => void,
-  itemsPerPage: number,
-  onItemsPerPageChange: (value: number) =>  void,
+interface PaginationProps {
+  currentPage: number
+  totalPages: number
+  onPageChange: (page: number) => void
+  itemsPerPage: number
+  onItemsPerPageChange: (value: number) => void
   totalItems: number
 }
 
@@ -26,7 +26,7 @@ const Pagination = ({
   onItemsPerPageChange,
   totalItems,
 }: PaginationProps) => {
-  const pageNumbers: (number)[] = []
+  const pageNumbers: number[] = []
 
   // Determine which page numbers to show
   const maxVisiblePages = 5
