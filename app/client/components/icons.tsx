@@ -63,13 +63,7 @@ import {
   TrendingUp,
   DollarSign,
   BarChart,
-  Loader2,
-  CheckCircle2,
-  XCircle,
-  Mail,
-  ArrowRight,
-  TrendingDown,
-  SlidersHorizontal
+  SlidersHorizontal,
   Loader2,
   CheckCircle2,
   XCircle,
@@ -149,13 +143,7 @@ const ICONS = {
   Mail: Mail,
   ArrowRight: ArrowRight,
   TrendingDown: TrendingDown,
-  SlidersHorizontal: SlidersHorizontal
-  Loader2: Loader2,
-  CheckCircle2: CheckCircle2,
-  XCircle: XCircle,
-  Mail: Mail,
-  ArrowRight: ArrowRight,
-  TrendingDown: TrendingDown,
+  SlidersHorizontal: SlidersHorizontal,
 } as const
 
 export type IconNames = keyof typeof ICONS
