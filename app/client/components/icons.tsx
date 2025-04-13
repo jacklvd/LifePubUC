@@ -70,6 +70,12 @@ import {
   ArrowRight,
   TrendingDown,
   SlidersHorizontal
+  Loader2,
+  CheckCircle2,
+  XCircle,
+  Mail,
+  ArrowRight,
+  TrendingDown,
 } from 'lucide-react'
 
 const ICONS = {
@@ -144,6 +150,12 @@ const ICONS = {
   ArrowRight: ArrowRight,
   TrendingDown: TrendingDown,
   SlidersHorizontal: SlidersHorizontal
+  Loader2: Loader2,
+  CheckCircle2: CheckCircle2,
+  XCircle: XCircle,
+  Mail: Mail,
+  ArrowRight: ArrowRight,
+  TrendingDown: TrendingDown,
 } as const
 
 export type IconNames = keyof typeof ICONS

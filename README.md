@@ -136,3 +136,13 @@ Link to the [Timeline](https://drive.google.com/file/d/1u4js-25v6d6zLAlpdISRgHBB
 
 - [@jacklvd](https://www.github.com/jacklvd)
 - [@BinniesLite](https://github.com/BinniesLite)
+Link to the [Timeline](https://drive.google.com/file/d/1u4js-25v6d6zLAlpdISRgHBBA9TRQKFY/view?usp=sharing)
+
+## License
+
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
+
+## Authors
+
+- [@jacklvd](https://www.github.com/jacklvd)
+- [@BinniesLite](https://github.com/BinniesLite)
