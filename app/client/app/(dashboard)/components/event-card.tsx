@@ -1,9 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react'
-import { Card, CardContent } from '@/components/ui/card'
-import { Icon } from '@/components/icons'
 import Image from 'next/image'
-import { format } from 'date-fns'
+import { Calendar, Clock, MapPin, Heart } from 'lucide-react'
+import Link from 'next/link'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
 
 interface EventCardProps {
   event: Event
@@ -16,134 +16,151 @@ const EventCard: React.FC<EventCardProps> = ({
   isSaved,
   onToggleSave,
 }) => {
-  // Handle date formatting safely
-  const formatEventDate = (date: Date | string) => {
+  // Format date to display in readable format
+  const formatDate = (dateString: string | Date): string => {
+    if (!dateString) return 'TBD'
+
+    const date = new Date(dateString)
+    if (isNaN(date.getTime())) return 'TBD'
+
+    return date.toLocaleDateString('en-US', {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric',
+    })
+  }
+
+  // Format time to AM/PM
+  const formatTime = (time: string): string => {
+    if (!time) return 'TBD'
+
+    // If already in AM/PM format, return as is
+    if (time.includes('AM') || time.includes('PM')) {
+      return time
+    }
+
     try {
-      // If date is already a string in a display format, just return it
-      if (
-        typeof date === 'string' &&
-        date.includes('-') === false &&
-        date.includes('/') === false
-      ) {
-        return date
+      const [hours, minutes] = time.split(':').map((num) => parseInt(num, 10))
+
+      if (isNaN(hours) || isNaN(minutes)) {
+        return time
       }
 
-      // Handle ISO strings or properly formatted date strings
-      if (typeof date === 'string') {
-        // Check if it's a timestamp number stored as string
-        if (/^\d+$/.test(date)) {
-          return format(new Date(parseInt(date)), 'MMMM d, yyyy')
-        }
+      const period = hours >= 12 ? 'PM' : 'AM'
+      const formattedHours = hours % 12 || 12 // Convert 0 to 12 for 12 AM
 
-        // Try to parse the date with different formats
-        try {
-          return format(new Date(date), 'MMMM d, yyyy')
-        } catch (e) {
-          // If direct parsing fails, try alternative formats
-          const parts = date.split(/[-/]/)
-          if (parts.length === 3) {
-            // Try different date formats (MM-DD-YYYY, YYYY-MM-DD, etc.)
-            const possibleDate = new Date(
-              parseInt(parts[2].length === 4 ? parts[2] : parts[0]),
-              parseInt(parts[1]) - 1,
-              parseInt(parts[2].length === 4 ? parts[0] : parts[2]),
-            )
-
-            if (!isNaN(possibleDate.getTime())) {
-              return format(possibleDate, 'MMMM d, yyyy')
-            }
-          }
-        }
-      } else if (date instanceof Date && !isNaN(date.getTime())) {
-        return format(date, 'MMMM d, yyyy')
-      }
-
-      // If we get here, we couldn't parse the date
-      return 'Date unavailable'
+      return `${formattedHours}:${minutes.toString().padStart(2, '0')} ${period}`
     } catch (error) {
-      console.error('Error formatting date:', error)
-      return 'Date unavailable' // Fallback
+      console.error('Error formatting time:', error)
+      return time
     }
   }
 
+  // Get the lowest ticket price
+  const getLowestPrice = (): string => {
+    if (!event.tickets || event.tickets.length === 0) {
+      return 'Free'
+    }
+
+    // Filter out free tickets
+    const paidTickets = event.tickets.filter(
+      (ticket) => ticket.price && ticket.price > 0,
+    )
+
+    if (paidTickets.length === 0) {
+      return 'Free'
+    }
+
+    // Find the lowest price
+    const lowestPrice = Math.min(
+      ...paidTickets.map((ticket) => ticket.price || 0),
+    )
+
+    return `${lowestPrice.toFixed(2)}`
+  }
+
+  // Handle save button click
+  const handleSaveClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    onToggleSave(event.eventId)
+  }
+
   return (
-    <Card className="h-full overflow-hidden border group cursor-pointer hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+    <Link
+      href={`organization/events/${event.eventId}`}
+      className="border rounded-lg overflow-hidden h-full flex flex-col hover:shadow-md transition-shadow duration-300"
+    >
+      {/* Event image */}
       <div className="relative">
         <Image
+          src={event.media || '/api/placeholder/400/200'}
+          alt={event.title}
           width={400}
           height={200}
-          src={event.media || '/api/placeholder/400/320'}
-          alt={event.title}
-          className="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105"
+          className="w-full h-48 object-cover"
         />
-        <button
-          className={`absolute top-2 right-2 h-8 w-8 rounded-full flex items-center justify-center transition-all duration-300 ${
-            isSaved
-              ? 'bg-red-500 text-white'
-              : 'bg-white/70 hover:bg-white text-gray-600'
-          }`}
-          onClick={(e) => {
-            e.stopPropagation()
-            onToggleSave(event.eventId)
-          }}
-          aria-label={isSaved ? 'Unsave event' : 'Save event'}
+
+        {/* Save button */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="absolute top-2 right-2 h-8 w-8 rounded-full bg-white/80 hover:bg-white p-0"
+          onClick={handleSaveClick}
         >
-          <Icon
-            name="Heart"
-            className={`h-4 w-4 ${isSaved ? 'fill-white' : ''}`}
+          <Heart
+            className={cn(
+              'h-4 w-4 transition-colors',
+              isSaved
+                ? 'fill-red-500 text-red-500'
+                : 'text-gray-600 hover:text-red-500',
+            )}
           />
-        </button>
+        </Button>
       </div>
-      <CardContent className="p-4">
-        <h3 className="font-semibold mb-2 text-base h-12 line-clamp-2 group-hover:text-blue-600 transition-colors">
+
+      {/* Event details */}
+      <div className="p-4 flex-grow flex flex-col">
+        {/* Title */}
+        <h3 className="font-semibold text-lg mb-2 line-clamp-2">
           {event.title}
         </h3>
-        <div className="flex items-center text-sm mb-1 text-gray-600">
-          <Icon name="Calendar" className="h-4 w-4 mr-1 flex-shrink-0" />
-          <span>
-            {/* Add debugging to see what the date actually contains */}
-            {typeof event.date === 'object'
-              ? formatEventDate(event.date)
-              : typeof event.date === 'string'
-                ? formatEventDate(event.date)
-                : 'Invalid date'}{' '}
-            • {event.startTime}
-          </span>
-        </div>
-        <div className="flex items-center text-sm mb-2 text-gray-600">
-          <Icon name="MapPin" className="h-4 w-4 mr-1 flex-shrink-0" />
-          <span className="truncate">{event.location}</span>
-        </div>
-        <div className="flex justify-between items-center">
-          {/* Show remaining tickets if available */}
-          {event.tickets && (
-            <div className="text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded">
-              <span>{event.tickets.length} tickets left</span>
-            </div>
-          )}
+
+        {/* Date */}
+        <div className="flex items-center text-sm text-gray-600 mb-1">
+          <Calendar className="h-4 w-4 mr-1.5 flex-shrink-0" />
+          <span>{formatDate(event.date)}</span>
         </div>
 
-        {/* Commented out organizer section */}
-        {/* {event.organizer && (
-                    <div className="flex items-center mt-3 text-xs text-gray-500">
-                        <Image
-                            src="/api/placeholder/24/24"
-                            width={24}
-                            height={24}
-                            alt="Organizer"
-                            className="w-5 h-5 rounded-full mr-1"
-                        />
-                        {event.organizer}
-                        {event.followers && (
-                            <span className="flex items-center ml-2">
-                                <Users className="h-3 w-3 mr-1" />
-                                {event.followers}
-                            </span>
-                        )}
-                    </div>
-                )} */}
-      </CardContent>
-    </Card>
+        {/* Time */}
+        <div className="flex items-center text-sm text-gray-600 mb-1">
+          <Clock className="h-4 w-4 mr-1.5 flex-shrink-0" />
+          <span>{formatTime(event.startTime)}</span>
+        </div>
+
+        {/* Location */}
+        {event.location && (
+          <div className="flex items-start text-sm text-gray-600 mb-3">
+            <MapPin className="h-4 w-4 mr-1.5 flex-shrink-0 translate-y-0.5" />
+            <span className="truncate">{event.location}</span>
+          </div>
+        )}
+
+        {/* Summary */}
+        {event.summary && (
+          <p className="text-sm text-gray-500 mb-3 line-clamp-2 flex-grow">
+            {event.summary}
+          </p>
+        )}
+
+        {/* Price tag */}
+        <div className="mt-auto">
+          <span className="inline-block bg-blue-50 text-blue-700 text-xs font-medium px-2.5 py-0.5 rounded">
+            {getLowestPrice()}
+          </span>
+        </div>
+      </div>
+    </Link>
   )
 }
 

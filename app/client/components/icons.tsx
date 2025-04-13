@@ -63,6 +63,12 @@ import {
   TrendingUp,
   DollarSign,
   BarChart,
+  Loader2,
+  CheckCircle2,
+  XCircle,
+  Mail,
+  ArrowRight,
+  TrendingDown,
   SlidersHorizontal
 } from 'lucide-react'
 
@@ -131,6 +137,12 @@ const ICONS = {
   TrendingUp: TrendingUp,
   DollarSign: DollarSign,
   BarChart: BarChart,
+  Loader2: Loader2,
+  CheckCircle2: CheckCircle2,
+  XCircle: XCircle,
+  Mail: Mail,
+  ArrowRight: ArrowRight,
+  TrendingDown: TrendingDown,
   SlidersHorizontal: SlidersHorizontal
 } as const
 

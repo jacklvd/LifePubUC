@@ -51,12 +51,14 @@ const ItemCard = ({ item, addItem }: ItemCardProps) => {
     return badges[status as keyof typeof badges] || 'bg-gray-500'
   }
 
-  const handleCartClick = () => {
+  const handleCartClick = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
+    e.stopPropagation()
     setIsInCart(!isInCart)
 
     addItem(item)
     toast.success('Item added to cart')
-    // Reset to cart icon after 1.5 seconds if added to cart
     if (!isInCart) {
       setTimeout(() => {
         setIsInCart(false)

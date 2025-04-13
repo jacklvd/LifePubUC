@@ -2,6 +2,31 @@ import mongoose from 'mongoose'
 
 const Schema = mongoose.Schema
 
+export const ITEM_CATEGORIES = [
+  'Textbooks & Educational Materials',
+  'Electronics & Technology',
+  'Furniture & Home Decor',
+  'Clothing & Accessories',
+  'Sports & Fitness Equipment',
+  'Musical Instruments',
+  'Art & Craft Supplies',
+  'Kitchen & Dining',
+  'Beauty & Personal Care',
+  'Books (non-textbook)',
+  'Gaming & Hobbies',
+  'Bicycles & Transportation',
+  'Dorm Essentials',
+  'Event Tickets',
+  'Computer Accessories',
+  'Office Supplies',
+  'Pet Supplies',
+  'Outdoor Gear',
+  'Tools & Hardware',
+  'Other',
+]
+
+export const ITEM_CONDITION = ['new', 'like_new', 'good', 'fair', 'poor']
+
 const ItemSchema = new Schema(
   {
     title: {
@@ -16,23 +41,22 @@ const ItemSchema = new Schema(
       trim: true,
       maxLength: 1000,
     },
-    // Add the seller field to reference User model
     seller: {
       type: Schema.Types.ObjectId,
       ref: 'User',
       required: true,
-      index: true, // Add index for faster lookup of items by seller
+      index: true,
     },
     category: {
       type: String,
       required: true,
-      enum: ['textbook', 'electronics', 'furniture', 'clothing', 'other'],
+      enum: ITEM_CATEGORIES,
       index: true,
     },
     condition: {
       type: String,
       required: true,
-      enum: ['new', 'like_new', 'good', 'fair', 'poor'],
+      enum: ITEM_CONDITION,
     },
     price: {
       amount: {
@@ -91,8 +115,12 @@ ItemSchema.virtual('sellerInfo', {
   justOne: true,
 })
 
+ItemSchema.statics.getCategories = function () {
+  return ITEM_CATEGORIES
+}
+
 ItemSchema.index({ title: 'text', description: 'text' }) // Enable text search
-ItemSchema.index({ 'price.amount': 1 }) // Index for price-based queries
+ItemSchema.index({ 'price.amount': 1 })
 
 const Item = mongoose.model('Item', ItemSchema)
 

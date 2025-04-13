@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import Item from '../models/itemSchema'
+import Item, { ITEM_CATEGORIES, ITEM_CONDITION } from '../models/itemSchema'
 import User from '../models/userSchema'
 import { v2 as cloudinary } from 'cloudinary'
 
@@ -52,6 +52,7 @@ interface ItemQueryParams {
   sort?: string
   page?: number
   limit?: number
+  q?: string // For search queries
 }
 
 /***************************
@@ -345,5 +346,89 @@ export const getCloudinarySignature = async (
     res
       .status(500)
       .json({ message: 'Error generating upload signature', error })
+  }
+}
+
+export const getAllCategories = async (req: Request, res: Response) => {
+  const categories = ITEM_CATEGORIES // Access the constant directly
+
+  try {
+    res.status(200).json({ message: 'success', data: categories })
+    return
+  } catch (error) {
+    console.error('Error fetching categories:', error)
+    res
+      .status(500)
+      .json({ message: 'error', error: 'Failed to fetch categories' })
+  }
+}
+
+export const getAllConditions = async (req: Request, res: Response) => {
+  const conditions = ITEM_CONDITION // Access the constant directly
+
+  try {
+    res.status(200).json({ message: 'success', data: conditions })
+    return
+  } catch (error) {
+    console.error('Error fetching categories:', error)
+    res
+      .status(500)
+      .json({ message: 'error', error: 'Failed to fetch categories' })
+  }
+}
+
+export const getSellerItems = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    const { sellerId } = req.params
+    const {
+      category,
+      condition,
+      minPrice,
+      maxPrice,
+      status,
+      sort = '-createdAt',
+      page = 1,
+      limit = 10,
+      q,
+    } = req.query as unknown as ItemQueryParams
+
+    // Build query
+    const query: any = { seller: sellerId }
+
+    if (category) query.category = category
+    if (condition) query.condition = condition
+    if (status) query.status = status
+    if (minPrice || maxPrice) {
+      query['price.amount'] = {}
+      if (minPrice) query['price.amount'].$gte = minPrice
+      if (maxPrice) query['price.amount'].$lte = maxPrice
+    }
+    if (q) query.$text = { $search: q as string }
+
+    const skip = (Number(page) - 1) * Number(limit)
+
+    const items = await Item.find(query)
+      .sort(sort)
+      .skip(skip)
+      .limit(Number(limit))
+
+    const total = await Item.countDocuments(query)
+
+    res.status(200).json({
+      message: 'Seller items retrieved successfully',
+      data: items,
+      pagination: {
+        total,
+        page,
+        pages: Math.ceil(total / Number(limit)),
+        limit,
+      },
+    })
+  } catch (error) {
+    console.error('Error fetching seller items:', error)
+    res.status(500).json({ message: 'Error fetching seller items', error })
   }
 }

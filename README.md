@@ -126,105 +126,13 @@ Note: Priority levels (High, Medium, Low) have been assigned based on the typica
 
 ### Timeline
 
-Link to the Timeline: https://drive.google.com/file/d/1u4js-25v6d6zLAlpdISRgHBBA9TRQKFY/view?usp=sharing
+Link to the [Timeline](https://drive.google.com/file/d/1u4js-25v6d6zLAlpdISRgHBBA9TRQKFY/view?usp=sharing)
 
+## License
 
-### Effort Matrix
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
 
-Link to the Effort Matrix:
-https://docs.google.com/document/d/17PhEfPg8uCi_Xp-QmUqM_7modIzHADlYA24vwrh6nVU/edit?usp=drive_link
+## Authors
 
-
-## ABET Concerns Essay (Assignment #7)
-
-Link to the essay: 
-https://drive.google.com/file/d/1u4js-25v6d6zLAlpdISRgHBBA9TRQKFY/view?usp=sharing
-
-## PPT Slideshow (includes ABET Concerns) (Assignment #8)
-
-Link to google doc:
-https://docs.google.com/presentation/d/1kMsCP-yr7eLmIw3owozBxf2PejEByKcg2G89E939FXg/edit?usp=sharing
-
-
-## Self-Assessment Essays (Assignment #3)
-
-Quan Le: https://docs.google.com/document/d/1hQbV365ZZpOAT3V0a0dDD-z3xuq_cu1_6PxtNohWYOE/edit?usp=sharing
-
-Long Vo: https://docs.google.com/document/d/1mVfOXcnEK43ZyxZ4KTXCkwdsOW5tnd6EnP02TQxXTwk/edit?usp=sharing
-
-
-
-## Professional Biographies  (Assignment #1)
-
-Quan Le:
-
-Email: leqn@mail.uc.edu 
-
-portfolio: leqndev.com
-
-**Company 1**: Meta
-
-Experience: Software Engineer Intern
-
-**Company 2**: University of Cincinnati
-
-Experience: Machine Learning Researcher
-
-Project Sought: 
-
-Want to work on project that utilize cloud technologies with machine learning operations to build a project that can solve a business needs or a pain point for end-users
-
-*NEED TO FILL IN YOUR BIOGRAPHIES HERE*
-
-
-Hoang Nguyen  
-Nguye3hg@mail.uc.edu  
-
-**CO-OP WORK EXPERIENCE**
-
-**Software Engineering Co-op, IRAS Lab, Cincinnati, OH**
-*May 2024 – Aug 2024*  
-- Developed and deployed a dynamic website using React, improving research project access and lab efficiency.  
-- Leveraged AWS Amplify for seamless deployment, incorporating CloudFront and S3, resulting in a 40% reduction in content delivery time as measured by CloudWatch.  
-- Collaborated with lab members to gather requirements and ensure the website met all technical and user experience standards, leading to a 25% increase in user engagement.  
-
-**Front-End Developer, Pam Air, Ha Noi, Viet Nam**  
-*May 2023 – Aug 2023*  
-- Implemented a web app using Next.js and Python with a team of 4 to generate accurate and synchronized Air Quality Index (AQI) readings for Saigon and Hanoi within 12 hours or 3 days.  
-- Developed a comprehensive web application comprising Management and API routes to effectively communicate and disseminate updates to employees across 10 different departments.  
-- Managed software for 400+ monitoring stations across 63 locations in Vietnam, focusing on feature integration and optimization.  
-
-**CS Intern, FPT Software, Ha Noi, Viet Nam**  
-*Jan 2023 – May 2023*  
-- Collaborated with a team of 17 individuals in 3 months to develop an internal management system for Singapore Airlines, using technologies such as React, Next.js, and Prisma.  
-- Reduced 60% paperwork by successfully implementing a new policy route through collaboration with both frontend and backend teams.  
-- Minimized customer complaints by 15% for Singapore Airlines within a 4-month period by improving scalability.  
-
-
-**SKILLS**  
-- **Skills**: Data Structure, Data Analysis, Data Visualization, Web Development, Software Development  
-- **Programming Languages**: JavaScript, TypeScript, Python, SQL, CSS, HTML5, C++  
-- **Database & Tools**: Git, AWS Services, Node.js, Next.js, React, Firebase, TensorFlow, Keras, Express, Postman, PostgreSQL  
-
-**AREA OF INTEREST**  
-- Cloud computing  
-- Web Development  
-- Machine learning/AI
-- 
-**PROJECT SOUGHT**  
-- **AI Finance Tracker**: An app that analyzes expenses, offers budgeting tips, and predicts spending using AI models on AWS.  
-- **Smart Health Monitor**: A cloud-based system that tracks patient vitals using IoT, with AI detecting anomalies and sending alerts.  
-- **Automated Customer Support Bot**: A chatbot using cloud AI to handle common customer queries, reducing support workload and response times.  
-
-## Budget
-- expenses to date or statement that there have not been any.
-
-We have mostly used free resources or tier from AWS, Azure and free resources on youtube so there has not been any extra cost yet. But using ClaudeAI api and google agent there has been some minimal cost 
-
-- show monetary value of donated items and donation sources.
-
-N/A
-
-## Appendix
-- include appropriate references, citations, links to code repositories, and meeting notes.
-- there should be evidence justifying 45 hours of effort for each team member.
+- [@jacklvd](https://www.github.com/jacklvd)
+- [@BinniesLite](https://github.com/BinniesLite)

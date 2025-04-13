@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 // import { useRouter } from 'next/navigation'
+// import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { format } from 'date-fns'
 import Image from 'next/image'
@@ -154,6 +155,7 @@ const ItemManagementDashboard = () => {
     }
 
     try {
+      // const itemIds = Array.from(selectedItems)
       // const itemIds = Array.from(selectedItems)
 
       setItems(items.filter((item) => !selectedItems.has(item._id)))

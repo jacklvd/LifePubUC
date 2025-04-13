@@ -4,9 +4,15 @@ import { Icon } from '@/components/icons'
 
 interface StatsOverviewProps {
   events?: Event[]
+  productCount?: number
+  totalSales?: number
 }
 
-const StatsOverview: React.FC<StatsOverviewProps> = ({ events = [] }) => {
+const StatsOverview: React.FC<StatsOverviewProps> = ({
+  events = [],
+  productCount = 0,
+  totalSales = 0,
+}) => {
   // Count total events
   const totalEvents = events.length
 
@@ -57,7 +63,9 @@ const StatsOverview: React.FC<StatsOverviewProps> = ({ events = [] }) => {
           <div className="flex justify-between items-center">
             <div>
               <p className="text-sm text-gray-600">Products</p>
-              <h3 className="text-2xl font-bold text-gray-800">12</h3>
+              <h3 className="text-2xl font-bold text-gray-800">
+                {productCount}
+              </h3>
             </div>
             <div className="bg-amber-100 p-2 rounded-full">
               <Icon name="ShoppingCart" className="h-6 w-6 text-amber-600" />
@@ -71,7 +79,9 @@ const StatsOverview: React.FC<StatsOverviewProps> = ({ events = [] }) => {
           <div className="flex justify-between items-center">
             <div>
               <p className="text-sm text-gray-600">Total Sales</p>
-              <h3 className="text-2xl font-bold text-gray-800">$1,240</h3>
+              <h3 className="text-2xl font-bold text-gray-800">
+                ${totalSales.toFixed(2)}
+              </h3>
             </div>
             <div className="bg-green-100 p-2 rounded-full">
               <Icon name="TrendingUp" className="h-6 w-6 text-green-600" />
