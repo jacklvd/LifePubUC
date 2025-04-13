@@ -52,19 +52,17 @@ Long Vo: https://docs.google.com/document/d/1mVfOXcnEK43ZyxZ4KTXCkwdsOW5tnd6EnP0
 
 Quan Le - [Link to document](https://docs.google.com/document/d/1AaWwlaLDvCEsfrYhOUwm7zbKtyfQHlmrxlBxzmEqAYw/edit?usp=sharing) 
 
+Long Vo - [Link to document](https://docs.google.com/document/d/1mVfOXcnEK43ZyxZ4KTXCkwdsOW5tnd6EnP02TQxXTwk/edit?usp=sharing)
+
 ### 8.  Summary of Hours and Justification (one per individual team member)
 
 | Team Member | Hours (Fall) | Hours (Spring) | Total | Description |
 |-------------|--------------|----------------|--------|-------------|
 | Quan Le     | 60 hrs       | 50 hrs         | 110 hrs | Project Lead, Product Manager, Full stack, Documentation, Testing, for more info visit the assesment section  |
+| Long Vo     | 45 hrs       | 45 hrs         | 90 hrs | Full Stack, Front End, Backend, CI/CD Integrations, for more info please visit the assessment section  |
 
 ### 9. Summary of Expenses
 The expenses incur when we were testing with deployment which lead to some charges of around $5 but overall it doesn't cost a lot too make the application
-
-
-
-
-
 
 ### 10. Appendix
 
@@ -76,6 +74,7 @@ Resources we used to make the app:
 - [Stripe Doc](https://docs.stripe.com/checkout/embedded/quickstart)
 - [shadcn](https://ui.shadcn.com/docs)
 - [nextjs auth](https://github.com/nextauthjs/next-auth)
+- [stripe integration guide](https://www.youtube.com/watch?v=Sh_enHD6ssI)
 
 
 
