@@ -23,6 +23,8 @@ const fetchMakerItems = async (): Promise<Item[]> => {
       views: 0,
       status: 'available',
       featured: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
     {
       _id: 'm2',
@@ -36,6 +38,8 @@ const fetchMakerItems = async (): Promise<Item[]> => {
       views: 0,
       status: 'available',
       featured: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
     {
       _id: 'm3',
@@ -49,6 +53,8 @@ const fetchMakerItems = async (): Promise<Item[]> => {
       views: 0,
       status: 'available',
       featured: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
     {
       _id: 'm4',
@@ -62,6 +68,8 @@ const fetchMakerItems = async (): Promise<Item[]> => {
       views: 0,
       status: 'available',
       featured: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
     {
       _id: 'm5',
@@ -75,6 +83,8 @@ const fetchMakerItems = async (): Promise<Item[]> => {
       status: 'available',
       views: 0,
       featured: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
     {
       _id: 'm6',
@@ -88,6 +98,8 @@ const fetchMakerItems = async (): Promise<Item[]> => {
       views: 0,
       status: 'available',
       featured: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
   ]
 }

@@ -9,6 +9,15 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 
+interface PaginationProps {
+  currentPage: number
+  totalPages: number
+  onPageChange: (page: number) => void
+  itemsPerPage: number
+  onItemsPerPageChange: (value: number) => void
+  totalItems: number
+}
+
 const Pagination = ({
   currentPage,
   totalPages,
@@ -16,8 +25,8 @@ const Pagination = ({
   itemsPerPage,
   onItemsPerPageChange,
   totalItems,
-}) => {
-  const pageNumbers = []
+}: PaginationProps) => {
+  const pageNumbers: number[] = []
 
   // Determine which page numbers to show
   const maxVisiblePages = 5
@@ -50,7 +59,7 @@ const Pagination = ({
 
     // Add ellipsis if needed
     if (start > 2) {
-      pageNumbers.push('...')
+      pageNumbers.push(-1)
     }
 
     // Add middle page numbers
@@ -60,7 +69,7 @@ const Pagination = ({
 
     // Add ellipsis if needed
     if (end < totalPages - 1) {
-      pageNumbers.push('...')
+      pageNumbers.push(-1)
     }
 
     // Add the last page
@@ -111,7 +120,7 @@ const Pagination = ({
 
           {pageNumbers.map((page, index) => (
             <React.Fragment key={index}>
-              {page === '...' ? (
+              {page === -1 ? (
                 <span className="px-3 h-8 flex items-center justify-center text-gray-500">
                   ...
                 </span>

@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
 import StarRating from '@/components/star-rating'
-import ItemsGrid from '../components/items-grid'
+// import ItemsGrid from '../components/items-grid'
 import { getItemById } from '@/lib/actions/item-actions'
 
 const ItemDetailPage = () => {
@@ -20,7 +20,7 @@ const ItemDetailPage = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const [selectedImageIndex, setSelectedImageIndex] = useState<number>(0)
   const [quantity, setQuantity] = useState(1)
-  const [relatedItems, setRelatedItems] = useState<Item[]>([])
+  // const [relatedItems, setRelatedItems] = useState<Item[]>([])
   const [activeTab, setActiveTab] = useState<string>('description')
 
   const addItem = useCartStore((state) => state.addItem)
@@ -667,16 +667,16 @@ const ItemDetailPage = () => {
       </div>
 
       {/* Related Items */}
-      {relatedItems.length > 0 && (
+      {/* {relatedItems.length > 0 && (
         <div className="mb-16">
           <h2 className="text-2xl font-bold mb-6">You may also like</h2>
           <ItemsGrid
             items={relatedItems}
             onAddToCart={addItem}
-            onItemSelect={(itemId: string) => router.push(`/item/${itemId}`)}
+            // onItemSelect={(itemId: string) => router.push(`/item/${itemId}`)}
           />
         </div>
-      )}
+      )} */}
     </div>
   )
 }

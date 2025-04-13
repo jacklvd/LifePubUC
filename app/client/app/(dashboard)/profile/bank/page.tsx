@@ -10,21 +10,72 @@ import {
   useElements,
 } from '@stripe/react-stripe-js'
 
-// Load stripe with environment variable
+// Card Information Types
+interface Card {
+  id: string
+  brand: string
+  last4: string
+  expMonth: number
+  expYear: number
+}
+
+interface PaymentMethod {
+  id: string
+  card: {
+    brand: string
+    last4: string
+    exp_month: number
+    exp_year: number
+  }
+  billing_details: {
+    name: string
+  }
+}
+
+interface CardFormProps {
+  onCardSaved: (paymentMethod: PaymentMethod) => void
+}
+
+interface CardError {
+  message: string
+}
+
+interface CardElementChangeEvent {
+  error?: CardError | null
+  complete: boolean
+}
+
+interface CardStyleOptions {
+  style: {
+    base: {
+      color: string
+      fontFamily: string
+      fontSmoothing: string
+      fontSize: string
+      '::placeholder': {
+        color: string
+      }
+    }
+    invalid: {
+      color: string
+      iconColor: string
+    }
+  }
+}
+
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '',
 )
 
-// Card Input Component
-const CardForm = ({ onCardSaved }) => {
+const CardForm: React.FC<CardFormProps> = ({ onCardSaved }) => {
   const stripe = useStripe()
   const elements = useElements()
-  const [error, setError] = useState(null)
-  const [cardComplete, setCardComplete] = useState(false)
-  const [processing, setProcessing] = useState(false)
-  const [cardName, setCardName] = useState('')
+  const [error, setError] = useState<CardError | null>(null)
+  const [cardComplete, setCardComplete] = useState<boolean>(false)
+  const [processing, setProcessing] = useState<boolean>(false)
+  const [cardName, setCardName] = useState<string>('')
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
 
     if (!stripe || !elements) {
@@ -32,7 +83,7 @@ const CardForm = ({ onCardSaved }) => {
     }
 
     if (error) {
-      elements.getElement('card').focus()
+      elements.getElement(CardElement)?.focus()
       return
     }
 
@@ -40,9 +91,12 @@ const CardForm = ({ onCardSaved }) => {
       setProcessing(true)
     }
 
+    const cardElement = elements.getElement(CardElement)
+    if (!cardElement) return
+
     const payload = await stripe.createPaymentMethod({
       type: 'card',
-      card: elements.getElement(CardElement),
+      card: cardElement,
       billing_details: {
         name: cardName,
       },
@@ -51,16 +105,16 @@ const CardForm = ({ onCardSaved }) => {
     setProcessing(false)
 
     if (payload.error) {
-      setError(payload.error)
-    } else {
+      setError(payload.error as CardError)
+    } else if (payload.paymentMethod) {
       setError(null)
-      onCardSaved(payload.paymentMethod)
-      elements.getElement(CardElement).clear()
+      onCardSaved(payload.paymentMethod as PaymentMethod)
+      cardElement.clear()
       setCardName('')
     }
   }
 
-  const cardStyle = {
+  const cardStyle: CardStyleOptions = {
     style: {
       base: {
         color: '#32325d',
@@ -102,8 +156,8 @@ const CardForm = ({ onCardSaved }) => {
           <CardElement
             id="cardElement"
             options={cardStyle}
-            onChange={(e) => {
-              setError(e.error)
+            onChange={(e: CardElementChangeEvent) => {
+              setError(e.error || null)
               setCardComplete(e.complete)
             }}
           />
@@ -124,12 +178,12 @@ const CardForm = ({ onCardSaved }) => {
 }
 
 // Credit Card Management Component
-const CreditCardManager = () => {
-  const [showCardForm, setShowCardForm] = useState(false)
-  const [savedCards, setSavedCards] = useState([])
+const CreditCardManager: React.FC = () => {
+  const [showCardForm, setShowCardForm] = useState<boolean>(false)
+  const [savedCards, setSavedCards] = useState<Card[]>([])
 
-  const handleCardSaved = (paymentMethod) => {
-    const newCard = {
+  const handleCardSaved = (paymentMethod: PaymentMethod) => {
+    const newCard: Card = {
       id: paymentMethod.id,
       brand: paymentMethod.card.brand,
       last4: paymentMethod.card.last4,
@@ -141,7 +195,7 @@ const CreditCardManager = () => {
     setShowCardForm(false)
   }
 
-  const handleDeleteCard = (cardId) => {
+  const handleDeleteCard = (cardId: string) => {
     setSavedCards(savedCards.filter((card) => card.id !== cardId))
   }
 

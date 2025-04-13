@@ -16,7 +16,10 @@ dist
 # next.js
 /.next/
 /out/
+.next
+.next.zip
 
+*.code-workspace
 # production
 /build
 

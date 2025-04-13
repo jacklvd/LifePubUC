@@ -10,6 +10,16 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 
+interface SortAndFilterBarProps {
+  showFilters: boolean
+  setShowFilters: React.Dispatch<React.SetStateAction<boolean>>
+  selectedCategory: string | null
+  onClearCategory: () => void
+  itemCount: number
+  sortOption: string
+  onSortChange: (value: string) => void
+}
+
 const SortAndFilterBar = ({
   showFilters,
   setShowFilters,
@@ -18,7 +28,7 @@ const SortAndFilterBar = ({
   itemCount,
   sortOption,
   onSortChange,
-}) => {
+}: SortAndFilterBarProps) => {
   return (
     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
       <div className="flex items-center gap-2">
@@ -27,7 +37,7 @@ const SortAndFilterBar = ({
           variant="outline"
           onClick={() => setShowFilters(!showFilters)}
         >
-          <Icon name="SlidersHorizontal" className="mr-2" size={16} />
+          <Icon name="SlidersHorizontal" className="mr-2" width={16} />
           <span>Filters</span>
         </Button>
 
@@ -35,7 +45,7 @@ const SortAndFilterBar = ({
           <Badge variant="secondary" className="px-3 py-1">
             {selectedCategory}
             <button onClick={onClearCategory} className="ml-2">
-              <Icon name="X" size={12} />
+              <Icon name="X" width={12} />
             </button>
           </Badge>
         )}
