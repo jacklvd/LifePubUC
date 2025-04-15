@@ -55,7 +55,7 @@ const UpcomingTimeline: React.FC<UpcomingTimelineProps> = ({
           <div key={index} className="border rounded-lg overflow-hidden">
             <div className="bg-gray-50 p-3 border-b flex justify-between items-center">
               <h3 className="font-medium">{timeframe.name}</h3>
-              <Link href={`/events?dateFilter=${timeframe.param}`}>
+              <Link href={`/organization/events?dateFilter=${timeframe.param}`}>
                 <span className="text-blue-600 text-sm flex items-center hover:underline">
                   View all <ArrowRight className="h-3 w-3 ml-1" />
                 </span>
@@ -70,7 +70,7 @@ const UpcomingTimeline: React.FC<UpcomingTimelineProps> = ({
                       key={eventIndex}
                       className="min-w-[200px] max-w-[200px] flex-shrink-0"
                     >
-                      <Link href={`/events/${event.eventId}`}>
+                      <Link href={`/organization/events/${event.eventId}`}>
                         <EventSmallCard event={event} />
                       </Link>
                     </div>

@@ -4,7 +4,7 @@
 import Link from 'next/link'
 import React, { useState, useEffect } from 'react'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
-import { Input } from '@/components/ui/input'
+// import { Input } from '@/components/ui/input'
 import { signOutUser } from '@/lib/actions/auth-actions'
 
 import {
@@ -126,7 +126,7 @@ const Navbar = () => {
         </Link>
 
         {/* SEARCH (Hidden on Small Screens) */}
-        <div className="hidden md:flex flex-1 max-w-3xl mx-5">
+        {/* <div className="hidden md:flex flex-1 max-w-3xl mx-5">
           <div className="relative w-full">
             <Input
               type="text"
@@ -136,7 +136,7 @@ const Navbar = () => {
             />
             <Icon name="Search" className="absolute right-3 top-2.5 h-5 w-5" />
           </div>
-        </div>
+        </div> */}
 
         {/* MOBILE MENU TOGGLE (Hamburger Menu) */}
         <div className="md:hidden flex items-center justify-end text-black ml-auto">
@@ -165,7 +165,7 @@ const Navbar = () => {
             noOverlay
           >
             <div className="menu-items mt-4">
-              <div className="relative w-full mb-6">
+              {/* <div className="relative w-full mb-6">
                 <Input
                   type="text"
                   placeholder="Search..."
@@ -175,7 +175,7 @@ const Navbar = () => {
                   name="Search"
                   className="absolute right-3 top-2.5 h-5 w-5"
                 />
-              </div>
+              </div> */}
 
               {navbarIcons.map((icon, index) => (
                 <Link

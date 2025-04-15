@@ -60,7 +60,7 @@ const SortAndFilterBar = ({
           <SelectTrigger className="w-full sm:w-[180px]">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className='bg-white-100'>
             <SelectItem value="recommended">Recommended</SelectItem>
             <SelectItem value="newest">Newest Arrivals</SelectItem>
             <SelectItem value="popularity">Most Popular</SelectItem>

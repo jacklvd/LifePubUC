@@ -7,7 +7,7 @@ export const deleteItemForSeller = async (
 ): Promise<void> => {
   try {
     const { itemId } = req.params
-    console.log(itemId)
+    // console.log(itemId)
     const item = await Item.findById(itemId)
 
     if (!item) {

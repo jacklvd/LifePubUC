@@ -185,9 +185,9 @@ export const useTicketStore = create<TicketState>()(
 
             // Fetch event details
             const eventData = await getEventById(eventId, userEmail)
-            if (!eventData || eventData.error) {
+            if (!eventData) {
               set((state) => {
-                state.error = eventData?.error || 'Event not found'
+                state.error = 'Event not found'
                 state.loading = false
               })
               return
@@ -198,7 +198,7 @@ export const useTicketStore = create<TicketState>()(
 
             // Calculate event end time
             const eventEndTime =
-              eventData.endTime || eventData.time || '11:59 PM'
+              eventData.endTime || '11:59 PM'
 
             // Generate time options
             const options = generateTimeOptions(eventEndTime)

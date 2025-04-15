@@ -7,7 +7,7 @@ import EventGrid from './components/event-grid'
 import UpcomingTimeline from './components/upcoming'
 import Newsletter from './components/newletter'
 import CreatorCTA from './components/creatorcta'
-import ShopMakerCommunities from '@/components/shop-maker'
+import ShopMakerCommunities from './components/shop-maker'
 import EventCarousel from './components/carousel'
 import {
   Select,
@@ -229,7 +229,7 @@ const LandingPage = () => {
         loading={loading}
         activeTab={0}
         activeCategory={null}
-        setActiveCategory={() => {}}
+        setActiveCategory={() => { }}
         savedEvents={savedEvents}
         toggleSaveEvent={toggleSaveEvent}
         fetchEvents={fetchEvents}

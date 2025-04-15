@@ -1,5 +1,6 @@
 'use server'
 import { auth } from '@/auth'
+import axios from 'axios'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function createItem({ formData }: { formData: any }) {
@@ -13,22 +14,23 @@ export async function createItem({ formData }: { formData: any }) {
   formData?.append('userId', session.user.id)
 
   try {
-    const response = await fetch(
+    const response = await axios.post(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/items`,
+      formData,
       {
-        method: 'POST',
-        body: formData,
-      },
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
     )
 
-    if (!response.ok) {
-      const errorData = await response.text()
-      throw new Error(errorData || 'Failed to create account')
-    }
-
-    return await response.json()
+    return response.data
   } catch (error) {
-    console.error('Error creating Item account:', error)
+    if (axios.isAxiosError(error)) {
+      console.error('Error creating Item:', error.response?.data || error.message)
+      throw new Error(error.response?.data || 'Failed to create item')
+    }
+    console.error('Error creating Item:', error)
     throw error
   }
 }
@@ -45,19 +47,16 @@ export async function getItemById({
   }
 
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/items/${itemId}`,
-      {
-        method: 'GET',
-      },
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/items/${itemId}`
     )
 
-    if (!response.ok) {
+    return response.data
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('Error getting item:', error.response?.data || error.message)
       throw new Error('Failed to get item')
     }
-
-    return await response.json()
-  } catch (error) {
     console.error('Error getting item:', error)
     throw error
   }
@@ -94,25 +93,31 @@ export async function getItemsForSeller({
     }
   }
 
-  const queryParams = new URLSearchParams()
-  if (status && !includeAll) queryParams.append('status', status)
-  if (page) queryParams.append('page', page.toString())
-  if (limit) queryParams.append('limit', limit.toString())
-  if (sort) queryParams.append('sort', sort)
-  if (q) queryParams.append('q', q)
+  // Build params object for axios
+  const params: Record<string, string | number | boolean> = {}
+  if (status && !includeAll) params.status = status
+  if (page) params.page = page
+  if (limit) params.limit = limit
+  if (sort) params.sort = sort
+  if (q) params.q = q
 
-  const queryString = queryParams.toString()
-  const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/sellers/${session.user.id}/items${queryString ? `?${queryString}` : ''}`
+  const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/sellers/${session.user.id}/items`
 
   try {
-    const response = await fetch(url, {
-      method: 'GET',
-    })
-
-    if (!response.ok) {
-      const errorData = await response.text()
+    const response = await axios.get(url, { params })
+    const result = response.data
+    
+    return {
+      ...result,
+      error: null,
+      requiresOnboarding: false,
+    }
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const errorData = error.response?.data || error.message
+      
       // Check if the error is related to Stripe onboarding
-      if (errorData.includes('Stripe Connect onboarding')) {
+      if (typeof errorData === 'string' && errorData.includes('Stripe Connect onboarding')) {
         return {
           data: [],
           pagination: {
@@ -125,6 +130,7 @@ export async function getItemsForSeller({
           requiresOnboarding: true,
         }
       }
+      
       return {
         data: [],
         pagination: {
@@ -137,14 +143,7 @@ export async function getItemsForSeller({
         requiresOnboarding: false,
       }
     }
-
-    const result = await response.json()
-    return {
-      ...result,
-      error: null,
-      requiresOnboarding: false,
-    }
-  } catch (error) {
+    
     console.error('Error fetching seller items:', error)
     return {
       data: [],
@@ -168,20 +167,17 @@ export async function deleteItem({ itemId }: { itemId: string }) {
   }
 
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/sellers/${session?.user?.id}/items/${itemId}`,
-      {
-        method: 'DELETE',
-      },
+    const response = await axios.delete(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/sellers/${session?.user?.id}/items/${itemId}`
     )
 
-    if (!response.ok) {
+    return response.data
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('Error deleting item:', error.response?.data || error.message)
       throw new Error('Failed to delete Item')
     }
-
-    return await response.json()
-  } catch (error) {
-    console.error('Error creating Item account:', error)
+    console.error('Error deleting item:', error)
     throw error
   }
 }
@@ -194,20 +190,17 @@ export async function getCategories() {
   }
 
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/items/categories`,
-      {
-        method: 'GET',
-      },
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/items/categories`
     )
 
-    if (!response.ok) {
+    return response.data
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('Error getting categories:', error.response?.data || error.message)
       throw new Error('Failed to get categories')
     }
-
-    return await response.json()
-  } catch (error) {
-    console.error('Error creating Item account:', error)
+    console.error('Error getting categories:', error)
     throw error
   }
 }
@@ -220,20 +213,85 @@ export async function getConditions() {
   }
 
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/items/conditions`,
-      {
-        method: 'GET',
-      },
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/items/conditions`
     )
 
-    if (!response.ok) {
+    return response.data
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('Error getting conditions:', error.response?.data || error.message)
       throw new Error('Failed to get conditions')
     }
-
-    return await response.json()
-  } catch (error) {
-    console.error('Error creating Item account:', error)
+    console.error('Error getting conditions:', error)
     throw error
+  }
+}
+
+export async function getAllItems({
+  category,
+  condition,
+  minPrice,
+  maxPrice,
+  status = 'available',
+  sort = '-createdAt',
+  page = 1,
+  limit = 10,
+  q,
+}: {
+  category?: string
+  condition?: string
+  minPrice?: number
+  maxPrice?: number
+  status?: string
+  sort?: string
+  page?: number
+  limit?: number
+  q?: string
+} = {}) {
+  try {
+    // Build params object for axios
+    const params: Record<string, string | number> = {}
+    if (category) params.category = category
+    if (condition) params.condition = condition
+    if (minPrice) params.minPrice = minPrice
+    if (maxPrice) params.maxPrice = maxPrice
+    if (status) params.status = status
+    if (sort) params.sort = sort
+    if (page) params.page = page
+    if (limit) params.limit = limit
+    if (q) params.q = q
+
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/items`,
+      { 
+        params,
+        headers: {
+          'Cache-Control': 'no-store' // Disable caching for fresh data
+        }
+      }
+    )
+
+    return response.data.data
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('Error fetching items:', error.response?.data || error.message)
+    } else {
+      console.error('Error fetching items:', error)
+    }
+    return []
+  }
+}
+
+export async function getRecentItems(limit = 12) {
+  try {
+    return getAllItems({
+      status: 'available',
+      sort: '-createdAt', // Sort by newest first
+      limit: limit,
+    })
+  } catch (error) {
+    console.error('Error fetching recent items:', error)
+    return []
   }
 }

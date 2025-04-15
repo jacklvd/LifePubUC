@@ -3,6 +3,7 @@ import Navbar from '@/components/navbar'
 import { auth } from '@/auth'
 import { redirect } from 'next/navigation'
 import OrganizationSideBar from '@/app/organization/components/organization-sidebar'
+import { OnboardingProvider } from '@/context/onboarding'
 
 const Layout = async ({ children }: { children: ReactNode }) => {
   const session = await auth()
@@ -23,10 +24,12 @@ const Layout = async ({ children }: { children: ReactNode }) => {
     <div className="flex-col w-full min-h-full">
       <Navbar />
       <main>
-        <div className="flex h-screen bg-white-100">
-          <OrganizationSideBar />
-          {children}
-        </div>
+        <OnboardingProvider>
+          <div className="flex h-screen bg-white-100">
+            <OrganizationSideBar />
+            {children}
+          </div>
+        </OnboardingProvider>
       </main>
     </div>
   )
