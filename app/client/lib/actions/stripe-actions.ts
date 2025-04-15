@@ -15,7 +15,7 @@ export async function createStripeAccount() {
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/payment/accounts`,
       {
         userId: session.user.id,
-      }
+      },
     )
 
     return response.data
@@ -37,7 +37,7 @@ export async function createStripeAccountLink(accountId: string) {
 
   try {
     console.log(
-      `Making request to: ${process.env.NEXT_PUBLIC_API_BASE_URL}/api/payment/account-links`
+      `Making request to: ${process.env.NEXT_PUBLIC_API_BASE_URL}/api/payment/account-links`,
     )
 
     const response = await axios.post(
@@ -45,7 +45,7 @@ export async function createStripeAccountLink(accountId: string) {
       {
         account: accountId,
         userId: session?.user?.id,
-      }
+      },
     )
 
     return response.data
@@ -71,14 +71,16 @@ export async function getUserOnboardingStripe(accountId: string) {
       {
         account: accountId,
         userId: session?.user?.id,
-      }
+      },
     )
 
     return response.data
   } catch (error) {
     console.log('Error: ', error)
     if (axios.isAxiosError(error)) {
-      throw new Error(error.response?.data || 'Failed to get user onboarding status')
+      throw new Error(
+        error.response?.data || 'Failed to get user onboarding status',
+      )
     }
     throw error
   }
@@ -99,7 +101,7 @@ export async function checkStripeOnboardingStatus() {
     // Use axios.get instead of post since your backend expects GET for checking status
     const response = await axios.post(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/onboarding`,
-      { userId: session.user.id }
+      { userId: session.user.id },
     )
 
     // Handle the case where the API returns a 400 status code
@@ -112,25 +114,25 @@ export async function checkStripeOnboardingStatus() {
     }
   } catch (error) {
     console.error('Error checking onboarding status:', error)
-    
+
     if (axios.isAxiosError(error) && error.response?.status === 400) {
       // If the error is specifically about not being onboarded (400 status)
       // This is the expected response from your backend when not onboarded
       return {
         success: false,
         error: error.response?.data?.message || "User hasn't finish onboarding",
-        isOnboarded: false
+        isOnboarded: false,
       }
     }
-    
+
     if (axios.isAxiosError(error)) {
       return {
         success: false,
         error: error.response?.data?.message || error.message,
-        isOnboarded: false
+        isOnboarded: false,
       }
     }
-    
+
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',
@@ -153,7 +155,7 @@ export async function getUserStripe() {
 
     const response = await axios.post(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/onboarding`,
-      { userId: session.user.id }
+      { userId: session.user.id },
     )
 
     const responseData = response.data
@@ -165,24 +167,24 @@ export async function getUserStripe() {
     }
   } catch (error) {
     console.error('Error getting user data:', error)
-    
+
     if (axios.isAxiosError(error) && error.response?.status === 400) {
       // If the error is specifically about not being onboarded
       return {
         success: false,
         isOnboarded: false,
-        error: error.response?.data?.message || "User hasn't finish onboarding"
+        error: error.response?.data?.message || "User hasn't finish onboarding",
       }
     }
-    
+
     if (axios.isAxiosError(error)) {
       return {
         success: false,
         error: error.response?.data?.message || error.message,
-        isOnboarded: false
+        isOnboarded: false,
       }
     }
-    
+
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',
@@ -212,7 +214,7 @@ export async function createStripePaymentIntent({
       {
         buyerId: session.user.id,
         cartItems: cartItems,
-      }
+      },
     )
 
     const responseData = response.data
@@ -224,19 +226,19 @@ export async function createStripePaymentIntent({
     }
   } catch (error) {
     console.error('Error creating payment intent:', error)
-    
+
     if (axios.isAxiosError(error)) {
       return {
         success: false,
         error: error.response?.data?.message || error.message,
-        data: null
+        data: null,
       }
     }
-    
+
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',
-      data: null
+      data: null,
     }
   }
 }

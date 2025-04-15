@@ -50,7 +50,7 @@ const OrganizationHome: React.FC = () => {
             // Fetch products and sales data
             const [productsResponse, saleSummary] = await Promise.all([
               getItemsForSeller({ limit: 3, sort: '-createdAt' }),
-              getTransactionsTotalSales()
+              getTransactionsTotalSales(),
             ])
 
             setSalesSummary(saleSummary)

@@ -21,9 +21,12 @@ import { useOnboarding } from '@/context/onboarding'
 
 export default function OrganizationOnboarding() {
   const [accountCreatePending, setAccountCreatePending] = useState(false)
-  const [accountLinkCreatePending, setAccountLinkCreatePending] = useState(false)
+  const [accountLinkCreatePending, setAccountLinkCreatePending] =
+    useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [connectedAccountId, setConnectedAccountId] = useState<string | null>(null)
+  const [connectedAccountId, setConnectedAccountId] = useState<string | null>(
+    null,
+  )
   const [step, setStep] = useState(1)
   const router = useRouter()
   const { isOnboarded, checkOnboardingStatus } = useOnboarding()
@@ -74,7 +77,9 @@ export default function OrganizationOnboarding() {
         window.open(data.url, '_blank')
 
         // Show a success message
-        alert('Please complete the onboarding process in the new tab. Once completed, return to this page and refresh to continue.')
+        alert(
+          'Please complete the onboarding process in the new tab. Once completed, return to this page and refresh to continue.',
+        )
 
         // Check onboarding status again after a delay
         setTimeout(() => {

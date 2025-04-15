@@ -49,7 +49,8 @@ const ShopMakerCommunities = () => {
           Shop Latest Items
         </h2>
         <p className="text-gray-600 mb-6 max-w-xl">
-          Discover the newest items from our community of makers and sellers. Fresh finds updated daily!
+          Discover the newest items from our community of makers and sellers.
+          Fresh finds updated daily!
         </p>
         <Link href="/categories?maker=true">
           <Button
@@ -93,14 +94,16 @@ const ShopMakerCommunities = () => {
                   alt={item.title}
                   width={700}
                   height={700}
-                  className={`object-cover transition-transform duration-500 ${hoveredItem === item._id ? 'scale-105' : 'scale-100'
-                    }`}
+                  className={`object-cover transition-transform duration-500 ${
+                    hoveredItem === item._id ? 'scale-105' : 'scale-100'
+                  }`}
                 />
 
                 {/* Hover Actions */}
                 <div
-                  className={`absolute inset-0 bg-black bg-opacity-20 flex flex-col items-center justify-center transition-opacity duration-300 ${hoveredItem === item._id ? 'opacity-100' : 'opacity-0'
-                    }`}
+                  className={`absolute inset-0 bg-black bg-opacity-20 flex flex-col items-center justify-center transition-opacity duration-300 ${
+                    hoveredItem === item._id ? 'opacity-100' : 'opacity-0'
+                  }`}
                 >
                   <div className="absolute border border-white bg-white-100 bottom-2 left-2 bg-white px-2 py-1 rounded-full text-sm font-semibold">
                     ${item.price.amount.toFixed(2)}
@@ -110,7 +113,10 @@ const ShopMakerCommunities = () => {
                       onClick={(e) => handleAddToCart(e, item)}
                       className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-md hover:bg-gray-100"
                     >
-                      <Icon name="ShoppingBag" className="w-4 h-4 text-gray-600" />
+                      <Icon
+                        name="ShoppingBag"
+                        className="w-4 h-4 text-gray-600"
+                      />
                     </button>
                   </div>
                 </div>

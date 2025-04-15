@@ -21,13 +21,16 @@ export async function createItem({ formData }: { formData: any }) {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
-      }
+      },
     )
 
     return response.data
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.error('Error creating Item:', error.response?.data || error.message)
+      console.error(
+        'Error creating Item:',
+        error.response?.data || error.message,
+      )
       throw new Error(error.response?.data || 'Failed to create item')
     }
     console.error('Error creating Item:', error)
@@ -48,13 +51,16 @@ export async function getItemById({
 
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/items/${itemId}`
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/items/${itemId}`,
     )
 
     return response.data
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.error('Error getting item:', error.response?.data || error.message)
+      console.error(
+        'Error getting item:',
+        error.response?.data || error.message,
+      )
       throw new Error('Failed to get item')
     }
     console.error('Error getting item:', error)
@@ -106,7 +112,7 @@ export async function getItemsForSeller({
   try {
     const response = await axios.get(url, { params })
     const result = response.data
-    
+
     return {
       ...result,
       error: null,
@@ -115,9 +121,12 @@ export async function getItemsForSeller({
   } catch (error) {
     if (axios.isAxiosError(error)) {
       const errorData = error.response?.data || error.message
-      
+
       // Check if the error is related to Stripe onboarding
-      if (typeof errorData === 'string' && errorData.includes('Stripe Connect onboarding')) {
+      if (
+        typeof errorData === 'string' &&
+        errorData.includes('Stripe Connect onboarding')
+      ) {
         return {
           data: [],
           pagination: {
@@ -130,7 +139,7 @@ export async function getItemsForSeller({
           requiresOnboarding: true,
         }
       }
-      
+
       return {
         data: [],
         pagination: {
@@ -143,7 +152,7 @@ export async function getItemsForSeller({
         requiresOnboarding: false,
       }
     }
-    
+
     console.error('Error fetching seller items:', error)
     return {
       data: [],
@@ -168,13 +177,16 @@ export async function deleteItem({ itemId }: { itemId: string }) {
 
   try {
     const response = await axios.delete(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/sellers/${session?.user?.id}/items/${itemId}`
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/sellers/${session?.user?.id}/items/${itemId}`,
     )
 
     return response.data
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.error('Error deleting item:', error.response?.data || error.message)
+      console.error(
+        'Error deleting item:',
+        error.response?.data || error.message,
+      )
       throw new Error('Failed to delete Item')
     }
     console.error('Error deleting item:', error)
@@ -191,13 +203,16 @@ export async function getCategories() {
 
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/items/categories`
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/items/categories`,
     )
 
     return response.data
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.error('Error getting categories:', error.response?.data || error.message)
+      console.error(
+        'Error getting categories:',
+        error.response?.data || error.message,
+      )
       throw new Error('Failed to get categories')
     }
     console.error('Error getting categories:', error)
@@ -214,13 +229,16 @@ export async function getConditions() {
 
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/items/conditions`
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/items/conditions`,
     )
 
     return response.data
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.error('Error getting conditions:', error.response?.data || error.message)
+      console.error(
+        'Error getting conditions:',
+        error.response?.data || error.message,
+      )
       throw new Error('Failed to get conditions')
     }
     console.error('Error getting conditions:', error)
@@ -264,18 +282,21 @@ export async function getAllItems({
 
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/items`,
-      { 
+      {
         params,
         headers: {
-          'Cache-Control': 'no-store' // Disable caching for fresh data
-        }
-      }
+          'Cache-Control': 'no-store', // Disable caching for fresh data
+        },
+      },
     )
 
     return response.data.data
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.error('Error fetching items:', error.response?.data || error.message)
+      console.error(
+        'Error fetching items:',
+        error.response?.data || error.message,
+      )
     } else {
       console.error('Error fetching items:', error)
     }

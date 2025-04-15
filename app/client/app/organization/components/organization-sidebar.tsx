@@ -41,7 +41,8 @@ const OrganizationSideBar = () => {
       <TooltipProvider>
         {eventSideBarIcons.map((icon, index) => {
           const isActive = pathname === icon.route // check if current route matches
-          const isDisabled = !isOnboarded && icon.route !== '/organization/onboarding'
+          const isDisabled =
+            !isOnboarded && icon.route !== '/organization/onboarding'
 
           return (
             <Tooltip key={index} delayDuration={100}>

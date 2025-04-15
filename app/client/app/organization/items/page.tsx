@@ -10,7 +10,7 @@ import {
   Pagination,
   EmptyState,
   LoadingState,
-  ErrorDisplay
+  ErrorDisplay,
 } from './components'
 
 const ItemManagementDashboard = () => {
@@ -160,9 +160,7 @@ const ItemManagementDashboard = () => {
       const itemIds = Array.from(selectedItems)
 
       // Delete each selected item
-      await Promise.all(
-        itemIds.map((id) => deleteItem({ itemId: id }))
-      )
+      await Promise.all(itemIds.map((id) => deleteItem({ itemId: id })))
 
       setItems(items.filter((item) => !selectedItems.has(item._id)))
       setSelectedItems(new Set())

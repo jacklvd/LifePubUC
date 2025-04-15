@@ -229,7 +229,7 @@ const LandingPage = () => {
         loading={loading}
         activeTab={0}
         activeCategory={null}
-        setActiveCategory={() => { }}
+        setActiveCategory={() => {}}
         savedEvents={savedEvents}
         toggleSaveEvent={toggleSaveEvent}
         fetchEvents={fetchEvents}

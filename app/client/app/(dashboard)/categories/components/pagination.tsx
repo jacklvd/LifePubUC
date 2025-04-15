@@ -98,7 +98,7 @@ const Pagination = ({
             <SelectTrigger className="w-[80px]">
               <SelectValue placeholder="12" />
             </SelectTrigger>
-            <SelectContent className='bg-white-100'>
+            <SelectContent className="bg-white-100">
               <SelectItem value="12">12</SelectItem>
               <SelectItem value="24">24</SelectItem>
               <SelectItem value="48">48</SelectItem>
@@ -128,11 +128,13 @@ const Pagination = ({
                 <Button
                   variant={currentPage === page ? 'default' : 'outline'}
                   onClick={() => onPageChange(page)}
-                  className={`h-8 w-8 ${index === 0 ? 'rounded-l-none' : ''} ${index === pageNumbers.length - 1 ? 'rounded-r-none' : ''
-                    } ${index !== 0 && index !== pageNumbers.length - 1
+                  className={`h-8 w-8 ${index === 0 ? 'rounded-l-none' : ''} ${
+                    index === pageNumbers.length - 1 ? 'rounded-r-none' : ''
+                  } ${
+                    index !== 0 && index !== pageNumbers.length - 1
                       ? 'rounded-none border-l-0'
                       : ''
-                    } ${index === pageNumbers.length - 1 ? 'border-l-0' : ''}`}
+                  } ${index === pageNumbers.length - 1 ? 'border-l-0' : ''}`}
                 >
                   {page}
                 </Button>

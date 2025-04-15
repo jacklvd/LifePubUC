@@ -197,8 +197,7 @@ export const useTicketStore = create<TicketState>()(
             const ticketsData = await getEventTickets(eventId)
 
             // Calculate event end time
-            const eventEndTime =
-              eventData.endTime || '11:59 PM'
+            const eventEndTime = eventData.endTime || '11:59 PM'
 
             // Generate time options
             const options = generateTimeOptions(eventEndTime)
