@@ -32,9 +32,8 @@ const Footer: FC = () => {
       </div>
 
       {/* Main footer */}
-      <div className="bg-blue-400 text-white py-12 shadow-inner">
+      {/* <div className="bg-blue-400 text-white py-12 shadow-inner">
         <div className="container mx-auto px-5 flex flex-col md:flex-row">
-          {/* Logo and app download */}
           <div className="w-full md:w-1/4 mb-10 md:mb-0 flex flex-col items-start">
             <div className="text-2xl font-bold mb-6">LifePub</div>
             <Link
@@ -61,9 +60,7 @@ const Footer: FC = () => {
             </Link>
           </div>
 
-          {/* Footer links */}
           <div className="w-full md:w-3/4 flex flex-wrap md:flex-nowrap gap-8">
-            {/* Shop column */}
             <div className="w-1/2 md:w-1/4 mb-6 md:mb-0">
               <h3 className="text-lg font-bold mb-4 border-b border-blue-700 pb-2">
                 Shop
@@ -128,7 +125,6 @@ const Footer: FC = () => {
               </ul>
             </div>
 
-            {/* Sell column */}
             <div className="w-1/2 md:w-1/4 mb-6 md:mb-0">
               <h3 className="text-lg font-bold mb-4 border-b border-blue-700 pb-2">
                 Sell
@@ -169,7 +165,6 @@ const Footer: FC = () => {
               </ul>
             </div>
 
-            {/* About column */}
             <div className="w-1/2 md:w-1/4 mb-6 md:mb-0">
               <h3 className="text-lg font-bold mb-4 border-b border-blue-700 pb-2">
                 About
@@ -226,7 +221,6 @@ const Footer: FC = () => {
               </ul>
             </div>
 
-            {/* Help column */}
             <div className="w-1/2 md:w-1/4">
               <h3 className="text-lg font-bold mb-4 border-b border-blue-700 pb-2">
                 Help
@@ -250,7 +244,6 @@ const Footer: FC = () => {
                 </li>
               </ul>
 
-              {/* Social media */}
               <h4 className="text-base font-semibold mt-6 mb-3">Follow us</h4>
               <div className="flex gap-3">
                 <Link href="#" aria-label="Instagram">
@@ -302,7 +295,7 @@ const Footer: FC = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Bottom footer */}
       <div className="bg-blue-500 text-white py-5">

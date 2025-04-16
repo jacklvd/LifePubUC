@@ -98,7 +98,7 @@ const Pagination = ({
             <SelectTrigger className="w-[80px]">
               <SelectValue placeholder="12" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-white-100">
               <SelectItem value="12">12</SelectItem>
               <SelectItem value="24">24</SelectItem>
               <SelectItem value="48">48</SelectItem>

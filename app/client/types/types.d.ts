@@ -1,5 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 //types/types.d.ts
+interface GetItemsParams {
+  category?: string
+  condition?: string
+  minPrice?: number
+  maxPrice?: number
+  status?: string
+  featured?: boolean
+  sort?: string
+  page?: number
+  limit?: number
+  q?: string
+}
+
 interface ProcessedItemData {
   title: string
   price: number

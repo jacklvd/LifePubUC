@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   ArrowRight,
   CheckCircle,
@@ -12,25 +12,35 @@ import {
   DollarSign,
 } from 'lucide-react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import {
   createStripeAccount,
   createStripeAccountLink,
 } from '@/lib/actions/stripe-actions'
+import { useOnboarding } from '@/context/onboarding'
 
 export default function OrganizationOnboarding() {
   const [accountCreatePending, setAccountCreatePending] = useState(false)
   const [accountLinkCreatePending, setAccountLinkCreatePending] =
     useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [connectedAccountId, setConnectedAccountId] = useState(null)
+  const [connectedAccountId, setConnectedAccountId] = useState<string | null>(
+    null,
+  )
   const [step, setStep] = useState(1)
+  const router = useRouter()
+  const { isOnboarded, checkOnboardingStatus } = useOnboarding()
+
+  // If already onboarded, redirect to home
+  useEffect(() => {
+    if (isOnboarded) {
+      router.push('/organization/home')
+    }
+  }, [isOnboarded, router])
 
   const createConnectAccount = async () => {
     setAccountCreatePending(true)
     setError(null)
-
-    // const session = await auth();
-    // console.log(session);
 
     try {
       const data = await createStripeAccount()
@@ -63,34 +73,31 @@ export default function OrganizationOnboarding() {
       const data = await createStripeAccountLink(connectedAccountId)
 
       if (data.url) {
+        // After successful creation, open the Stripe onboarding URL
         window.open(data.url, '_blank')
+
+        // Show a success message
+        alert(
+          'Please complete the onboarding process in the new tab. Once completed, return to this page and refresh to continue.',
+        )
+
+        // Check onboarding status again after a delay
+        setTimeout(() => {
+          checkOnboardingStatus()
+        }, 5000)
       } else {
-        throw Error('Stripe not found')
+        throw Error('Stripe account link not found')
       }
     } catch (error) {
       console.log('Error: ', error)
+      setError('Failed to create Stripe account link')
+    } finally {
+      setAccountLinkCreatePending(false)
     }
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      {/* <header className="bg-white shadow-sm">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-          <Link href="/" className="text-2xl font-bold text-primary">
-            LifePub
-          </Link>
-          <nav>
-            <Link
-              href="/help"
-              className="text-sm text-gray-600 hover:text-primary"
-            >
-              Need help?
-            </Link>
-          </nav>
-        </div>
-      </header> */}
-
+    <div className="min-h-screen">
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         {/* Progress indicator */}
         <div className="mb-8">

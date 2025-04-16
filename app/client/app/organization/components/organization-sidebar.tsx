@@ -18,35 +18,48 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
+import { useOnboarding } from '@/context/onboarding'
 
 const OrganizationSideBar = () => {
   const router = useRouter()
   const pathname = usePathname() // get current route
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const { isOnboarded, isLoading } = useOnboarding()
+
+  const handleNavigation = (route: string) => {
+    if (!isOnboarded && route !== '/organization/onboarding') {
+      // If not onboarded, only allow navigation to onboarding page
+      router.push('/organization/onboarding')
+    } else {
+      router.push(route)
+    }
+    setIsMobileMenuOpen(false)
+  }
 
   const sidebarContent = (
     <div className="flex flex-col items-center py-4 space-y-4 sm:space-y-6">
       <TooltipProvider>
         {eventSideBarIcons.map((icon, index) => {
           const isActive = pathname === icon.route // check if current route matches
+          const isDisabled =
+            !isOnboarded && icon.route !== '/organization/onboarding'
 
           return (
             <Tooltip key={index} delayDuration={100}>
               <TooltipTrigger asChild>
                 <button
                   type="button"
-                  onClick={() => {
-                    router.push(icon.route)
-                    setIsMobileMenuOpen(false)
-                  }}
+                  onClick={() => handleNavigation(icon.route)}
                   className={`
                     p-2 rounded-lg transition-all w-full sm:w-auto flex sm:justify-center items-center
                     ${isActive ? 'bg-blue-500 text-white' : 'text-gray-500 hover:bg-gray-200 hover:text-blue-600'}
+                    ${isDisabled ? 'opacity-40 cursor-not-allowed' : ''}
                   `}
+                  disabled={isDisabled}
                   aria-label={icon.title}
                 >
                   <Icon name={icon.name} className="h-5 w-5" />
-                  <span className="ml-3 sm:hidden">{icon.title}</span>
+                  <span className="sr-only">{icon.title}</span>
                 </button>
               </TooltipTrigger>
               <TooltipContent
@@ -60,6 +73,13 @@ const OrganizationSideBar = () => {
           )
         })}
       </TooltipProvider>
+
+      {/* Show loading indicator if onboarding status is being checked */}
+      {isLoading && (
+        <div className="w-full text-center py-2">
+          <div className="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500"></div>
+        </div>
+      )}
     </div>
   )
 
@@ -81,6 +101,11 @@ const OrganizationSideBar = () => {
             {/* Add SheetHeader and SheetTitle for accessibility */}
             <SheetHeader className="mb-6">
               <SheetTitle>Organization</SheetTitle>
+              {!isOnboarded && !isLoading && (
+                <p className="text-sm text-orange-500">
+                  Complete onboarding to access all features
+                </p>
+              )}
             </SheetHeader>
             {sidebarContent}
           </SheetContent>

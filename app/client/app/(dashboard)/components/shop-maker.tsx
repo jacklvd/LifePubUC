@@ -4,105 +4,9 @@ import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { ShoppingBag } from 'lucide-react'
 import { useCartStore } from '@/store/cart'
-
-const fetchMakerItems = async (): Promise<Item[]> => {
-  await new Promise((resolve) => setTimeout(resolve, 500))
-
-  return [
-    {
-      _id: 'm1',
-      title: 'Handcrafted Ceramic Lantern',
-      description:
-        'Beautiful ceramic lantern handmade with eco-friendly materials. Perfect for indoor and outdoor use.',
-      images: ['https://picsum.photos/id/119/800/800'],
-      price: { amount: 75.0 },
-      condition: 'new',
-      category: 'furniture',
-      views: 0,
-      status: 'available',
-      featured: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      _id: 'm2',
-      title: 'Hand-Painted Wooden Serving Board',
-      description:
-        'Unique, hand-painted serving board made from sustainable walnut wood. Food-safe finishes used.',
-      images: ['https://picsum.photos/id/30/800/800'],
-      price: { amount: 65.5 },
-      condition: 'like_new',
-      category: 'furniture',
-      views: 0,
-      status: 'available',
-      featured: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      _id: 'm3',
-      title: 'Indigo Hand-Dyed Silk Scarf',
-      description:
-        'Luxurious silk scarf hand-dyed with natural indigo. Each piece is unique and one-of-a-kind.',
-      images: ['https://picsum.photos/id/20/800/800'],
-      price: { amount: 48.99 },
-      condition: 'new',
-      category: 'clothing',
-      views: 0,
-      status: 'available',
-      featured: false,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      _id: 'm4',
-      title: 'Handcrafted Walnut Cutting Board',
-      description:
-        'Premium cutting board handcrafted from solid walnut. Finished with food-safe oils for durability.',
-      images: ['https://picsum.photos/id/49/800/800'],
-      price: { amount: 79.99 },
-      condition: 'new',
-      category: 'furniture',
-      views: 0,
-      status: 'available',
-      featured: false,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      _id: 'm5',
-      title: 'Handwoven Cotton Drawstring Bag',
-      description:
-        'Eco-friendly handwoven cotton drawstring bag. Perfect for storage or as a gift bag.',
-      images: ['https://picsum.photos/id/111/800/800'],
-      price: { amount: 32.5 },
-      condition: 'new',
-      category: 'other',
-      status: 'available',
-      views: 0,
-      featured: false,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      _id: 'm6',
-      title: 'Leather Minimalist Wallet',
-      description:
-        'Handcrafted minimalist wallet made from premium full-grain leather. Will develop a beautiful patina over time.',
-      images: ['https://picsum.photos/id/21/800/800'],
-      price: { amount: 45.0 },
-      condition: 'new',
-      category: 'clothing',
-      views: 0,
-      status: 'available',
-      featured: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-  ]
-}
+import { getRecentItems } from '@/lib/actions/item-actions'
+import { Icon } from '@/components/icons'
 
 const ShopMakerCommunities = () => {
   const [items, setItems] = useState<Item[]>([])
@@ -115,7 +19,7 @@ const ShopMakerCommunities = () => {
     const loadMakerItems = async () => {
       try {
         setLoading(true)
-        const data = await fetchMakerItems()
+        const data = await getRecentItems(12) // Get 12 newest items
         setItems(data)
         setError(null)
       } catch (err) {
@@ -142,13 +46,13 @@ const ShopMakerCommunities = () => {
       <div className="mb-8">
         <p className="text-sm text-gray-600 mb-2">Editors&apos; Picks</p>
         <h2 className="text-2xl md:text-3xl font-semibold mb-3">
-          Shop Maker Communities
+          Shop Latest Items
         </h2>
         <p className="text-gray-600 mb-6 max-w-xl">
-          Discover artisan shops from our Uplift Makers Program, which aims to
-          bring economic opportunities to creative entrepreneurs everywhere.
+          Discover the newest items from our community of makers and sellers.
+          Fresh finds updated daily!
         </p>
-        <Link href="/category?maker=true">
+        <Link href="/categories?maker=true">
           <Button
             variant="outline"
             className="bg-gray-100 hover:bg-gray-200 hover:shadow-xl transition-all text-gray-900 rounded-full px-6"
@@ -175,7 +79,7 @@ const ShopMakerCommunities = () => {
           </Button>
         </div>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {items.map((item) => (
             <Link
               href={`/item/${item._id}`}
@@ -186,11 +90,10 @@ const ShopMakerCommunities = () => {
             >
               <div className="relative w-full aspect-square overflow-hidden rounded-md">
                 <Image
-                  src={item.images[0]}
+                  src={item.images[0] || 'https://picsum.photos/id/1/800/800'} // Fallback image
                   alt={item.title}
                   width={700}
                   height={700}
-                  //   sizes="(max-width: 768px) 70vw, (max-width: 1200px) 33vw, 16vw"
                   className={`object-cover transition-transform duration-500 ${
                     hoveredItem === item._id ? 'scale-105' : 'scale-100'
                   }`}
@@ -210,7 +113,10 @@ const ShopMakerCommunities = () => {
                       onClick={(e) => handleAddToCart(e, item)}
                       className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-md hover:bg-gray-100"
                     >
-                      <ShoppingBag className="w-4 h-4 text-gray-600" />
+                      <Icon
+                        name="ShoppingBag"
+                        className="w-4 h-4 text-gray-600"
+                      />
                     </button>
                   </div>
                 </div>

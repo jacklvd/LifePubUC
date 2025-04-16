@@ -1,6 +1,5 @@
 import { Request, Response } from 'express'
 import Transaction from '../models/transactionSchema'
-import User from '../models/userSchema'
 
 import mongoose from 'mongoose'
 

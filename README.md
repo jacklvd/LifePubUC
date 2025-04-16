@@ -16,10 +16,10 @@ For more detail see this user manual with image of the application
 [User Manual](https://docs.google.com/document/d/1UPYpGw8IojakOKmIpDG154LTZCH72kU0kI6L7zFRKaA/edit?usp=sharing)
 
 *landing page*
-![alt text](image.png)
+![alt text](assets/image.png)
 
 *event creation page for seller*
-![alt text](image-1.png)
+![alt text](assets/image-1.png)
 
 ### 3. Test Plans
 
@@ -37,7 +37,7 @@ Presentation link is [here](https://docs.google.com/presentation/d/1kMsCP-yr7eLm
 
 
 ### 6. Final Expo Poster
-![alt text](image-3.png)
+![alt text](assets/image-3.png)
 
 ### 7. Assessments
 
@@ -59,7 +59,7 @@ Long Vo - [Link to document](https://docs.google.com/document/d/1mVfOXcnEK43ZyxZ
 | Team Member | Hours (Fall) | Hours (Spring) | Total | Description |
 |-------------|--------------|----------------|--------|-------------|
 | Quan Le     | 60 hrs       | 50 hrs         | 110 hrs | Project Lead, Product Manager, Full stack, Documentation, Testing, for more info visit the assesment section  |
-| Long Vo     | 45 hrs       | 45 hrs         | 90 hrs | Full Stack, Front End, Backend, CI/CD Integrations, for more info please visit the assessment section  |
+| Long Vo     | 45 hrs       | 55 hrs         | 100 hrs | Full Stack, Front End, Backend, CI/CD Integrations, for more info please visit the assessment section  |
 
 ### 9. Summary of Expenses
 The expenses incur when we were testing with deployment which lead to some charges of around $5 but overall it doesn't cost a lot too make the application
@@ -123,11 +123,6 @@ Resources we used to make the app:
 Note: Priority levels (High, Medium, Low) have been assigned based on the typical importance of these tasks in a project lifecycle. The team should review and adjust these as needed. The Status column is left blank for the team to update as the project progresses.
 
 
-
-### Timeline
-
-Link to the [Timeline](https://drive.google.com/file/d/1u4js-25v6d6zLAlpdISRgHBBA9TRQKFY/view?usp=sharing)
-
 ## License
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
@@ -137,12 +132,3 @@ Link to the [Timeline](https://drive.google.com/file/d/1u4js-25v6d6zLAlpdISRgHBB
 - [@jacklvd](https://www.github.com/jacklvd)
 - [@BinniesLite](https://github.com/BinniesLite)
 Link to the [Timeline](https://drive.google.com/file/d/1u4js-25v6d6zLAlpdISRgHBBA9TRQKFY/view?usp=sharing)
-
-## License
-
-[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
-
-## Authors
-
-- [@jacklvd](https://www.github.com/jacklvd)
-- [@BinniesLite](https://github.com/BinniesLite)
