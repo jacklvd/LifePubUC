@@ -17,7 +17,7 @@ import { STORAGE_KEY as sk } from '@/constants'
 interface EventProgressData {
   eventId: string | null
   eventTitle: string
-  eventDate: string | null
+  eventDate: string | Date | null
   eventLocation: string | null
   eventStatus: 'draft' | 'on sale'
   activeStep: EventStep
@@ -28,7 +28,7 @@ interface EventProgressContextType extends EventProgressData {
   isEditing: boolean
   setEventId: (id: string) => void
   setEventTitle: (title: string) => void
-  setEventDate: (date: string) => void
+  setEventDate: (date: string | Date) => void
   setEventLocation: (location: string) => void
   setEventStatus: (status: 'draft' | 'on sale') => void
   setActiveStep: (step: EventStep) => void
@@ -157,7 +157,7 @@ export const EventProgressProvider: React.FC<{ children: React.ReactNode }> = ({
   )
 
   const setEventDate = useCallback(
-    (date: string) => {
+    (date: string | Date) => {
       updateState({ eventDate: date })
     },
     [updateState],

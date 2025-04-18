@@ -20,7 +20,7 @@ interface EditEventPageProps {
 
 export default function EditEventPage({ params }: EditEventPageProps) {
   const { eventId, email } = use(params)
-  const [eventData, setEventData] = useState<EventData | null>(null)
+  const [eventData, setEventData] = useState<any | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const { markStepCompleted, setEventStatus } = useEventProgress()

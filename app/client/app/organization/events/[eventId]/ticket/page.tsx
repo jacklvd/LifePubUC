@@ -28,8 +28,8 @@ export default function TicketManagementPage({ params }: TicketPageProps) {
     const checkEvent = async () => {
       try {
         const eventData = await getEventById(eventId)
-        if (!eventData || eventData.error) {
-          setError(eventData?.error || 'Event not found')
+        if (!eventData) {
+          setError('Event not found')
         }
       } catch (err: any) {
         setError(err?.message || 'Failed to load event')

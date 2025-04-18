@@ -156,8 +156,9 @@ const CalendarEventPopup: React.FC<CalendarEventPopupProps> = ({
         {/* Header with close button */}
         <div className="flex justify-between items-start mb-3">
           <Badge className={`${getStatusColor(event.status)} text-white`}>
-            {event.status?.charAt(0).toUpperCase() + event.status?.slice(1) ||
-              'Draft'}
+            {(event.status
+              ? event.status.charAt(0).toUpperCase() + event.status.slice(1)
+              : 'Draft') || 'Draft'}
           </Badge>
           <Button
             variant="ghost"

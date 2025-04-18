@@ -21,7 +21,7 @@ export type EventStep = 'build' | 'tickets' | 'publish'
 interface LeftSideBarProps {
   eventId?: string
   eventTitle?: string
-  eventDate?: string
+  eventDate?: string | Date
   location?: string
   eventStatus?: 'draft' | 'on sale'
   activeStep?: EventStep
@@ -58,7 +58,7 @@ const StepIndicator = ({
   )
 }
 
-const formatEventDate = (dateString?: string) => {
+const formatEventDate = (dateString?: string | Date) => {
   // This handles server-side rendering consistently
   return formatDate(dateString, 'simple')
 }
