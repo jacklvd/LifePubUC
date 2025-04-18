@@ -27,7 +27,6 @@ const DayCell = React.memo(
   ({
     day,
     month,
-    year,
     isPast,
     isToday,
     isOtherMonth,

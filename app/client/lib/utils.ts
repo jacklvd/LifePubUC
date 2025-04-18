@@ -340,34 +340,47 @@ export function matchesLocation(
 }
 
 /**
- * Safely formats a date string to a consistent format for both server and client rendering
+ * Safely formats a date string or Date object to a consistent format for both server and client rendering
  *
- * @param dateString - The date string to format (expects ISO or YYYY-MM-DD format)
+ * @param dateInput - The date to format (accepts ISO string, YYYY-MM-DD format, or Date object)
  * @param format - The format to use (simple, display, or iso)
  * @returns Formatted date string or fallback text if invalid
  */
 export const formatDate = (
-  dateString?: string | null,
+  dateInput?: string | Date | null,
   format: 'simple' | 'display' | 'iso' = 'simple',
 ): string => {
-  if (!dateString) return 'Date TBD'
+  if (!dateInput) return 'Date TBD'
 
   try {
     let date: Date
-
-    // Handle ISO string format (like "2025-03-29T00:00:00.000Z")
-    if (dateString.includes('T')) {
-      date = new Date(dateString)
+    
+    // Handle Date object
+    if (dateInput instanceof Date) {
+      date = dateInput
     }
-    // Handle YYYY-MM-DD format
-    else if (dateString.includes('-')) {
-      const [year, month, day] = dateString.split('-').map(Number)
-      // Use noon to avoid timezone issues
-      date = new Date(year, month - 1, day, 12, 0, 0)
+    // Handle string input
+    else if (typeof dateInput === 'string') {
+      const dateString = dateInput
+      
+      // Handle ISO string format (like "2025-03-29T00:00:00.000Z")
+      if (dateString.includes('T')) {
+        date = new Date(dateString)
+      }
+      // Handle YYYY-MM-DD format
+      else if (dateString.includes('-')) {
+        const [year, month, day] = dateString.split('-').map(Number)
+        // Use noon to avoid timezone issues
+        date = new Date(year, month - 1, day, 12, 0, 0)
+      }
+      // Fallback for unexpected string formats
+      else {
+        return dateString || 'Date TBD'
+      }
     }
-    // Fallback for unexpected formats
+    // Fallback for unexpected input types
     else {
-      return dateString || 'Date TBD'
+      return 'Date TBD'
     }
 
     // Check if the date is valid

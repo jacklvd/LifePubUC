@@ -4,7 +4,7 @@ import { Icon } from '@/components/icons'
 import { Button } from '@/components/ui/button'
 
 interface Props {
-  description: string
+  description?: string
   handleChange: (
     e: React.ChangeEvent<HTMLTextAreaElement>,
     field: string,
