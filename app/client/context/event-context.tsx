@@ -52,15 +52,15 @@ const initialProgressData: EventProgressData = {
 const EventProgressContext = createContext<EventProgressContextType>({
   ...initialProgressData,
   isEditing: false,
-  setEventId: () => { },
-  setEventTitle: () => { },
-  setEventDate: () => { },
-  setEventLocation: () => { },
-  setEventStatus: () => { },
-  setActiveStep: () => { },
-  markStepCompleted: () => { },
-  markStepIncomplete: () => { },
-  resetProgress: () => { },
+  setEventId: () => {},
+  setEventTitle: () => {},
+  setEventDate: () => {},
+  setEventLocation: () => {},
+  setEventStatus: () => {},
+  setActiveStep: () => {},
+  markStepCompleted: () => {},
+  markStepIncomplete: () => {},
+  resetProgress: () => {},
 })
 
 const key = sk as string

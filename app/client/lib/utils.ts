@@ -354,7 +354,7 @@ export const formatDate = (
 
   try {
     let date: Date
-    
+
     // Handle Date object
     if (dateInput instanceof Date) {
       date = dateInput
@@ -362,7 +362,7 @@ export const formatDate = (
     // Handle string input
     else if (typeof dateInput === 'string') {
       const dateString = dateInput
-      
+
       // Handle ISO string format (like "2025-03-29T00:00:00.000Z")
       if (dateString.includes('T')) {
         date = new Date(dateString)
