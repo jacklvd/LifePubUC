@@ -1,17 +1,19 @@
-FROM 18.20.8-alpine
+FROM node:22-alpine
 
 WORKDIR /app
 
 # Copy package files 
 COPY package.json yarn.lock ./
-RUN yarn install --production --frozen-lockfile
+RUN yarn install --frozen-lockfile
 
-# Copy source code and build
+# Copy source code
 COPY . .
+
+# Build the application
 RUN yarn build
 
-# Expose port (should match what's in docker-compose)
+# Expose the application port
 EXPOSE 8000
 
-# Start the application (adjust path as needed)
+# Start the application
 CMD ["node", "dist/index.js"]
