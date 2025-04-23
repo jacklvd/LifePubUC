@@ -1,22 +1,17 @@
-FROM node:18-alpine@sha256:3c8a5c5b8b6e5e8b9e6f5b8e8b7e5c8a5c5b8b6e5e8b9e6f5b8e8b7e5c8a5c5
+FROM 18.20.8-alpine
 
 WORKDIR /app
 
-# Install yarn if not already included in the base image
-RUN apk add --no-cache yarn
-
-# Copy package files and install dependencies
+# Copy package files 
 COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile
+RUN yarn install --production --frozen-lockfile
 
-# Copy source code
+# Copy source code and build
 COPY . .
-
-# Build the application
 RUN yarn build
 
-# Expose the application port
-EXPOSE 3000
+# Expose port (should match what's in docker-compose)
+EXPOSE 8000
 
-# Start the application
-CMD ["node", "dist/src/index.js"]
+# Start the application (adjust path as needed)
+CMD ["node", "dist/index.js"]
