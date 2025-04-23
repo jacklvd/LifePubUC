@@ -1,9 +1,11 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
+  output: 'standalone',
   eslint: {
     ignoreDuringBuilds: true,
   },
+
   images: {
     remotePatterns: [
       {
@@ -103,7 +105,18 @@ const nextConfig: NextConfig = {
         hostname: 'picsum.photos',
       },
     ],
+  
   },
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: process.env.NEXT_PUBLIC_API_BASE_URL + '/api/:path*',
+      },
+    ];
+  },
+  // Ensure trailing slashes are handled consistently
+  trailingSlash: false,
 }
 
 export default nextConfig
