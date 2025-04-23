@@ -1,13 +1,14 @@
 'use server'
 
 import { auth } from '@/auth'
+import { API_BASE_URL } from '@/constants'
 
 export async function getTransactionsTotalSales() {
   try {
     const session = await auth()
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/transactions/${session?.user?.id}/total-sale`,
+      `${API_BASE_URL}/api/transactions/${session?.user?.id}/total-sale`,
       {
         method: 'GET',
       },

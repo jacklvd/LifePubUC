@@ -1,6 +1,7 @@
 'use server'
 import { auth } from '@/auth'
 import axios from 'axios'
+import { API_BASE_URL } from '@/constants'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function createItem({ formData }: { formData: any }) {
@@ -51,7 +52,7 @@ export async function getItemById({
 
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/items/${itemId}`,
+      `${API_BASE_URL}/api/items/${itemId}`,
     )
 
     return response.data
@@ -107,7 +108,7 @@ export async function getItemsForSeller({
   if (sort) params.sort = sort
   if (q) params.q = q
 
-  const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/sellers/${session.user.id}/items`
+  const url = `${API_BASE_URL}/api/sellers/${session.user.id}/items`
 
   try {
     const response = await axios.get(url, { params })
@@ -177,7 +178,7 @@ export async function deleteItem({ itemId }: { itemId: string }) {
 
   try {
     const response = await axios.delete(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/sellers/${session?.user?.id}/items/${itemId}`,
+      `${API_BASE_URL}/api/sellers/${session?.user?.id}/items/${itemId}`,
     )
 
     return response.data
@@ -203,7 +204,7 @@ export async function getCategories() {
 
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/items/categories`,
+      `${API_BASE_URL}/api/items/categories`,
     )
 
     return response.data
@@ -229,7 +230,7 @@ export async function getConditions() {
 
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/items/conditions`,
+      `${API_BASE_URL}/api/items/conditions`,
     )
 
     return response.data
@@ -281,7 +282,7 @@ export async function getAllItems({
     if (q) params.q = q
 
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/items`,
+      `${API_BASE_URL}/api/items`,
       {
         params,
         headers: {

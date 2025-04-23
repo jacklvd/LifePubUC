@@ -2,6 +2,7 @@
 
 import { auth } from '@/auth'
 import axios from 'axios'
+import { API_BASE_URL } from '@/constants'
 
 export async function createStripeAccount() {
   const session = await auth()
@@ -12,7 +13,7 @@ export async function createStripeAccount() {
 
   try {
     const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/payment/accounts`,
+      `${API_BASE_URL}/api/payment/accounts`,
       {
         userId: session.user.id,
       },
@@ -37,11 +38,11 @@ export async function createStripeAccountLink(accountId: string) {
 
   try {
     console.log(
-      `Making request to: ${process.env.NEXT_PUBLIC_API_BASE_URL}/api/payment/account-links`,
+      `Making request to: ${API_BASE_URL}/api/payment/account-links`,
     )
 
     const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/payment/account-links`,
+      `${API_BASE_URL}/api/payment/account-links`,
       {
         account: accountId,
         userId: session?.user?.id,
@@ -67,7 +68,7 @@ export async function getUserOnboardingStripe(accountId: string) {
 
   try {
     const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/onboarding`,
+      `${API_BASE_URL}/api/user/onboarding`,
       {
         account: accountId,
         userId: session?.user?.id,
@@ -100,7 +101,7 @@ export async function checkStripeOnboardingStatus() {
 
     // Use axios.get instead of post since your backend expects GET for checking status
     const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/onboarding`,
+      `${API_BASE_URL}/api/user/onboarding`,
       { userId: session.user.id },
     )
 
@@ -154,7 +155,7 @@ export async function getUserStripe() {
     }
 
     const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/onboarding`,
+      `${API_BASE_URL}/api/user/onboarding`,
       { userId: session.user.id },
     )
 
@@ -210,7 +211,7 @@ export async function createStripePaymentIntent({
     }
 
     const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/payment/payment-intent`,
+      `${API_BASE_URL}/api/payment/payment-intent`,
       {
         buyerId: session.user.id,
         cartItems: cartItems,
