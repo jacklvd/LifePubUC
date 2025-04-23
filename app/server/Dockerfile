@@ -16,4 +16,4 @@ RUN yarn build
 EXPOSE 8000
 
 # Start the application
-CMD ["node", "dist/index.js"]
+CMD ["node", "dist/src/index.js"]
