@@ -65,8 +65,12 @@ apiRouter.use('/transactions', transactionRoute)
 
 app.use('/api', apiRouter)
 
+
 /* SERVER */
-const port = process.env.PORT || 8000
+const port = parseInt(process.env.PORT || '8000', 10)
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Server running on port ${port} and accessible at http://localhost:${port}`);
+});
 
 if (!isProduction) {
   app.listen(port, () => {
