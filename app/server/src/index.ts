@@ -65,6 +65,9 @@ apiRouter.use('/transactions', transactionRoute)
 
 app.use('/api', apiRouter)
 
+app.get('/', (req, res) => {
+  res.json({ message: 'Welcome to the LifePubUC API' });
+});
 
 /* SERVER */
 const port = parseInt(process.env.PORT || '8000', 10)
