@@ -3,15 +3,12 @@ name: Deploy to EC2
 on:
   push:
     branches:
-      - master
+      - master # or main, depending on your default branch
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
       - name: Set up SSH
         run: |
           mkdir -p ~/.ssh
@@ -22,14 +19,14 @@ jobs:
       - name: Deploy to EC2
         run: |
           ssh ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} << 'EOF'
-            cd ~/app/server
+            cd ~/LifePubUC/app/server
             
             # Pull latest code
             git pull origin master
             
             # Build and restart Docker containers
-            docker-compose -f docker-compose.prod.yml down
-            docker-compose -f docker-compose.prod.yml up -d --build
+            docker-compose -f docker-compose.yml down
+            docker-compose -f docker-compose.yml up -d --build
             
             # Clean up unused Docker images
             docker image prune -f
