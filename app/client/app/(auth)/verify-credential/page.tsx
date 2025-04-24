@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 
 import { useSearchParams, useRouter } from 'next/navigation'
@@ -14,17 +13,18 @@ import {
 } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Icon } from '@/components/icons'
+import ResendVerification from '../components/resent-email'
 
 export default function VerifyEmail() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const emailToken = searchParams.get('emailToken')
   const [message, setMessage] = useState('We are verifying your email address')
-  const [status, setStatus] = useState<'loading' | 'success' | 'error'>(
-    'loading',
-  )
+  const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading')
   const [progress, setProgress] = useState(0)
   const [timeLeft, setTimeLeft] = useState(5)
+  const [userEmail, setUserEmail] = useState<string | null>(null)
+  const [tokenExpired, setTokenExpired] = useState(false)
   const redirectTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
@@ -35,39 +35,44 @@ export default function VerifyEmail() {
 
         const result = await verifyEmail(emailToken)
 
-        // Check specifically for redirect success
+        // Check if verification was successful
         if (result.success) {
           setStatus('success')
-          setMessage(
-            result.message || 'Your email has been successfully verified!',
-          )
+          setMessage(result.message || 'Your email has been successfully verified!')
         } else {
           setStatus('error')
-          setMessage(
-            result.message || 'There was a problem verifying your email.',
-          )
+          setMessage(result.message || 'There was a problem verifying your email.')
+
+          // Check if token is expired
+          if (result.expired) {
+            setTokenExpired(true)
+            setUserEmail(result.email)
+          }
         }
 
-        // Start countdown timer
-        const timer = setInterval(() => {
-          setTimeLeft((prev) => {
-            if (prev <= 1) {
-              clearInterval(timer)
-              // Schedule redirect separately from state update
-              redirectTimeoutRef.current = setTimeout(() => {
-                router.push('/sign-in')
-              }, 0)
-              return 0
-            }
-            return prev - 1
-          })
-        }, 1000)
+        // Start countdown timer (only for success or non-expired errors)
+        if (result.success || !result.expired) {
+          const timer = setInterval(() => {
+            setTimeLeft((prev) => {
+              if (prev <= 1) {
+                clearInterval(timer)
+                if (!result.expired) {
+                  redirectTimeoutRef.current = setTimeout(() => {
+                    router.push('/sign-in')
+                  }, 0)
+                }
+                return 0
+              }
+              return prev - 1
+            })
+          }, 1000)
 
-        // Cleanup
-        return () => {
-          clearInterval(timer)
-          if (redirectTimeoutRef.current) {
-            clearTimeout(redirectTimeoutRef.current)
+          // Cleanup
+          return () => {
+            clearInterval(timer)
+            if (redirectTimeoutRef.current) {
+              clearTimeout(redirectTimeoutRef.current)
+            }
           }
         }
       } catch (error) {
@@ -100,13 +105,7 @@ export default function VerifyEmail() {
 
   // Effect to handle redirect after countdown reaches zero
   useEffect(() => {
-    if (timeLeft === 0 && (status === 'success' || status === 'error')) {
-      // If user can sign in, we should assume verification was successful
-      // regardless of the status that was set
-      if (status === 'error') {
-        console.log('Note: Redirecting to sign-in despite error status')
-      }
-
+    if (timeLeft === 0 && (status === 'success' || (status === 'error' && !tokenExpired))) {
       redirectTimeoutRef.current = setTimeout(() => {
         router.push('/sign-in')
       }, 100)
@@ -117,16 +116,13 @@ export default function VerifyEmail() {
         }
       }
     }
-  }, [timeLeft, status, router])
+  }, [timeLeft, status, router, tokenExpired])
 
   const getStatusIcon = () => {
     switch (status) {
       case 'loading':
         return (
-          <Icon
-            name="Loader2"
-            className="h-16 w-16 text-primary animate-spin"
-          />
+          <Icon name="Loader2" className="h-16 w-16 text-primary animate-spin" />
         )
       case 'success':
         return <Icon name="CheckCircle2" className="h-16 w-16 text-green-500" />
@@ -141,12 +137,6 @@ export default function VerifyEmail() {
     }
     router.push('/sign-in')
   }
-
-  // Add debugging to console
-  useEffect(() => {
-    console.log('Current status:', status)
-    console.log('Current message:', message)
-  }, [status, message])
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-slate-900 p-4">
@@ -179,12 +169,16 @@ export default function VerifyEmail() {
               </div>
             )}
 
-            {(status === 'success' || status === 'error') && (
+            {(status === 'success' || (status === 'error' && !tokenExpired)) && (
               <div className="bg-slate-700 rounded-lg p-4 mt-4">
                 <p className="text-slate-300 text-center">
                   Redirecting to sign-in in {timeLeft} seconds...
                 </p>
               </div>
+            )}
+
+            {tokenExpired && userEmail && (
+              <ResendVerification email={userEmail} />
             )}
           </CardContent>
 

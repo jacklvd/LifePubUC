@@ -49,19 +49,53 @@ export const signUp = async (params: AuthCredentials) => {
 
     return {
       success: true,
-      message: 'Please check your email to verify your account.',
+      message: response.data.message || 'Please check your email to verify your account.',
+      canResend: response.data.canResend || false,
+      email: response.data.email || null,
       toast: {
         title: 'Signup successful',
-        description: 'Please check your email to verify your account.',
+        description: 'Please check your email to verify your account. The verification link will expire in 24 hours.',
         variant: 'default',
       },
     }
   } catch (error: any) {
     console.error('Signup error:', error)
+    // Check if we got a canResend flag from the backend
+    if (error.response?.data?.canResend) {
+      return {
+        success: false,
+        error: error.response?.data?.message || 'Signup failed. Please try again.',
+        canResend: true,
+        email: error.response?.data?.email || null
+      }
+    }
     return {
       success: false,
-      error:
-        error.response?.data?.message || 'Signup failed. Please try again.',
+      error: error.response?.data?.message || 'Signup failed. Please try again.',
+    }
+  }
+}
+
+/**
+ * Resend verification email
+ */
+export const resendVerificationEmail = async (email: string) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/api/auth/resend-verification`,
+      { email }
+    )
+    
+    return {
+      success: true,
+      message: response.data.message || 'Verification email resent successfully!',
+      expiresIn: response.data.expiresIn || '24 hours',
+    }
+  } catch (error: any) {
+    console.error('Resend verification error:', error)
+    return {
+      success: false,
+      error: error.response?.data?.message || 'Failed to resend verification email.',
     }
   }
 }
@@ -91,6 +125,7 @@ export const signOutUser = async () => {
  * Verify email with token
  */
 export const verifyEmail = async (emailToken: string | null) => {
+  // Existing implementation with improved error handling
   if (!emailToken) {
     return { success: false, message: 'Invalid verification link.' }
   }
@@ -117,6 +152,15 @@ export const verifyEmail = async (emailToken: string | null) => {
     }
   } catch (error: any) {
     console.error('Verification error:', error)
+    // Check if the token has expired
+    if (error.response?.status === 400 && error.response?.data?.message?.includes('expired')) {
+      return {
+        success: false,
+        message: 'Your verification link has expired. Please request a new one.',
+        expired: true,
+        email: error.response?.data?.email || null
+      }
+    }
     return {
       success: false,
       message:
@@ -125,3 +169,4 @@ export const verifyEmail = async (emailToken: string | null) => {
     }
   }
 }
+

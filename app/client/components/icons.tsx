@@ -71,6 +71,7 @@ import {
   ArrowRight,
   TrendingDown,
   ShoppingBag,
+  RefreshCw
 } from 'lucide-react'
 
 const ICONS = {
@@ -146,6 +147,7 @@ const ICONS = {
   TrendingDown: TrendingDown,
   SlidersHorizontal: SlidersHorizontal,
   ShoppingBag: ShoppingBag,
+  RefreshCw: RefreshCw
 } as const
 
 export type IconNames = keyof typeof ICONS
