@@ -2867,9 +2867,9 @@ js-cookie@3.0.5:
   integrity sha512-cEiJEAEoIbWfCZYKWhVwFuvPX1gETRYPw6LlaTKoxD3s2AkXzkCjnp6h0V77ozyqj0jakteJ4YqDJT830+lVGw==
 
 js-object-utilities@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/js-object-utilities/-/js-object-utilities-2.2.0.tgz#4677a7fd3174369fb8f0d8c10fb9f7381c71fd0d"
-  integrity sha512-gVw7FwD6r7mNNjzSKJ74uxvqNIGu7hb67K+Xvwus9JRBTWLezxcg77cCFOmTbiToV09BqdYmIJ+zfL3UiWDtpQ==
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/js-object-utilities/-/js-object-utilities-2.2.1.tgz#8c8b65bced78d4cfe598781f52ec63f17e15d2c9"
+  integrity sha512-0Ki0uXeMEga6OVM7ESxLjSaCYMdrQ46av0VomzaQT7BWNwMsEodmrtImkdD6K7SCq0ADw1uoQm4HBrsMQqtEww==
 
 jsonwebtoken@^9.0.2:
   version "9.0.2"
