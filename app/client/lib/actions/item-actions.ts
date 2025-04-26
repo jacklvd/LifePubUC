@@ -51,9 +51,7 @@ export async function getItemById({
   }
 
   try {
-    const response = await axios.get(
-      `${API_BASE_URL}/api/items/${itemId}`,
-    )
+    const response = await axios.get(`${API_BASE_URL}/api/items/${itemId}`)
 
     return response.data
   } catch (error) {
@@ -203,9 +201,7 @@ export async function getCategories() {
   }
 
   try {
-    const response = await axios.get(
-      `${API_BASE_URL}/api/items/categories`,
-    )
+    const response = await axios.get(`${API_BASE_URL}/api/items/categories`)
 
     return response.data
   } catch (error) {
@@ -229,9 +225,7 @@ export async function getConditions() {
   }
 
   try {
-    const response = await axios.get(
-      `${API_BASE_URL}/api/items/conditions`,
-    )
+    const response = await axios.get(`${API_BASE_URL}/api/items/conditions`)
 
     return response.data
   } catch (error) {
@@ -281,15 +275,12 @@ export async function getAllItems({
     if (limit) params.limit = limit
     if (q) params.q = q
 
-    const response = await axios.get(
-      `${API_BASE_URL}/api/items`,
-      {
-        params,
-        headers: {
-          'Cache-Control': 'no-store', // Disable caching for fresh data
-        },
+    const response = await axios.get(`${API_BASE_URL}/api/items`, {
+      params,
+      headers: {
+        'Cache-Control': 'no-store', // Disable caching for fresh data
       },
-    )
+    })
 
     return response.data.data
   } catch (error) {

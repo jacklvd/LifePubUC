@@ -127,6 +127,18 @@ const AuthForm = <T extends FieldValues>({
               ))}
             </div>
 
+            {/* Add forgot password link for sign in form */}
+            {isSignIn && (
+              <div className="text-right">
+                <Link
+                  href="/forgot-password"
+                  className="text-sm text-primary hover:underline"
+                >
+                  Forgot your password?
+                </Link>
+              </div>
+            )}
+
             {/* {!isSignIn && (
               <div className="text-sm text-slate-400">
                 By creating an account, you agree to our{' '}

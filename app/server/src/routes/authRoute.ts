@@ -1,5 +1,13 @@
 import express from 'express'
-import { signIn, signUp, verifyEmail, resendVerificationEmail, resetPassword, forgotPassword, validateResetToken } from '../controllers/authController'
+import {
+  signIn,
+  signUp,
+  verifyEmail,
+  resendVerificationEmail,
+  resetPassword,
+  forgotPassword,
+  validateResetToken,
+} from '../controllers/authController'
 
 const router = express.Router()
 router.post('/register', signUp)

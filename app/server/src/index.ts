@@ -66,14 +66,16 @@ apiRouter.use('/transactions', transactionRoute)
 app.use('/api', apiRouter)
 
 app.get('/', (req, res) => {
-  res.json({ message: 'Welcome to the LifePubUC API' });
-});
+  res.json({ message: 'Welcome to the LifePubUC API' })
+})
 
 /* SERVER */
 const port = parseInt(process.env.PORT || '8000', 10)
 app.listen(port, '0.0.0.0', () => {
-  console.log(`Server running on port ${port} and accessible at http://localhost:${port}`);
-});
+  console.log(
+    `Server running on port ${port} and accessible at http://localhost:${port}`,
+  )
+})
 
 if (!isProduction) {
   app.listen(port, () => {

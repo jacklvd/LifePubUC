@@ -2,7 +2,6 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
 import AuthForm from '@/app/(auth)/components/authform'
 import { signInSchema } from '@/lib/validations'
 import { signInWithCredentials } from '@/lib/actions/auth-actions'
@@ -20,9 +19,11 @@ const SignIn = () => {
     const result = await signInWithCredentials(data)
 
     // Check if the error indicates an unverified email
-    if (!result.success &&
+    if (
+      !result.success &&
       result.error &&
-      result.error.toLowerCase().includes('not verified')) {
+      result.error.toLowerCase().includes('not verified')
+    ) {
       setIsUnverified(true)
     } else {
       setIsUnverified(false)
@@ -43,26 +44,17 @@ const SignIn = () => {
         onSubmit={handleSubmit}
       />
 
-      {/* Add Forgot Password Link */}
-      <div className="mt-4 text-center">
-        <Link
-          href="/forgot-password"
-          className="text-sm text-primary hover:underline"
-        >
-          Forgot your password?
-        </Link>
-      </div>
-
       {isUnverified && userEmail && (
         <Card className="mt-6 bg-slate-800 border border-slate-700 p-4 max-w-md mx-auto">
-          <h3 className="text-lg font-semibold text-white mb-2">Email Not Verified</h3>
+          <h3 className="text-lg font-semibold text-white mb-2">
+            Email Not Verified
+          </h3>
           <p className="text-slate-300 mb-4">
             It looks like your email address hasn&apos;t been verified yet.
-            Please check your inbox for the verification email or request a new one.
+            Please check your inbox for the verification email or request a new
+            one.
           </p>
-          <ResendVerification
-            email={userEmail}
-          />
+          <ResendVerification email={userEmail} />
         </Card>
       )}
     </>

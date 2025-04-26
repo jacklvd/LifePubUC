@@ -49,12 +49,15 @@ export const signUp = async (params: AuthCredentials) => {
 
     return {
       success: true,
-      message: response.data.message || 'Please check your email to verify your account.',
+      message:
+        response.data.message ||
+        'Please check your email to verify your account.',
       canResend: response.data.canResend || false,
       email: response.data.email || null,
       toast: {
         title: 'Signup successful',
-        description: 'Please check your email to verify your account. The verification link will expire in 24 hours.',
+        description:
+          'Please check your email to verify your account. The verification link will expire in 24 hours.',
         variant: 'default',
       },
     }
@@ -64,14 +67,16 @@ export const signUp = async (params: AuthCredentials) => {
     if (error.response?.data?.canResend) {
       return {
         success: false,
-        error: error.response?.data?.message || 'Signup failed. Please try again.',
+        error:
+          error.response?.data?.message || 'Signup failed. Please try again.',
         canResend: true,
-        email: error.response?.data?.email || null
+        email: error.response?.data?.email || null,
       }
     }
     return {
       success: false,
-      error: error.response?.data?.message || 'Signup failed. Please try again.',
+      error:
+        error.response?.data?.message || 'Signup failed. Please try again.',
     }
   }
 }
@@ -83,19 +88,21 @@ export const resendVerificationEmail = async (email: string) => {
   try {
     const response = await axios.post(
       `${API_BASE_URL}/api/auth/resend-verification`,
-      { email }
+      { email },
     )
-    
+
     return {
       success: true,
-      message: response.data.message || 'Verification email resent successfully!',
+      message:
+        response.data.message || 'Verification email resent successfully!',
       expiresIn: response.data.expiresIn || '24 hours',
     }
   } catch (error: any) {
     console.error('Resend verification error:', error)
     return {
       success: false,
-      error: error.response?.data?.message || 'Failed to resend verification email.',
+      error:
+        error.response?.data?.message || 'Failed to resend verification email.',
     }
   }
 }
@@ -153,12 +160,16 @@ export const verifyEmail = async (emailToken: string | null) => {
   } catch (error: any) {
     console.error('Verification error:', error)
     // Check if the token has expired
-    if (error.response?.status === 400 && error.response?.data?.message?.includes('expired')) {
+    if (
+      error.response?.status === 400 &&
+      error.response?.data?.message?.includes('expired')
+    ) {
       return {
         success: false,
-        message: 'Your verification link has expired. Please request a new one.',
+        message:
+          'Your verification link has expired. Please request a new one.',
         expired: true,
-        email: error.response?.data?.email || null
+        email: error.response?.data?.email || null,
       }
     }
     return {
@@ -177,18 +188,20 @@ export const requestPasswordReset = async (email: string) => {
   try {
     const response = await axios.post(
       `${API_BASE_URL}/api/auth/forgot-password`,
-      { email }
+      { email },
     )
-    
+
     return {
       success: true,
-      message: response.data.message || 'Password reset email sent if account exists.',
+      message:
+        response.data.message || 'Password reset email sent if account exists.',
     }
   } catch (error: any) {
     console.error('Password reset request error:', error)
     return {
       success: false,
-      error: error.response?.data?.message || 'Failed to request password reset.',
+      error:
+        error.response?.data?.message || 'Failed to request password reset.',
     }
   }
 }
@@ -200,9 +213,9 @@ export const resetPassword = async (token: string, password: string) => {
   try {
     const response = await axios.post(
       `${API_BASE_URL}/api/auth/reset-password`,
-      { token, password }
+      { token, password },
     )
-    
+
     return {
       success: true,
       message: response.data.message || 'Password reset successful!',
@@ -222,9 +235,9 @@ export const resetPassword = async (token: string, password: string) => {
 export const validateResetToken = async (token: string) => {
   try {
     const response = await axios.get(
-      `${API_BASE_URL}/api/auth/validate-reset-token/${token}`
+      `${API_BASE_URL}/api/auth/validate-reset-token/${token}`,
     )
-    
+
     return {
       success: true,
       message: response.data.message || 'Token is valid.',

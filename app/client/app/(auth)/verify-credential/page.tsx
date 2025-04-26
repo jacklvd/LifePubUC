@@ -20,7 +20,9 @@ export default function VerifyEmail() {
   const router = useRouter()
   const emailToken = searchParams.get('emailToken')
   const [message, setMessage] = useState('We are verifying your email address')
-  const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading')
+  const [status, setStatus] = useState<'loading' | 'success' | 'error'>(
+    'loading',
+  )
   const [progress, setProgress] = useState(0)
   const [timeLeft, setTimeLeft] = useState(5)
   const [userEmail, setUserEmail] = useState<string | null>(null)
@@ -38,10 +40,14 @@ export default function VerifyEmail() {
         // Check if verification was successful
         if (result.success) {
           setStatus('success')
-          setMessage(result.message || 'Your email has been successfully verified!')
+          setMessage(
+            result.message || 'Your email has been successfully verified!',
+          )
         } else {
           setStatus('error')
-          setMessage(result.message || 'There was a problem verifying your email.')
+          setMessage(
+            result.message || 'There was a problem verifying your email.',
+          )
 
           // Check if token is expired
           if (result.expired) {
@@ -105,7 +111,10 @@ export default function VerifyEmail() {
 
   // Effect to handle redirect after countdown reaches zero
   useEffect(() => {
-    if (timeLeft === 0 && (status === 'success' || (status === 'error' && !tokenExpired))) {
+    if (
+      timeLeft === 0 &&
+      (status === 'success' || (status === 'error' && !tokenExpired))
+    ) {
       redirectTimeoutRef.current = setTimeout(() => {
         router.push('/sign-in')
       }, 100)
@@ -122,7 +131,10 @@ export default function VerifyEmail() {
     switch (status) {
       case 'loading':
         return (
-          <Icon name="Loader2" className="h-16 w-16 text-primary animate-spin" />
+          <Icon
+            name="Loader2"
+            className="h-16 w-16 text-primary animate-spin"
+          />
         )
       case 'success':
         return <Icon name="CheckCircle2" className="h-16 w-16 text-green-500" />
@@ -169,7 +181,8 @@ export default function VerifyEmail() {
               </div>
             )}
 
-            {(status === 'success' || (status === 'error' && !tokenExpired)) && (
+            {(status === 'success' ||
+              (status === 'error' && !tokenExpired)) && (
               <div className="bg-slate-700 rounded-lg p-4 mt-4">
                 <p className="text-slate-300 text-center">
                   Redirecting to sign-in in {timeLeft} seconds...

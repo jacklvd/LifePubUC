@@ -3,7 +3,7 @@ services:
     build: .
     restart: always
     ports:
-      - "80:8000"
+      - '80:8000'
     depends_on:
       - mongodb
       - redis

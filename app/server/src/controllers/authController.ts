@@ -104,9 +104,13 @@ try {
 const VERIFICATION_EXPIRY = 24 * 60 * 60 // 24 hours in seconds
 const VERIFICATION_EXPIRY_MS = VERIFICATION_EXPIRY * 1000 // 24 hours in milliseconds
 
-const sendVerificationEmail = async (email: string, fullName: string, verificationToken: string) => {
+const sendVerificationEmail = async (
+  email: string,
+  fullName: string,
+  verificationToken: string,
+) => {
   const verificationLink = `${FRONTEND_URL}/verify-credential?emailToken=${verificationToken}`
-  
+
   await transporter.sendMail({
     from: EMAIL_USER,
     to: email,
@@ -135,7 +139,7 @@ const sendVerificationEmail = async (email: string, fullName: string, verificati
       </div>
     `,
   })
-  
+
   return verificationLink
 }
 
@@ -168,7 +172,8 @@ export const verifyEmail = async (req: any, res: any) => {
     if (!userDataJson) {
       return res.status(400).json({
         success: false,
-        message: 'Invalid or expired token. Please request a new verification email.',
+        message:
+          'Invalid or expired token. Please request a new verification email.',
       })
     }
 
@@ -180,22 +185,22 @@ export const verifyEmail = async (req: any, res: any) => {
       // Delete the verification token from storage
       await storage.del(`verification:${emailToken}`)
       await storage.del(`email:${userData.email}`)
-      
+
       return res.status(200).json({
         success: true,
         message: 'Your email is already verified. You can sign in.',
       })
     }
-    
+
     // If user exists but is not verified, update it
     if (existingUser && !existingUser.isVerified) {
       existingUser.isVerified = true
       await existingUser.save()
-      
+
       // Delete the verification token from storage
       await storage.del(`verification:${emailToken}`)
       await storage.del(`email:${userData.email}`)
-      
+
       return res.status(200).json({
         success: true,
         message: 'Email verified successfully. You can now sign in.',
@@ -243,18 +248,19 @@ export const signUp = async (req: any, res: any) => {
 
     // If user exists and is verified, reject the signup
     if (existingUser && existingUser.isVerified) {
-      return res.status(400).json({ 
-        message: 'User already exists and is verified. Please sign in instead.' 
+      return res.status(400).json({
+        message: 'User already exists and is verified. Please sign in instead.',
       })
     }
-    
+
     // Check if this email already has a pending verification
     const hasExistingVerification = await storage.get(`email:${email}`)
     if (hasExistingVerification) {
       return res.status(400).json({
-        message: 'A verification email has already been sent. Please check your inbox or request a new verification email.',
+        message:
+          'A verification email has already been sent. Please check your inbox or request a new verification email.',
         canResend: true,
-        email: email
+        email: email,
       })
     }
 
@@ -285,14 +291,14 @@ export const signUp = async (req: any, res: any) => {
     await storage.setex(
       `verification:${verificationToken}`,
       VERIFICATION_EXPIRY,
-      JSON.stringify(userData)
+      JSON.stringify(userData),
     )
 
     // Store a reference from email to token to prevent duplicate verification emails
     await storage.setex(
       `email:${email}`,
       VERIFICATION_EXPIRY,
-      verificationToken
+      verificationToken,
     )
 
     // Send verification email
@@ -302,7 +308,8 @@ export const signUp = async (req: any, res: any) => {
     session.endSession()
 
     res.status(201).json({
-      message: 'Please check your email to verify your account. The verification link will expire in 24 hours.',
+      message:
+        'Please check your email to verify your account. The verification link will expire in 24 hours.',
     })
   } catch (error: any) {
     console.log(error)
@@ -318,38 +325,38 @@ export const signUp = async (req: any, res: any) => {
 export const resendVerificationEmail = async (req: any, res: any) => {
   try {
     const { email } = req.body
-    
+
     if (!email) {
       return res.status(400).json({
         success: false,
-        message: 'Email is required.'
+        message: 'Email is required.',
       })
     }
-    
+
     // Check if user exists
     const existingUser = await User.findOne({ email })
-    
+
     // If user exists and is already verified
     if (existingUser && existingUser.isVerified) {
       return res.status(400).json({
         success: false,
-        message: 'This email is already verified. Please sign in.'
+        message: 'This email is already verified. Please sign in.',
       })
     }
-    
+
     // Check if there is an existing token
     const existingToken = await storage.get(`email:${email}`)
-    
+
     // If there is an existing token, delete it
     if (existingToken) {
       await storage.del(`verification:${existingToken}`)
       await storage.del(`email:${email}`)
     }
-    
+
     // Get user data - either from existing user or from request
     let userData
     let fullName
-    
+
     if (existingUser) {
       // Use existing user data
       fullName = existingUser.fullName
@@ -365,42 +372,43 @@ export const resendVerificationEmail = async (req: any, res: any) => {
       // We need more information to create a new verification
       return res.status(404).json({
         success: false,
-        message: 'No pending verification found for this email. Please sign up first.'
+        message:
+          'No pending verification found for this email. Please sign up first.',
       })
     }
-    
+
     // Generate a new verification token
     const verificationToken = crypto.randomBytes(32).toString('hex')
-    
+
     // Store the token with the user data, with expiration
     await storage.setex(
       `verification:${verificationToken}`,
       VERIFICATION_EXPIRY,
-      JSON.stringify(userData)
+      JSON.stringify(userData),
     )
-    
+
     // Store a reference from email to token
     await storage.setex(
       `email:${email}`,
       VERIFICATION_EXPIRY,
-      verificationToken
+      verificationToken,
     )
-    
+
     // Send the verification email
     await sendVerificationEmail(email, fullName, verificationToken)
-    
+
     return res.status(200).json({
       success: true,
-      message: 'Verification email resent successfully. Please check your inbox.',
-      expiresIn: `${VERIFICATION_EXPIRY / 3600} hours`
+      message:
+        'Verification email resent successfully. Please check your inbox.',
+      expiresIn: `${VERIFICATION_EXPIRY / 3600} hours`,
     })
-    
   } catch (error: any) {
     console.error('Error resending verification email:', error)
     return res.status(500).json({
       success: false,
       message: 'Error resending verification email',
-      error: error.message
+      error: error.message,
     })
   }
 }
@@ -462,12 +470,13 @@ export const forgotPassword = async (req: any, res: any) => {
 
     // Check if user exists and is verified
     const user = await User.findOne({ email })
-    
+
     if (!user) {
       // For security, we don't reveal if the email exists
       return res.status(200).json({
         success: true,
-        message: 'If an account exists with this email, a password reset link will be sent.',
+        message:
+          'If an account exists with this email, a password reset link will be sent.',
       })
     }
 
@@ -480,7 +489,7 @@ export const forgotPassword = async (req: any, res: any) => {
 
     // Generate reset token
     const resetToken = crypto.randomBytes(32).toString('hex')
-    
+
     // Store reset token data
     const resetData = {
       userId: user._id,
@@ -492,19 +501,15 @@ export const forgotPassword = async (req: any, res: any) => {
     await storage.setex(
       `reset:${resetToken}`,
       3600, // 1 hour in seconds
-      JSON.stringify(resetData)
+      JSON.stringify(resetData),
     )
 
     // Also store a reference from email to prevent multiple reset requests
-    await storage.setex(
-      `reset-email:${email}`,
-      3600,
-      resetToken
-    )
+    await storage.setex(`reset-email:${email}`, 3600, resetToken)
 
     // Send password reset email
     const resetLink = `${FRONTEND_URL}/reset-password?token=${resetToken}`
-    
+
     await transporter.sendMail({
       from: EMAIL_USER,
       to: email,
@@ -536,7 +541,8 @@ export const forgotPassword = async (req: any, res: any) => {
 
     res.status(200).json({
       success: true,
-      message: 'If an account exists with this email, a password reset link will be sent.',
+      message:
+        'If an account exists with this email, a password reset link will be sent.',
     })
   } catch (error: any) {
     console.error('Error in forgotPassword:', error)
@@ -565,15 +571,16 @@ export const resetPassword = async (req: any, res: any) => {
     if (!resetDataJson) {
       return res.status(400).json({
         success: false,
-        message: 'Invalid or expired reset token. Please request a new password reset.',
+        message:
+          'Invalid or expired reset token. Please request a new password reset.',
       })
     }
 
     const resetData = JSON.parse(resetDataJson)
-    
+
     // Find user
     const user = await User.findById(resetData.userId)
-    
+
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -612,7 +619,8 @@ export const resetPassword = async (req: any, res: any) => {
 
     res.status(200).json({
       success: true,
-      message: 'Password reset successful. You can now sign in with your new password.',
+      message:
+        'Password reset successful. You can now sign in with your new password.',
     })
   } catch (error: any) {
     console.error('Error in resetPassword:', error)

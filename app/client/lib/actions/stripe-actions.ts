@@ -12,12 +12,9 @@ export async function createStripeAccount() {
   }
 
   try {
-    const response = await axios.post(
-      `${API_BASE_URL}/api/payment/accounts`,
-      {
-        userId: session.user.id,
-      },
-    )
+    const response = await axios.post(`${API_BASE_URL}/api/payment/accounts`, {
+      userId: session.user.id,
+    })
 
     return response.data
   } catch (error) {
@@ -37,9 +34,7 @@ export async function createStripeAccountLink(accountId: string) {
   }
 
   try {
-    console.log(
-      `Making request to: ${API_BASE_URL}/api/payment/account-links`,
-    )
+    console.log(`Making request to: ${API_BASE_URL}/api/payment/account-links`)
 
     const response = await axios.post(
       `${API_BASE_URL}/api/payment/account-links`,
@@ -67,13 +62,10 @@ export async function getUserOnboardingStripe(accountId: string) {
   }
 
   try {
-    const response = await axios.post(
-      `${API_BASE_URL}/api/user/onboarding`,
-      {
-        account: accountId,
-        userId: session?.user?.id,
-      },
-    )
+    const response = await axios.post(`${API_BASE_URL}/api/user/onboarding`, {
+      account: accountId,
+      userId: session?.user?.id,
+    })
 
     return response.data
   } catch (error) {
@@ -100,10 +92,9 @@ export async function checkStripeOnboardingStatus() {
     }
 
     // Use axios.get instead of post since your backend expects GET for checking status
-    const response = await axios.post(
-      `${API_BASE_URL}/api/user/onboarding`,
-      { userId: session.user.id },
-    )
+    const response = await axios.post(`${API_BASE_URL}/api/user/onboarding`, {
+      userId: session.user.id,
+    })
 
     // Handle the case where the API returns a 400 status code
     const responseData = response.data
@@ -154,10 +145,9 @@ export async function getUserStripe() {
       }
     }
 
-    const response = await axios.post(
-      `${API_BASE_URL}/api/user/onboarding`,
-      { userId: session.user.id },
-    )
+    const response = await axios.post(`${API_BASE_URL}/api/user/onboarding`, {
+      userId: session.user.id,
+    })
 
     const responseData = response.data
     const user = responseData?.data || false

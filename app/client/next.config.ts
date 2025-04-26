@@ -105,7 +105,6 @@ const nextConfig: NextConfig = {
         hostname: 'picsum.photos',
       },
     ],
-  
   },
   async rewrites() {
     return [
@@ -113,7 +112,7 @@ const nextConfig: NextConfig = {
         source: '/api/:path*',
         destination: process.env.NEXT_PUBLIC_API_BASE_URL + '/api/:path*',
       },
-    ];
+    ]
   },
   // Ensure trailing slashes are handled consistently
   trailingSlash: false,
