@@ -77,11 +77,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         return true
       }
 
+      if (pathname.includes('/forgot-password') || pathname.includes('/reset-password')) {
+        return true
+      }
+
       const isLoggedIn = !!auth?.user
-      const publicRoutes = ['/', '/sign-in', '/sign-up']
+      const publicRoutes = ['/', '/sign-in', '/sign-up', '/forgot-password', '/reset-password']
 
       if (publicRoutes.includes(pathname)) {
-        if (isLoggedIn && ['/sign-in', '/sign-up'].includes(pathname)) {
+        if (isLoggedIn && ['/sign-in', '/sign-up', '/forgot-password', '/reset-password'].includes(pathname)) {
           return Response.redirect(new URL('/', request.nextUrl))
         }
         return true

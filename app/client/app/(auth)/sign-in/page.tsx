@@ -1,13 +1,15 @@
+// Update your sign-in page.tsx
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import AuthForm from '@/app/(auth)/components/authform'
 import { signInSchema } from '@/lib/validations'
 import { signInWithCredentials } from '@/lib/actions/auth-actions'
 import ResendVerification from '@/app/(auth)/components/resent-email'
 import { Card } from '@/components/ui/card'
 
-const Page = () => {
+const SignIn = () => {
   const [isUnverified, setIsUnverified] = useState(false)
   const [userEmail, setUserEmail] = useState('')
 
@@ -41,6 +43,16 @@ const Page = () => {
         onSubmit={handleSubmit}
       />
 
+      {/* Add Forgot Password Link */}
+      <div className="mt-4 text-center">
+        <Link
+          href="/forgot-password"
+          className="text-sm text-primary hover:underline"
+        >
+          Forgot your password?
+        </Link>
+      </div>
+
       {isUnverified && userEmail && (
         <Card className="mt-6 bg-slate-800 border border-slate-700 p-4 max-w-md mx-auto">
           <h3 className="text-lg font-semibold text-white mb-2">Email Not Verified</h3>
@@ -57,4 +69,4 @@ const Page = () => {
   )
 }
 
-export default Page
+export default SignIn

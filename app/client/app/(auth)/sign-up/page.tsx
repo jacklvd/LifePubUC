@@ -4,7 +4,7 @@ import AuthForm from '@/app/(auth)/components/authform'
 import { signUpSchema } from '@/lib/validations'
 import { signUp } from '@/lib/actions/auth-actions'
 
-const Page = () => (
+const SignUp = () => (
   <AuthForm
     type="SIGN_UP"
     schema={signUpSchema}
@@ -18,4 +18,4 @@ const Page = () => (
   />
 )
 
-export default Page
+export default SignUp

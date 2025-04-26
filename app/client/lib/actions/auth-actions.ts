@@ -170,3 +170,70 @@ export const verifyEmail = async (emailToken: string | null) => {
   }
 }
 
+/**
+ * Request password reset
+ */
+export const requestPasswordReset = async (email: string) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/api/auth/forgot-password`,
+      { email }
+    )
+    
+    return {
+      success: true,
+      message: response.data.message || 'Password reset email sent if account exists.',
+    }
+  } catch (error: any) {
+    console.error('Password reset request error:', error)
+    return {
+      success: false,
+      error: error.response?.data?.message || 'Failed to request password reset.',
+    }
+  }
+}
+
+/**
+ * Reset password with token
+ */
+export const resetPassword = async (token: string, password: string) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/api/auth/reset-password`,
+      { token, password }
+    )
+    
+    return {
+      success: true,
+      message: response.data.message || 'Password reset successful!',
+    }
+  } catch (error: any) {
+    console.error('Password reset error:', error)
+    return {
+      success: false,
+      error: error.response?.data?.message || 'Failed to reset password.',
+    }
+  }
+}
+
+/**
+ * Validate reset token
+ */
+export const validateResetToken = async (token: string) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/api/auth/validate-reset-token/${token}`
+    )
+    
+    return {
+      success: true,
+      message: response.data.message || 'Token is valid.',
+    }
+  } catch (error: any) {
+    console.error('Token validation error:', error)
+    return {
+      success: false,
+      error: error.response?.data?.message || 'Invalid or expired token.',
+    }
+  }
+}

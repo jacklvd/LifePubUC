@@ -116,7 +116,7 @@ const sendVerificationEmail = async (email: string, fullName: string, verificati
         <h2>Hi ${fullName}! 😊</h2>
         <p>Thank you for signing up for LifePub! 🎉</p>
         <p>To get started, please confirm your email address by clicking the link below:</p>
-        <p style="text-align: center; margin: 20px 0;">
+        <p style="margin: 20px 0;">
           <a href="${verificationLink}" 
             style="display: inline-block; padding: 12px 20px; font-size: 16px; 
             color: #fff; background-color: #007bff; text-decoration: none; 
@@ -444,6 +444,216 @@ export const signIn = async (req: any, res: any) => {
   } catch (error: any) {
     res.status(500).json({
       message: 'Error signing in',
+      error: error.message,
+    })
+  }
+}
+
+export const forgotPassword = async (req: any, res: any) => {
+  try {
+    const { email } = req.body
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email is required.',
+      })
+    }
+
+    // Check if user exists and is verified
+    const user = await User.findOne({ email })
+    
+    if (!user) {
+      // For security, we don't reveal if the email exists
+      return res.status(200).json({
+        success: true,
+        message: 'If an account exists with this email, a password reset link will be sent.',
+      })
+    }
+
+    if (!user.isVerified) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please verify your email first.',
+      })
+    }
+
+    // Generate reset token
+    const resetToken = crypto.randomBytes(32).toString('hex')
+    
+    // Store reset token data
+    const resetData = {
+      userId: user._id,
+      email: user.email,
+      createdAt: new Date().toISOString(),
+    }
+
+    // Store with 1 hour expiration
+    await storage.setex(
+      `reset:${resetToken}`,
+      3600, // 1 hour in seconds
+      JSON.stringify(resetData)
+    )
+
+    // Also store a reference from email to prevent multiple reset requests
+    await storage.setex(
+      `reset-email:${email}`,
+      3600,
+      resetToken
+    )
+
+    // Send password reset email
+    const resetLink = `${FRONTEND_URL}/reset-password?token=${resetToken}`
+    
+    await transporter.sendMail({
+      from: EMAIL_USER,
+      to: email,
+      subject: '🔒 Password Reset Request - LifePub',
+      html: `
+        <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+          <h2>Password Reset Request 🔑</h2>
+          <p>Hi ${user.fullName},</p>
+          <p>We received a request to reset your password for your LifePub account.</p>
+          <p>Click the link below to reset your password:</p>
+          <p style="margin: 20px 0;">
+            <a href="${resetLink}" 
+              style="display: inline-block; padding: 12px 20px; font-size: 16px; 
+              color: #fff; background-color: #007bff; text-decoration: none; 
+              border-radius: 5px;">
+              Reset Password
+            </a>
+          </p>
+          <p>Or copy and paste this link into your browser:</p>
+          <p style="word-break: break-all; background: #f4f4f4; padding: 10px; border-radius: 5px;">
+            <a href="${resetLink}" style="color: #007bff;">${resetLink}</a>
+          </p>
+          <p><strong>This link will expire in 1 hour.</strong></p>
+          <p>If you didn't request a password reset, you can safely ignore this email.</p>
+          <p>Best regards,<br>The LifePub Team 🚀</p>
+        </div>
+      `,
+    })
+
+    res.status(200).json({
+      success: true,
+      message: 'If an account exists with this email, a password reset link will be sent.',
+    })
+  } catch (error: any) {
+    console.error('Error in forgotPassword:', error)
+    res.status(500).json({
+      success: false,
+      message: 'Error processing password reset request',
+      error: error.message,
+    })
+  }
+}
+
+export const resetPassword = async (req: any, res: any) => {
+  try {
+    const { token, password } = req.body
+
+    if (!token || !password) {
+      return res.status(400).json({
+        success: false,
+        message: 'Token and new password are required.',
+      })
+    }
+
+    // Retrieve reset data from storage
+    const resetDataJson = await storage.get(`reset:${token}`)
+
+    if (!resetDataJson) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid or expired reset token. Please request a new password reset.',
+      })
+    }
+
+    const resetData = JSON.parse(resetDataJson)
+    
+    // Find user
+    const user = await User.findById(resetData.userId)
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found.',
+      })
+    }
+
+    // Hash new password
+    const salt = await bcrypt.genSalt(12)
+    const hashedPassword = await bcrypt.hash(password, salt)
+
+    // Update user password
+    user.password = hashedPassword
+    await user.save()
+
+    // Delete reset tokens
+    await storage.del(`reset:${token}`)
+    await storage.del(`reset-email:${user.email}`)
+
+    // Send confirmation email
+    await transporter.sendMail({
+      from: EMAIL_USER,
+      to: user.email,
+      subject: '✅ Password Reset Successful - LifePub',
+      html: `
+        <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+          <h2>Password Reset Successful! ✅</h2>
+          <p>Hi ${user.fullName},</p>
+          <p>Your password has been successfully reset.</p>
+          <p>You can now sign in with your new password.</p>
+          <p>If you didn't make this change, please contact our support team immediately.</p>
+          <p>Best regards,<br>The LifePub Team 🚀</p>
+        </div>
+      `,
+    })
+
+    res.status(200).json({
+      success: true,
+      message: 'Password reset successful. You can now sign in with your new password.',
+    })
+  } catch (error: any) {
+    console.error('Error in resetPassword:', error)
+    res.status(500).json({
+      success: false,
+      message: 'Error resetting password',
+      error: error.message,
+    })
+  }
+}
+
+export const validateResetToken = async (req: any, res: any) => {
+  try {
+    const { token } = req.params
+
+    if (!token) {
+      return res.status(400).json({
+        success: false,
+        message: 'Token is required.',
+      })
+    }
+
+    // Check if token exists
+    const resetDataJson = await storage.get(`reset:${token}`)
+
+    if (!resetDataJson) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid or expired reset token.',
+      })
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Token is valid.',
+    })
+  } catch (error: any) {
+    console.error('Error in validateResetToken:', error)
+    res.status(500).json({
+      success: false,
+      message: 'Error validating reset token',
       error: error.message,
     })
   }
