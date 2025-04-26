@@ -3,7 +3,7 @@ import { FC } from 'react'
 
 const Footer: FC = () => {
   return (
-    <footer className="w-full">
+    <footer className="w-full bottom-0 fixed">
       {/* Renewable energy section */}
       <div className="bg-gradient-to-r from-blue-200 to-blue-300 py-4 text-center text-white shadow-md">
         <div className="container mx-auto px-5">
